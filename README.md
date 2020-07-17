@@ -39,8 +39,7 @@ example: `RunCovidSimulation.exe -n 100 -s ./Scenarios/Baseline_scenario.json -t
 ### Threading
 The default value for the number of threads is `-t 1`. Running single threaded is highly recommended for debugging. Setting `-t 0` will detect the number of logical cores on the system and spawn the corresponding number of threads.
 
-**WARNING:**
-For performance reasons each thread keeps its own agent population in memory. A large value of the NumberOfAgentsToSimulate parameter in the solution file combined with a large number of processing threads can result in high memory usage. Users should open task manager and keep an eye on memory usage to select the optimal balance between performance and memory usage, given the amount of RAM available.
+**WARNING:** For performance reasons each thread keeps its own agent population in memory. A large value of the NumberOfAgentsToSimulate parameter in the solution file combined with a large number of processing threads can result in high memory usage. Users should open task manager and keep an eye on memory usage to select the optimal balance between performance and memory usage, given the amount of RAM available.
 
 ### Changing model parameters
 
@@ -53,8 +52,8 @@ Output is saved in the Output/ directory. A copy of the scenario file that was u
 The naming convention is to start the filename with the value of the ScenarioName setting in the scenario file.
 
 If the --saveDate switch is used then the date and time the model was run will be appended to the filename.
-**WARNING**
-If a file with the same name already exists it will be overwritten.
+
+**WARNING:** If a file with the same name already exists it will be overwritten.
 
 ---
 
@@ -81,8 +80,8 @@ Modelling of contacts between agents and virus transmission is not complete and 
 Agents are currently assigned to provinces and each province is essentially a separate bucket with no interaction with the other buckets. 
 Future development plans include 
 
-* Modelling contacts beween agents as a graph, based on household structure and contact matrix input
-* Modelling on a more granular level, most likely based on wards
+* Modelling contacts beween agents as an undirected graph, based on household structure and contact matrix input
+* Modelling on a more granular level geographically, most likely based on wards
 * Explicitly modelling travel between regions
 
 ### Output format
@@ -103,7 +102,7 @@ Unit test coverage is currently very poor.
 
 ## References:
 
-1. Grouped graph generation algorithm used in `MultiConfigModelGenerator` class in the *Yaabm.Graph* library is partly based on [gennet](https://github.com/kklot/gennet)
+1. Grouped graph generation algorithm used in `MultiConfigModelGenerator` class in the *Yaabm.Graph* library is partly based on the r code in [kklot/gennet](https://github.com/kklot/gennet)
 
 ## Dependencies
 
