@@ -21,9 +21,10 @@ This is an agent based model that is being developed to model the impact of the 
 
 ### Running the model
 
-To run the model you need to execute RunCovidSimulation.exe from the command line.
+To run the model you need to execute **RunCovidSimulation.exe** from the command line.
 
-The application has the following command line arguments
+The application has the following command line arguments:
+
 	-n, --iterations  [Required] How many Monte Carlo iterations to simulate
 
 	-s, --scenario    [Required] The path to the scenario settings file
