@@ -1,6 +1,7 @@
 ﻿using System;
-using FileHelpers;
 using System.Collections.Generic;
+using System.IO;
+using Yaabm.generic;
 
 namespace Covid19ModelLibrary.Population
 {
@@ -37,17 +38,36 @@ namespace Covid19ModelLibrary.Population
 
         public static PopulationPyramid LoadFromFile(string filename)
         {
-            var result = new PopulationPyramid();
-            var engine = new FileHelperEngine<ProvincialAgeGroup>();
+            var fileInfo = new FileInfo(filename);
+
+            //var engine = new FileHelperEngine<ProvincialAgeGroup>();
 
             lock (FileLock)
             {
-                var data = engine.ReadFile(filename);
-
-                foreach (var item in data)
+                using (var reader = fileInfo.OpenText())
                 {
-                    result.SetNumberOfLives(item.Province, item.AgeBand, item.NumberOfLives);
+                    try
+                    {
+                        return LoadFromStream(reader);
+                    }
+                    catch (Exception ex)
+                    {
+                        InternalLog.Error(ex,$"Could not load file {filename}");
+                        return null;
+                    }
                 }
+            }
+        }
+
+        private static PopulationPyramid LoadFromStream(StreamReader reader)
+        {
+            var result = new PopulationPyramid();
+
+            while (!reader.EndOfStream)
+            {
+                var nextLine = reader.ReadLine();
+                var newRecord = ProvincialAgeGroup.FromLine(nextLine);
+                result.SetNumberOfLives(newRecord.Province, newRecord.AgeBand, newRecord.NumberOfLives);
             }
 
             return result;
