@@ -33,7 +33,7 @@ namespace UnitTests.Yaabm.generic
         {
             var newSpec = new InterventionSpec
             {
-                InterventionName = "UnitTests.Cabm.Core.LabInterventionSpec, UnitTests.Cabm.Core",
+                InterventionName = "UnitTests.Yaabm.generic.LabInterventionSpec, UnitTests.Yaabm.generic",
                 DayToApply = 180
             };
             newSpec.Parameters.Add(new InterventionParam() {Name = "Value1", TypeName = "System.Double", Value = "3.1415"});

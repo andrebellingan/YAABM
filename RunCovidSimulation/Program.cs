@@ -3,23 +3,24 @@ using System.Linq;
 using System.Reflection;
 using CommandLineParser.Exceptions;
 using Covid19ModelLibrary;
-using NLog;
+using Serilog;
+using Serilog.Events;
 
 namespace RunCovidSimulation
 {
     public class Program
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
         private static int Main(string[] args)
         {
+            SetupLogging();
+
             if (!CheckArgumentParserVersion()) return -1;
 
             var runSettings = new RunSettings();
 
             if (!ParseArguments(args, runSettings))
             {
-                Logger.Error("Execution stopped because command line parameters did not parse successfully.");
+                Log.Error("Execution stopped because command line parameters did not parse successfully.");
                 return -1;
             }
 
@@ -48,9 +49,20 @@ namespace RunCovidSimulation
             var endTime = DateTime.Now;
             var timePassed = endTime - startTime;
 
-            Logger.Info($"Total processing time: {timePassed:g}");
+            Log.Information($"Total processing time: {timePassed:g}");
 
             return 0;
+        }
+
+        private static void SetupLogging()
+        {
+            var logFileName = $"{DateTime.Today:yyyy-MM-dd}.log";
+
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.Console(restrictedToMinimumLevel:LogEventLevel.Information)
+                .WriteTo.File($"./logs/{logFileName}", restrictedToMinimumLevel: LogEventLevel.Debug)
+                .CreateLogger();
         }
 
         private static bool CheckArgumentParserVersion()
@@ -96,14 +108,14 @@ namespace RunCovidSimulation
             }
             catch (MandatoryArgumentNotSetException m)
             {
-                Logger.Error(m, "Command line parsing error");
+                Log.Error(m, "Command line parsing error");
                 Console.WriteLine($"A mandatory argument {m.Argument} was not set");
                 parser.PrintUsage(Console.Out);
                 return false;
             }
             catch (CommandLineException e)
             {
-                Logger.Error(e, "Command line exception");
+                Log.Error(e, "Command line exception");
                 return false;
             }
 
