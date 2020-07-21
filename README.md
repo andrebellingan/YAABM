@@ -7,7 +7,6 @@ This is an agent based model that is being developed to model the impact of the 
 ## Getting started
 
 ### System requirements
-* Windows 10 (must be 64-bit)
 * .NET Framework 4.7.2 runtimes
 * Sufficient RAM given the size of the simulation and the number of processing threads (see below)
 
@@ -15,13 +14,13 @@ This is an agent based model that is being developed to model the impact of the 
 
 1. Download or clone the source code
 2. Compiling
-	* It is recommended to open the solution in Visual Studio 2017 (or 2019) and build the projected from there (The Visual Studio Community editions are free to download for non-commercial use)
-	* Alternatively you can download the .NET SDK and use ```dotnet build CAMB.sln``` from the command line (remember to get the correct version of the SDK)
+	* It is recommended to open the solution in Visual Studio 2019 and build the projected from there (The Visual Studio Community editions are free to download for non-commercial use). Visual Studio code works too.
+	* Alternatively you can download the .NET Core 3.1 SDK and use ```dotnet build CAMB.sln``` from the command line
 3. Note that the nuget package manager may indicate that there is an update available for the "CommandLineArgumentsParser" package. Due to a bug in version 3.0.20 of the package when handling default argument values you should not upgrade to this specific version.
 
 ### Running the model
 
-To run the model you need to execute **RunCovidSimulation.exe** from the command line.
+To run the model you need to execute **RunCovidSimulation** from the command line.
 
 The application has the following command line arguments:
 
@@ -83,6 +82,10 @@ Future development plans include
 * Modelling contacts beween agents as an undirected graph, based on household structure and contact matrix input
 * Modelling on a more granular level geographically, most likely based on wards
 * Explicitly modelling travel between regions
+
+### Input formats
+
+If you get invalid format errors while trying to run the model it is probably because the regional number format settings on your computer don't match what was assumed when the input files were prepared. For example the files assume that a value would be written as 0.7 but your system expects 0,7.
 
 ### Output format
 
