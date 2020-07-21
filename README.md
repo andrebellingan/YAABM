@@ -7,7 +7,7 @@ This is an agent based model that is being developed to model the impact of the 
 ## Getting started
 
 ### System requirements
-* .NET Framework 4.7.2 runtimes
+* .NET Core 3.1 runtimes
 * Sufficient RAM given the size of the simulation and the number of processing threads (see below)
 
 ### Compiling to code
