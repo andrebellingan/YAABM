@@ -1,25 +1,23 @@
 ﻿using System;
-using NLog;
+using Serilog;
 
 namespace Yaabm.generic
 {
     public static class InternalLog
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
         public static void Error(Exception exception, string message)
         {
-            Logger.Error(exception, message);
+            Log.Error(exception, message);
         }
 
         public static void Error(string message)
         {
-            Logger.Error(message);
+            Log.Error(message);
         }
 
         public static void Info(string message)
         {
-            Logger.Info(message);
+            Log.Information(message);
         }
     }
 }

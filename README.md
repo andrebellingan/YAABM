@@ -7,21 +7,20 @@ This is an agent based model that is being developed to model the impact of the 
 ## Getting started
 
 ### System requirements
-* Windows 10 (must be 64-bit)
-* .NET Framework 4.7.2 runtimes
+* .NET Core 3.1 runtimes
 * Sufficient RAM given the size of the simulation and the number of processing threads (see below)
 
 ### Compiling to code
 
 1. Download or clone the source code
 2. Compiling
-	* It is recommended to open the solution in Visual Studio 2017 (or 2019) and build the projected from there (The Visual Studio Community editions are free to download for non-commercial use)
-	* Alternatively you can download the .NET SDK and use ```dotnet build CAMB.sln``` from the command line (remember to get the correct version of the SDK)
+	* It is recommended to open the solution in Visual Studio 2019 and build the projected from there (The Visual Studio Community editions are free to download for non-commercial use). Visual Studio code works too.
+	* Alternatively you can download the .NET Core 3.1 SDK and use ```dotnet build CAMB.sln``` from the command line
 3. Note that the nuget package manager may indicate that there is an update available for the "CommandLineArgumentsParser" package. Due to a bug in version 3.0.20 of the package when handling default argument values you should not upgrade to this specific version.
 
 ### Running the model
 
-To run the model you need to execute **RunCovidSimulation.exe** from the command line.
+To run the model you need to execute **RunCovidSimulation** from the command line.
 
 The application has the following command line arguments:
 
@@ -109,10 +108,9 @@ Unit test coverage is currently very poor.
 This solution gratefully relies on code developed by the following projects:
 
 * [Command Line Parser Library for CLR and NetStandard](https://github.com/commandlineparser/commandline#command-line-parser-library-for-clr-and-netstandard)
-* [FileHelpers.net](https://www.filehelpers.net/)
 * [The Loyc Core project ](http://core.loyc.net/)
 * [Math.NET Numerics](https://numerics.mathdotnet.com/)
-* [NLog](https://nlog-project.org/)
+* [Serilog](https://serilog.net/)
 * [Sandwych.QuickGraph](https://github.com/oldrev/Sandwych.QuickGraph)
 
 ---

@@ -215,7 +215,7 @@ namespace Covid19ModelLibrary
         {
             using (var ms = new MemoryStream())
             {
-                var serializer = new DataContractSerializer(typeof(CovidModelParameters), null, int.MaxValue, false, false, null);
+                var serializer = new DataContractSerializer(typeof(CovidModelParameters));
 
                 serializer.WriteObject(ms, this);
                 ms.Position = 0;
