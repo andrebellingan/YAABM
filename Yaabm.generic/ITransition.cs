@@ -1,4 +1,4 @@
-﻿namespace Cabm.Core
+﻿namespace Yaabm.generic
 {
     public interface ITransition<TAgent> where TAgent : Agent<TAgent>
     {
