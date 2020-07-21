@@ -12,6 +12,7 @@ namespace RunCovidSimulation
     {
         private static int Main(string[] args)
         {
+            System.Globalization.CultureInfo.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
             SetupLogging();
 
             if (!CheckArgumentParserVersion()) return -1;
