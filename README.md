@@ -83,10 +83,6 @@ Future development plans include
 * Modelling on a more granular level geographically, most likely based on wards
 * Explicitly modelling travel between regions
 
-### Input formats
-
-If you get invalid format errors while trying to run the model it is probably because the regional number format settings on your computer don't match what was assumed when the input files were prepared. For example the files assume that a value would be written as 0.7 but your system expects 0,7.
-
 ### Output format
 
 Output is currently written in CSV format, which makes it easy to import into whatever analysis software you would like. Unfortunatly the file sizes can get very large depending on the number of monte-carlo iterations.
