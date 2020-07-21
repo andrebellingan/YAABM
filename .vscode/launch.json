@@ -1,0 +1,25 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": ".NET Core Launch (RunCovidSimulation)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/RunCovidSimulation/bin/Debug/netcoreapp3.1/RunCovidSimulation.dll",
+            "args": ["-n", "10", "-s", "Scenarios/Baseline_scenario.json", "-t", "4"],
+            "cwd": "${workspaceFolder}/RunCovidSimulation/bin/Debug/netcoreapp3.1",
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
+            "name": ".NET Core Attach",
+            "type": "coreclr",
+            "request": "attach",
+            "processId": "${command:pickProcess}"
+        }
+    ]
+}
