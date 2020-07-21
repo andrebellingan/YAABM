@@ -109,7 +109,6 @@ Unit test coverage is currently very poor.
 This solution gratefully relies on code developed by the following projects:
 
 * [Command Line Parser Library for CLR and NetStandard](https://github.com/commandlineparser/commandline#command-line-parser-library-for-clr-and-netstandard)
-* [FileHelpers.net](https://www.filehelpers.net/)
 * [The Loyc Core project ](http://core.loyc.net/)
 * [Math.NET Numerics](https://numerics.mathdotnet.com/)
 * [NLog](https://nlog-project.org/)
