@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.Serialization;
 
@@ -35,7 +36,7 @@ namespace Yaabm.generic
                 throw new InvalidCastException(TypeName);
             }
 
-            return !pType.IsEnum ? Convert.ChangeType(Value, pType) : Enum.Parse(pType, Value);
+            return !pType.IsEnum ? Convert.ChangeType(Value, pType, CultureInfo.InvariantCulture) : Enum.Parse(pType, Value);
         }
     }
 
