@@ -12,7 +12,6 @@ namespace RunCovidSimulation
     {
         private static int Main(string[] args)
         {
-            System.Globalization.CultureInfo.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
             SetupLogging();
 
             if (!CheckArgumentParserVersion()) return -1;
@@ -34,6 +33,7 @@ namespace RunCovidSimulation
             {
                 noOfThreads = runSettings.Threads;
             }
+            Log.Information($"Processing on {noOfThreads} threads");
 
             var maximumQueueSize = Math.Min(noOfThreads, 3);
 
