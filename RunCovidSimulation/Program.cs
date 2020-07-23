@@ -52,6 +52,7 @@ namespace RunCovidSimulation
 
             Log.Information($"Total processing time: {timePassed:g}");
 
+            Log.CloseAndFlush();
             return 0;
         }
 
@@ -69,8 +70,11 @@ namespace RunCovidSimulation
         private static bool CheckArgumentParserVersion()
         {
             var parserAssembly = Assembly.GetAssembly(typeof(CommandLineParser.CommandLineParser));
-            var version = parserAssembly.GetName().Version;
 
+            if (parserAssembly == null) return false;
+
+            var version = parserAssembly.GetName().Version;
+            if (version == null) return false;
             if (version.Major == 3 && version.Minor == 0 && version.MajorRevision == 20)
             {
                 Console.WriteLine($"Due to a bug in the package {parserAssembly.FullName} version 3.0.20 the command line parser may not work correctly. Please install 3.0.19 or a version later than 3.0.20 using nuget");
@@ -78,6 +82,7 @@ namespace RunCovidSimulation
             }
 
             Console.WriteLine($"Using command line arguments parser version {version}");
+
             return true;
         }
 
