@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml.Serialization;
 using Yaabm.generic;
 
 namespace GraphGen
@@ -10,6 +11,7 @@ namespace GraphGen
             GroupId = group;
         }
 
+        [XmlAttribute]
         public int GroupId { get; set; }
 
         public override void Behave()
@@ -20,6 +22,11 @@ namespace GraphGen
         public override string ToString()
         {
             return Id.ToString();
+        }
+
+        internal static string VertexIdentities(GraphNode v)
+        {
+            return v.Id.ToString();
         }
     }
 }

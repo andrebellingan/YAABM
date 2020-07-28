@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using QuickGraph.Serialization;
 using Yaabm.generic.Random;
 using Yaabm.Graph.Generation;
 
@@ -16,7 +17,7 @@ namespace GraphGen
             Console.WriteLine("This will generate the test graph for analysis");
 
             const bool useComplexExample = true;
-            const int multiplier = 441; //4406 for about a million nodes in the complex example
+            const int multiplier = 1; //4406 for about a million nodes in the complex example
 
             var multiLambdas = ContactMatrix(useComplexExample);
             var groupSizes = GroupSizes(useComplexExample);
@@ -183,6 +184,13 @@ namespace GraphGen
             Console.WriteLine($"Time to generate basic degree sequence graph was {watch.Elapsed:g}");
 
             SaveGraph(graph, "./TestGraph_Basic.sif");
+            SaveGraphToMl(graph, "./TestGraph_Basic.xml");
+        }
+
+        private static void SaveGraphToMl(TestGraph graph, string fileName)
+        {
+            graph.SerializeToGraphML<GraphNode, GraphEdge, TestGraph>(fileName, GraphNode.VertexIdentities,
+                GraphEdge.EdgeIdentities);
         }
 
         private static List<Tuple<GraphNode, int>> ConvertToBasicPopulation(List<MultiConfigItem<GraphNode>> population)

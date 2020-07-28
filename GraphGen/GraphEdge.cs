@@ -1,4 +1,5 @@
-﻿using Yaabm.Graph;
+﻿using System;
+using Yaabm.Graph;
 
 namespace GraphGen
 {
@@ -6,6 +7,11 @@ namespace GraphGen
     {
         public GraphEdge(GraphNode source, GraphNode target) : base(source, target)
         {
+        }
+
+        internal static string EdgeIdentities(GraphEdge edge)
+        {
+            return edge.ToString();
         }
     }
 }
