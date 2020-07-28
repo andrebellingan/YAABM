@@ -115,7 +115,7 @@ namespace Yaabm.Graph.Generation
                 }
 
                 var randomIndex = _random.NextInt(0, freeToConnect.Count);
-                var otherWrapper = freeToConnect[randomIndex];  //TODO:s Optimize this - using LINQ is a major bottleneck.
+                var otherWrapper = freeToConnect[randomIndex];
 
                 if (otherWrapper.AgentId == wrapper.AgentId) continue; // can't link to yourself
                 if (Graph.ContainsEdge(currentAgent, otherWrapper.Agent)) continue; // that link already exists

@@ -144,7 +144,7 @@ namespace Yaabm.Graph.Generation
                     }
 
                     var randomIndex = _random.NextInt(0, freeToConnectToAgent.Count);
-                    var otherWrapper = freeToConnectToAgent[randomIndex];  //TODO:s Optimize this - using LINQ is a major bottleneck.
+                    var otherWrapper = freeToConnectToAgent[randomIndex];
 
                     if(!LinkingConditionMet(wrapper, otherWrapper, groupIndex)) continue;
 
