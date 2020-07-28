@@ -111,7 +111,7 @@ This solution gratefully relies on code developed by the following projects:
 * [The Loyc Core project ](http://core.loyc.net/)
 * [Math.NET Numerics](https://numerics.mathdotnet.com/)
 * [Serilog](https://serilog.net/)
-* [Sandwych.QuickGraph](https://github.com/oldrev/Sandwych.QuickGraph)
+* [QuickGraph.NETStandard](https://github.com/deepakkumar1984/QuickGraph.NETStandard)
 
 ---
 
