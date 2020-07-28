@@ -17,7 +17,7 @@ namespace GraphGen
             Console.WriteLine("This will generate the test graph for analysis");
 
             const bool useComplexExample = true;
-            const int multiplier = 1; //4406 for about a million nodes in the complex example
+            const int multiplier = 4; //4406 for about a million nodes in the complex example
 
             var multiLambdas = ContactMatrix(useComplexExample);
             var groupSizes = GroupSizes(useComplexExample);
@@ -31,9 +31,6 @@ namespace GraphGen
             
             TestMulti(population, seed, numberOfGroups, multiLambdas);
 
-#if DEBUG
-            Console.ReadKey();
-#endif
         }
 
         private static int[] GroupSizes(bool useComplexExample)
