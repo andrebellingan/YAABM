@@ -2,7 +2,7 @@
 
 namespace Yaabm.generic
 {
-    public abstract class Agent<T> : IComparable<Agent<T>> where T : Agent<T> 
+    public class Agent<T> : IComparable<Agent<T>> where T : Agent<T> 
     {
         protected Agent()
         {
@@ -34,12 +34,15 @@ namespace Yaabm.generic
 
         public int NumberOfDaysInCurrentState => Context.Day - DayCurrentStateEntered;
 
-        public abstract void Behave();
+        public virtual void Behave()
+        {
+            //Default behaviour is to do nothing
+        }
 
 
         public int CompareTo(Agent<T> other)
         {
-            return this.Id.CompareTo(other.Id);
+            return Id.CompareTo(other.Id);
         }
 
         public override int GetHashCode()

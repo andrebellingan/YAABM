@@ -95,11 +95,6 @@ namespace Covid19ModelLibrary
         }
 
         public int? DaysCanSurviveWithoutHospital { get; set; }
-
-        public override void Behave()
-        {
-            //TODO: Program agent behaviour
-        }
     }
 }
  
