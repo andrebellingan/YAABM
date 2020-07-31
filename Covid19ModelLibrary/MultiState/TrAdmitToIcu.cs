@@ -15,7 +15,7 @@ namespace Covid19ModelLibrary.MultiState
             var daysInfected = agent.NumberOfDaysInCurrentState;
             if (daysInfected < agent.DaysInInfectedState) return false;
 
-            return agent.CovidContext.HospitalSystem.IcuBedIsAvailable();
+            return agent.Ward.HospitalSystem.IcuBedIsAvailable();
         }
     }
 }

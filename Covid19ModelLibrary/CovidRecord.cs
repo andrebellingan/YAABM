@@ -55,17 +55,17 @@ namespace Covid19ModelLibrary
 
         public void RecordTransition(Human agent, Transition<Human> transition)
         {
-            var provinceOffSet = (int) agent.CovidContext.Province;
+            var provinceOffSet = (int) agent.Ward.Province;
             _transitionCounts[transition][provinceOffSet]++;
         }
 
         public void RecordState(Human agent)
         {
-            var provinceOffset = (int) agent.CovidContext.Province;
+            var provinceOffset = (int) agent.Ward.Province;
             _stateCounts[agent.CurrentState][provinceOffset]++;
 
-            if (agent.CurrentState == _susceptibleState) _susceptibleTotals[agent.CovidContext.Province]++;
-            if (agent.IsInfectious) _infectiousTotals[agent.CovidContext.Province]++;
+            if (agent.CurrentState == _susceptibleState) _susceptibleTotals[agent.Ward.Province]++;
+            if (agent.IsInfectious) _infectiousTotals[agent.Ward.Province]++;
         }
 
         public string CsvHeading 

@@ -12,7 +12,7 @@ namespace Covid19ModelLibrary.MultiState
         {
             if (agent.NumberOfDaysInCurrentState < agent.DaysCanSurviveWithoutHospital) return false;
 
-            return agent.CovidContext.HospitalSystem.HospitalBedIsAvailable(agent, true);
+            return agent.Ward.HospitalSystem.HospitalBedIsAvailable(agent, true);
         }
     }
 }

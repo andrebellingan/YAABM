@@ -11,8 +11,8 @@ namespace Covid19ModelLibrary.MultiState
 
         public override bool InfectionOccurs(Human carrierAgent, Human susceptibleAgent, IRandomProvider random)
         {
-            var p = susceptibleAgent.CovidContext.ProbabilityOfInfection;
-            var s = susceptibleAgent.CovidContext.SusceptibilityFactor(susceptibleAgent);
+            var p = susceptibleAgent.Ward.ProbabilityOfInfection;
+            var s = susceptibleAgent.Ward.SusceptibilityFactor(susceptibleAgent);
 
             var probOfTransition = p * s;
             if (double.IsNaN(probOfTransition)) throw new NotFiniteNumberException("Probability of infection is NaN");

@@ -40,12 +40,12 @@ namespace Covid19ModelLibrary.MultiState
         {
             agent.IsInfectious = false;
             agent.IsAlive = false;
-            agent.CovidContext.HospitalSystem.DischargePatient(agent);
+            agent.Ward.HospitalSystem.DischargePatient(agent);
         }
 
         private void WhenPersonExitsIcu(Human agent, IRandomProvider random)
         {
-            var avgDays = agent.CovidContext.GetMeanDaysRecoveringAfterIcu(agent);
+            var avgDays = agent.Ward.GetMeanDaysRecoveringAfterIcu(agent);
             agent.DaysRecoveringAfterIcu = random.SamplePoisson(avgDays);
         }
 
@@ -56,26 +56,26 @@ namespace Covid19ModelLibrary.MultiState
 
         private void WhenPersonEntersIcu(Human agent, IRandomProvider random)
         {
-            var icuOutcomeWeights = agent.CovidContext.GetIntensiveCareOutcomeWeights(agent);
+            var icuOutcomeWeights = agent.Ward.GetIntensiveCareOutcomeWeights(agent);
             agent.IntensiveCareOutcome = RandomChooser<IntensiveCareOutcome>.RandomChoice(icuOutcomeWeights, random);
 
-            var avgTimeInIcu = agent.CovidContext.GetAvgTimeInIcu(agent);
+            var avgTimeInIcu = agent.Ward.GetAvgTimeInIcu(agent);
             agent.DaysInIcu = random.SamplePoisson(avgTimeInIcu);
         }
 
         private void WhenPersonQueuesForHospital(Human agent, IRandomProvider random)
         {
-            var lambda = agent.CovidContext.MeanSurvivalWaitingForHospital;
+            var lambda = agent.Ward.MeanSurvivalWaitingForHospital;
             agent.DaysCanSurviveWithoutHospital = random.SamplePoisson(lambda);
         }
 
         private void WhenPersonAdmitted(Human agent, IRandomProvider random)
         {
-            agent.CovidContext.HospitalSystem.AdmitPatient(agent);
-            var outcomeWeights = agent.CovidContext.GetHospitalOutcomeWeights(agent);
+            agent.Ward.HospitalSystem.AdmitPatient(agent);
+            var outcomeWeights = agent.Ward.GetHospitalOutcomeWeights(agent);
             agent.HospitalOutcome = RandomChooser<HospitalOutcome>.RandomChoice(outcomeWeights, random);
 
-            var averageDaysInHospital = agent.CovidContext.GetAverageHospitalStay(agent.HospitalOutcome);
+            var averageDaysInHospital = agent.Ward.GetAverageHospitalStay(agent.HospitalOutcome);
             agent.DaysInHospital = random.SamplePoisson(averageDaysInHospital);
         }
 
@@ -84,25 +84,25 @@ namespace Covid19ModelLibrary.MultiState
             agent.IsInfectious = false;
             agent.Symptoms = DiseaseSymptoms.None;
             agent.Hospitalization = Hospitalization.None;
-            agent.CovidContext.HospitalSystem.DischargePatient(agent);
+            agent.Ward.HospitalSystem.DischargePatient(agent);
         }
 
         private void WhenIncubationEnds(Human agent, IRandomProvider random)
         {
             agent.IsInfectious = true;
-            var symptomProportions = agent.CovidContext.GetSymptomWeights(agent);
+            var symptomProportions = agent.Ward.GetSymptomWeights(agent);
             agent.Symptoms = RandomChooser<DiseaseSymptoms>.RandomChoice(symptomProportions, random);
-            var hospitalizationWeights = agent.CovidContext.GetHospitalizationWeights(agent);
+            var hospitalizationWeights = agent.Ward.GetHospitalizationWeights(agent);
 
             agent.Hospitalization = RandomChooser<Hospitalization>.RandomChoice(hospitalizationWeights, random);
 
-            var averageDays = agent.CovidContext.GetMeanInfectedTime(agent);
+            var averageDays = agent.Ward.GetMeanInfectedTime(agent);
             agent.DaysInInfectedState = random.SamplePoisson(averageDays);
         }
 
         private void WhenPersonExposed(Human agent, IRandomProvider random)
         {
-            agent.IncubationDays = random.SamplePoisson(agent.CovidContext.MeanIncubationPeriod);
+            agent.IncubationDays = random.SamplePoisson(agent.Ward.MeanIncubationPeriod);
             agent.Symptoms = DiseaseSymptoms.Incubating;
         }
 

@@ -80,7 +80,7 @@ namespace Covid19ModelLibrary
 
         public bool IsAlive { get; set; }
 
-        public CovidContext CovidContext { get; private set; }
+        public Ward Ward { get; private set; }
 
         private LocalArea<Human> _localContext;
 
@@ -90,7 +90,7 @@ namespace Covid19ModelLibrary
             set
             {
                 _localContext = value;
-                CovidContext = value as CovidContext;
+                Ward = value as Ward;
             }
         }
 

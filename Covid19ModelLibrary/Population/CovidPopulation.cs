@@ -32,7 +32,7 @@ namespace Covid19ModelLibrary.Population
             {
                 if (agent.CurrentState != diseaseModel.I) continue;
 
-                if (agent.CovidContext.Province == province && agent.Symptoms == symptoms) total++;
+                if (agent.Ward.Province == province && agent.Symptoms == symptoms) total++;
             }
 
             return total;

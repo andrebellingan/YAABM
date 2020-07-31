@@ -7,7 +7,7 @@ using Yaabm.generic;
 
 namespace Covid19ModelLibrary
 {
-    public class Controller : MasterController<Human, CovidStateModel, CovidContext, CovidPopulation, CovidSimulation>
+    public class Controller : MasterController<Human, CovidStateModel, Ward, CovidPopulation, CovidSimulation>
     {
         private StreamWriter _outputTextFile;
         private bool _headingHasBeenWritten;

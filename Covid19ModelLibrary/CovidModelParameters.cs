@@ -252,5 +252,13 @@ namespace Covid19ModelLibrary
                 return (CovidModelParameters) deserializer.ReadObject(fileStream);
             }
         }
+
+        #region Paramters are files
+
+        [DataMember]
+        public string WardFile { get; set; }
+
+
+        #endregion
     }
 }
