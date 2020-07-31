@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Yaabm.generic
 {
-    public class Agent<T> : IEqualityComparer<Agent<T>> where T : Agent<T> 
+    public class Agent<T> : IEqualityComparer<Agent<T>>, IComparable<Agent<T>> where T : Agent<T> 
     {
         protected Agent()
         {
@@ -47,6 +48,11 @@ namespace Yaabm.generic
         public int GetHashCode(Agent<T> agent)
         {
             return Id;
+        }
+
+        public int CompareTo(Agent<T> other)
+        {
+            return Id.CompareTo(other.Id);
         }
     }
 }
