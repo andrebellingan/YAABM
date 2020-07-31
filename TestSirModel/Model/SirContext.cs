@@ -10,7 +10,7 @@ namespace TestSirModel.Model
         public int ResistantTotal { get; set; }
         public int N { get; set; }
 
-        public SirContext(ILocalResourceSystem<SirAgent> localResource, string name, GroupedContext<SirAgent> parentContext) : base(localResource, name, parentContext)
+        public SirContext(ILocalResourceSystem<SirAgent> localResource, string name) : base(localResource, name, name, "SirContext")
         {
         }
 
