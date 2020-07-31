@@ -189,22 +189,18 @@ namespace Covid19ModelLibrary
             var serializer = new DataContractSerializer(typeof(CovidModelParameters));
 
             var settings = new XmlWriterSettings() {Indent = true};
-            using (var writer = XmlWriter.Create(fileName, settings))
-            {
-                serializer.WriteObject(writer, this);
-            }
+            using var writer = XmlWriter.Create(fileName, settings);
+            serializer.WriteObject(writer, this);
         }
 
 
 
         public static CovidModelParameters LoadFromXml(FileInfo fileInfo)
         {
-            using (var fileSteam = fileInfo.Open(FileMode.Open))
-            {
-                var deserializer = new DataContractSerializer(typeof(CovidModelParameters));
+            using var fileSteam = fileInfo.Open(FileMode.Open);
+            var deserializer = new DataContractSerializer(typeof(CovidModelParameters));
                 
-                return (CovidModelParameters)deserializer.ReadObject(fileSteam);
-            }
+            return (CovidModelParameters)deserializer.ReadObject(fileSteam);
         }
 
         /// <summary>
@@ -213,14 +209,12 @@ namespace Covid19ModelLibrary
         /// <returns>A deep cloned CovidModelParameters object</returns>
         public CovidModelParameters Clone()
         {
-            using (var ms = new MemoryStream())
-            {
-                var serializer = new DataContractSerializer(typeof(CovidModelParameters));
+            using var ms = new MemoryStream();
+            var serializer = new DataContractSerializer(typeof(CovidModelParameters));
 
-                serializer.WriteObject(ms, this);
-                ms.Position = 0;
-                return (CovidModelParameters)serializer.ReadObject(ms);
-            }
+            serializer.WriteObject(ms, this);
+            ms.Position = 0;
+            return (CovidModelParameters)serializer.ReadObject(ms);
         }
 
         public void SaveToJson(string fileName)
@@ -232,25 +226,21 @@ namespace Covid19ModelLibrary
 
             var serializer = new DataContractJsonSerializer(typeof(CovidModelParameters), settings);
 
-            using (var stream = File.Create(fileName))
-            {
-                serializer.WriteObject(stream, this);
-            }
+            using var stream = File.Create(fileName);
+            serializer.WriteObject(stream, this);
         }
 
         public static CovidModelParameters LoadFromJson(FileInfo fileInfo)
         {
-            using (var fileStream = fileInfo.Open(FileMode.Open))
+            using var fileStream = fileInfo.Open(FileMode.Open);
+            var settings = new DataContractJsonSerializerSettings
             {
-                var settings = new DataContractJsonSerializerSettings
-                {
-                    DateTimeFormat = new DateTimeFormat("o")
-                };
+                DateTimeFormat = new DateTimeFormat("o")
+            };
 
-                var deserializer = new DataContractJsonSerializer(typeof(CovidModelParameters), settings);
+            var deserializer = new DataContractJsonSerializer(typeof(CovidModelParameters), settings);
 
-                return (CovidModelParameters) deserializer.ReadObject(fileStream);
-            }
+            return (CovidModelParameters) deserializer.ReadObject(fileStream);
         }
 
         #region Paramters are files

@@ -212,41 +212,37 @@ namespace GraphGen
 
         private static void SaveNodeAttributeTable(List<MultiConfigItem<GraphNode>> population, int numberOfGroups, string fileName)
         {
-            using (var file = new StreamWriter(fileName))
+            using var file = new StreamWriter(fileName);
+            var headings = new List<string> { "Name", "GroupId" };
+
+            for (var g = 0; g < numberOfGroups; g++)
+                headings.Add($"DesiredDegrees_gp_{g}");
+
+            file.WriteLine(String.Join(",", headings));
+
+            foreach (var item in population)
             {
-                var headings = new List<string> { "Name", "GroupId" };
-
-                for (var g = 0; g < numberOfGroups; g++)
-                    headings.Add($"DesiredDegrees_gp_{g}");
-
-                file.WriteLine(String.Join(",", headings));
-
-                foreach (var item in population)
-                {
-                    file.WriteLine($"{item.Agent.Id},{item.GroupId},{String.Join(",", item.Degrees)}");
-                }
+                file.WriteLine($"{item.Agent.Id},{item.GroupId},{String.Join(",", item.Degrees)}");
             }
         }
 
         private static void SaveGraph(TestGraph graph, string filename)
         {
-            using (var file = new StreamWriter(filename))
+            using var file = new StreamWriter(filename);
+            foreach (var vtx in graph.Vertices)
             {
-                foreach (var vtx in graph.Vertices)
+                var vertexString = $"{vtx.Id}";
+
+                var adjacentEdges = graph.AdjacentEdges(vtx).ToArray();
+
+                if (adjacentEdges.Length > 0)
                 {
-                    var vertexString = $"{vtx.Id}";
+                    var otherIds = adjacentEdges.Select(p => p.OtherConnectedAgent(vtx).Id.ToString());
 
-                    var adjacentEdges = graph.AdjacentEdges(vtx).ToArray();
-
-                    if (adjacentEdges.Length > 0)
-                    {
-                        var otherIds = adjacentEdges.Select(p => p.OtherConnectedAgent(vtx).Id.ToString());
-
-                        vertexString += " TypeA " + string.Join(" ", otherIds);
-                    }
-
-                    file.WriteLine(vertexString);
+                    vertexString += " TypeA " + string.Join(" ", otherIds);
                 }
+
+                file.WriteLine(vertexString);
             }
         }
     }

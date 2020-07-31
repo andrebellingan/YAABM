@@ -44,17 +44,15 @@ namespace Covid19ModelLibrary.Population
 
             lock (FileLock)
             {
-                using (var reader = fileInfo.OpenText())
+                using var reader = fileInfo.OpenText();
+                try
                 {
-                    try
-                    {
-                        return LoadFromStream(reader);
-                    }
-                    catch (Exception ex)
-                    {
-                        InternalLog.Error(ex,$"Could not load file {filename}");
-                        return null;
-                    }
+                    return LoadFromStream(reader);
+                }
+                catch (Exception ex)
+                {
+                    InternalLog.Error(ex,$"Could not load file {filename}");
+                    return null;
                 }
             }
         }
