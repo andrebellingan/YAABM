@@ -2,7 +2,7 @@
   "profiles": {
     "RunCovidSimulation": {
       "commandName": "Project",
-      "commandLineArgs": " -n 10 -s .\\Scenarios\\Baseline_scenario.json -t 5"
+      "commandLineArgs": " -n 10 -s .\\Scenarios\\Baseline_scenario.json -t 1"
     }
   }
 }
