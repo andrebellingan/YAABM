@@ -2,10 +2,10 @@
 
 namespace Yaabm.generic
 {
-    public abstract class LocalArea<T> : CustomContext<T> where T : Agent<T>
+    public abstract class LocalArea<T> : GeographicArea<T> where T : Agent<T>
     {
-        protected LocalArea(ILocalResourceSystem<T> localResource, string name, GroupedContext<T> parentContext) 
-            : base(name, parentContext)
+        protected LocalArea(ILocalResourceSystem<T> localResource, string name, string fullName, string areaType) 
+            : base(name, fullName, areaType)
         {
             LocalResourceSystem = localResource;
         }

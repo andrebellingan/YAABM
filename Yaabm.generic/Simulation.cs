@@ -22,7 +22,7 @@ namespace Yaabm.generic
         private readonly Dictionary<int, TAgent> _infectedAgents = new Dictionary<int, TAgent>();
 
         private readonly IDictionary<string, TLocalContext> _localContexts = new Dictionary<string, TLocalContext>();
-        private readonly IDictionary<string, CustomContext<TAgent>> _allContexts = new Dictionary<string, CustomContext<TAgent>>();
+        private readonly IDictionary<string, GeographicArea<TAgent>> _allContexts = new Dictionary<string, GeographicArea<TAgent>>();
 
         // this should be set to true in cases where the transitions are based on probabilities.
         // In models where the time the agent will leave a state is determined when the state is entered it can be set to false (but this should be decided on a case-by-case basis
@@ -46,13 +46,29 @@ namespace Yaabm.generic
             RandomProvider = new DefaultRandom(seed);
             _shuffleTransitions = shuffleTransitions; 
 
-            RootContext = new GroupedContext<TAgent>("root", null); // This is fine because it is only a grouped context - not an instance of TG
+            RootContext = new Region<TAgent>("root", "root", "Global"); // This is fine because it is only a grouped context - not an instance of TG
             _allContexts.Add(RootContext.Name, RootContext);
         }
 
-        protected void AddLocalContext(string parentContextName, TLocalContext newContext)
+        protected void AddRegion(RegionSpec regionSpec)
         {
-            if (!(_allContexts[parentContextName] is GroupedContext<TAgent> parentContext)) throw new ArgumentNullException($"Cannot add context as child to {parentContextName}");
+            AddRegion(regionSpec.ParentRegionName, regionSpec.Name, regionSpec.FullName, regionSpec.RegionType);
+        }
+
+        protected void AddRegion(string parentRegionName, string name, string fullname, string regionType)
+        {
+            if (string.IsNullOrEmpty(parentRegionName)) throw new ArgumentException("Cannot add region without parent region's name. Did you mean to use \"root\"?");
+            if (!_allContexts.ContainsKey(parentRegionName)) throw new ArgumentOutOfRangeException($"The given parent region {parentRegionName} has not been defined");
+            if (!(_allContexts[parentRegionName] is Region<TAgent> parentRegion)) throw new ArgumentNullException($"Cannot add context as child to {parentRegionName}");
+
+            var newRegion = new Region<TAgent>(name, fullname, regionType);
+            parentRegion.AddChild(newRegion);
+            _allContexts.Add(newRegion.Name, newRegion);
+        }
+
+        protected void AddLocalArea(string parentContextName, TLocalContext newContext)
+        {
+            if (!(_allContexts[parentContextName] is Region<TAgent> parentContext)) throw new ArgumentNullException($"Cannot add context as child to {parentContextName}");
 
             parentContext.AddChild(newContext);
             _allContexts.Add(newContext.Name, newContext);
@@ -67,7 +83,7 @@ namespace Yaabm.generic
 
         public int IterationNo { get; }
 
-        public GroupedContext<TAgent> RootContext { get; }
+        public Region<TAgent> RootContext { get; }
 
         public int Day { get; private set; }
 
@@ -119,9 +135,9 @@ namespace Yaabm.generic
             Day++;
         }
 
-        private void UpdateContexts(CustomContext<TAgent> context)
+        private void UpdateContexts(GeographicArea<TAgent> context)
         {
-            if (context is GroupedContext<TAgent> asGroup)
+            if (context is Region<TAgent> asGroup)
             {
                 foreach (var child in asGroup.ChildContexts) UpdateContexts(child.Value);
                 return;
