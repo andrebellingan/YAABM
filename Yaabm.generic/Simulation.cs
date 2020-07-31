@@ -5,7 +5,7 @@ using Yaabm.generic.Random;
 namespace Yaabm.generic
 {
     public abstract class Simulation<TAgent, TMultiStateModel, TLocalContext, TPopulationDynamics, TSimulation>
-        where TAgent : Agent<TAgent>
+        where TAgent : Agent<TAgent>, new()
         where TMultiStateModel : MultiStateModel<TAgent>, new()
         where TLocalContext : LocalArea<TAgent>             //TODO: Make this a simple construction method as well and remove direct access to children
         where TPopulationDynamics : PopulationDynamics<TAgent>, new()
@@ -214,8 +214,6 @@ namespace Yaabm.generic
         {
             destinationState.StateEntered(agent, random);
             agent.SetCurrentState(destinationState, Day);
-
-            PopulationDynamics.ProcessAgentMovingState(agent, destinationState); // Let the interaction model know that this agent changed state
         }
 
         private static void IterateAgentBehaviour(IEnumerable<TAgent> population)
@@ -285,11 +283,11 @@ namespace Yaabm.generic
             }
         }
 
-        public void AddAgent(TAgent agent, ModelState<TAgent> initialState, TLocalContext context)
+        public TAgent AddAgent(ModelState<TAgent> initialState, TLocalContext context)
         {
-            PopulationDynamics.AddAgent(agent);
-            agent.Context = context;
-            MoveAgentToState(agent, initialState, RandomProvider);
+            var newAgent = PopulationDynamics.CreateAgent(initialState, context.Day);
+            newAgent.Context = context;
+            return newAgent;
         }
 
         public TLocalContext GetContextByName(string contextName)

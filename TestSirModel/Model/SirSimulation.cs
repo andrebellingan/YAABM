@@ -46,8 +46,7 @@ namespace TestSirModel.Model
         {
             for (var s = 0; s < numberOfLives; s++)
             {
-                var newSusceptible = new SirAgent();
-                AddAgent(newSusceptible, state, context);
+                AddAgent(state, context);
             }
         }
 

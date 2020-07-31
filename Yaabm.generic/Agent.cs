@@ -29,8 +29,16 @@ namespace Yaabm.generic
 
         internal void SetCurrentState(ModelState<T> newState, int day)
         {
+            var previousState = CurrentState;
             CurrentState = newState;
             DayCurrentStateEntered = day;
+
+            NotifyStateChange(this, previousState);
+        }
+
+        private void NotifyStateChange(Agent<T> agent, ModelState<T> previousState)
+        {
+            OnStateChange?.Invoke(agent, previousState);
         }
 
         public int NumberOfDaysInCurrentState => Context.Day - DayCurrentStateEntered;
@@ -54,5 +62,9 @@ namespace Yaabm.generic
         {
             return Id.CompareTo(other.Id);
         }
+
+        public delegate void StateChangeDelegate(Agent<T> agent, ModelState<T> previousState);
+
+        public StateChangeDelegate OnStateChange { get; set; }
     }
 }

@@ -27,10 +27,10 @@ namespace Covid19ModelLibrary.Interventions
 
              for (var i = 0; i < _v; i++)
             {
-                var newDude = new Human {AgeBand = _ageBand};
-                var newContext = simulation.GetContextByName(_province.ToString());
                 var newState = simulation.MultiStateModel.E;
-                simulation.AddAgent(newDude, newState, newContext);
+                var newContext = simulation.GetContextByName(_province.ToString());
+                var newDude = simulation.AddAgent(newState, newContext);
+                newDude.AgeBand = _ageBand;
             }
         }
     }

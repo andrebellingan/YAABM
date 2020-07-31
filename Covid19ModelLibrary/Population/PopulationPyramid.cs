@@ -94,8 +94,8 @@ namespace Covid19ModelLibrary.Population
                     livesPerProvince += numberOfLivesToCreate;
                     for (var i = 0; i < numberOfLivesToCreate; i++)
                     {
-                        var newAgent = new Human() {AgeBand = ageBand};
-                        covidSimulation.AddAgent(newAgent, covidSimulation.MultiStateModel.S, context);
+                        var newAgent = covidSimulation.AddAgent(covidSimulation.MultiStateModel.S, context);
+                        newAgent.AgeBand = ageBand;
                     }
                 }
 
