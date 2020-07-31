@@ -23,8 +23,8 @@ namespace Covid19ModelLibrary
 
     public class Ward : LocalArea<Human>
     {
-        public Ward(ILocalResourceSystem<Human> localResource, int wardId, CovidModelParameters parameters) 
-            : base(localResource, wardId.ToString(), wardId.ToString(), "Province")
+        public Ward(int wardId, CovidModelParameters parameters) 
+            : base(wardId.ToString(), wardId.ToString(), "Province")
         {
             ModelParameters = parameters;
         }

@@ -4,15 +4,14 @@ namespace Yaabm.generic
 {
     public abstract class LocalArea<T> : GeographicArea<T> where T : Agent<T>
     {
-        protected LocalArea(ILocalResourceSystem<T> localResource, string name, string fullName, string areaType) 
+        protected LocalArea(string name, string fullName, string areaType) 
             : base(name, fullName, areaType)
         {
-            LocalResourceSystem = localResource;
         }
 
         public int Day { get; set; }
 
-        public ILocalResourceSystem<T> LocalResourceSystem { get; }
+        public ILocalResourceSystem<T> LocalResourceSystem { get; set; }
 
         public DateTime Date { get; set; }
 
