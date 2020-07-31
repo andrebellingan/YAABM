@@ -1104,5 +1104,6 @@
   "ScenarioName": "Baseline",
   "DaysToProject": 365,
   "NumberOfAgentsToSimulate": 100000,
-  "StartDate": "2020-02-06T00:00:00.0000000"
+  "StartDate": "2020-02-06T00:00:00.0000000",
+  "WardFile": "Data/Wards2016.csv"
 }
