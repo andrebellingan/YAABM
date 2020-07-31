@@ -82,9 +82,9 @@ namespace Covid19ModelLibrary
 
         public CovidContext CovidContext { get; private set; }
 
-        private LocalContext<Human> _localContext;
+        private LocalArea<Human> _localContext;
 
-        public override LocalContext<Human> Context
+        public override LocalArea<Human> Context
         {
             get => _localContext;
             set

@@ -1,8 +1,8 @@
-﻿using System;
+﻿using System.Collections.Generic;
 
 namespace Yaabm.generic
 {
-    public class Agent<T> : IComparable<Agent<T>> where T : Agent<T> 
+    public class Agent<T> : IEqualityComparer<Agent<T>> where T : Agent<T> 
     {
         protected Agent()
         {
@@ -24,7 +24,7 @@ namespace Yaabm.generic
 
         public int DayCurrentStateEntered { get; private set; }
 
-        public virtual LocalContext<T> Context { get; set; }
+        public virtual LocalArea<T> Context { get; set; }
 
         internal void SetCurrentState(ModelState<T> newState, int day)
         {
@@ -39,13 +39,12 @@ namespace Yaabm.generic
             //Default behaviour is to do nothing
         }
 
-
-        public int CompareTo(Agent<T> other)
+        public bool Equals(Agent<T> x, Agent<T> y)
         {
-            return Id.CompareTo(other.Id);
+            return y != null && (x != null && x.Id == y.Id);
         }
 
-        public override int GetHashCode()
+        public int GetHashCode(Agent<T> agent)
         {
             return Id;
         }

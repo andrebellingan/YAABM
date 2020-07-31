@@ -7,7 +7,7 @@ namespace Yaabm.generic
     public abstract class Simulation<TAgent, TMultiStateModel, TLocalContext, TPopulationDynamics, TSimulation>
         where TAgent : Agent<TAgent>
         where TMultiStateModel : MultiStateModel<TAgent>, new()
-        where TLocalContext : LocalContext<TAgent>             //TODO: Make this a simple construction method as well and remove direct access to children
+        where TLocalContext : LocalArea<TAgent>             //TODO: Make this a simple construction method as well and remove direct access to children
         where TPopulationDynamics : PopulationDynamics<TAgent>, new()
         where TSimulation : Simulation<TAgent, TMultiStateModel, TLocalContext, TPopulationDynamics, TSimulation>
     {

@@ -2,7 +2,7 @@
 
 namespace TestSirModel.Model
 {
-    public class SirContext : LocalContext<SirAgent>
+    public class SirContext : LocalArea<SirAgent>
     {
         public int SusceptibleTotal { get; set; }
         public int ExposedTotal { get; set; }

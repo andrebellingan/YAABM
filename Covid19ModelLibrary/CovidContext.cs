@@ -21,7 +21,7 @@ namespace Covid19ModelLibrary
         WesternCape = 8
     }
 
-    public class CovidContext : LocalContext<Human>
+    public class CovidContext : LocalArea<Human>
     {
         public CovidContext(ILocalResourceSystem<Human> localResource, Province province, GroupedContext<Human> parentContext, CovidModelParameters parameters) : base(localResource, province.ToString(), parentContext)
         {
