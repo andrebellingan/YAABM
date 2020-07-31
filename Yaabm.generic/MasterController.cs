@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using MathNet.Numerics.Random;
+using Serilog;
 
 namespace Yaabm.generic
 {
     public abstract class MasterController<TAgent, TMultiStateModel, TLocalContext, TPopulationDynamics, TSimulation> : IDisposable
-            where TAgent : Agent<TAgent>
+            where TAgent : Agent<TAgent>, new()
             where TMultiStateModel : MultiStateModel<TAgent>, new()
             where TLocalContext : LocalArea<TAgent>
             where TPopulationDynamics : PopulationDynamics<TAgent>, new()
@@ -48,7 +49,7 @@ namespace Yaabm.generic
             try
             {
                 Task.WaitAll(processingTasks);
-                CloseOutput();
+                Log.Information("All processing threads have finished");
             }
             catch (AggregateException a)
             {
@@ -61,8 +62,6 @@ namespace Yaabm.generic
         {
             // By default do nothing
         }
-
-        protected abstract void CloseOutput();
 
         protected abstract void OpenOutput();
 
@@ -78,7 +77,7 @@ namespace Yaabm.generic
                     {
                         var newSimulation = GenerateSimulation(simulationSeed, i, modelParameters);
                         newSimulation.AddInterventions(_interventions);
-                        const int milliseconds = 60 * 60 * 1000;
+                        const int milliseconds = 60 * 60 * 1000; //TODO: Hardcoded value for cancellation timeout
                         _simulations.TryAdd(newSimulation, milliseconds, token);
                     }
                     catch (OperationCanceledException  operationCanceledException)

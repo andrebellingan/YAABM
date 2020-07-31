@@ -9,22 +9,18 @@ namespace Covid19ModelLibrary
 {
     public class Controller : MasterController<Human, CovidStateModel, Ward, CovidPopulation, CovidSimulation>
     {
-        private StreamWriter _outputTextFile;
+        private string _outputFileName;
         private bool _headingHasBeenWritten;
         private readonly object _fileLock = new object();
 
-        protected override void CloseOutput()
-        {
-            _outputTextFile.Close();
-        }
-
         protected override void OpenOutput()
         {
-            var fileName = SaveFilesWithDates 
+            _outputFileName = SaveFilesWithDates 
                                     ? $"./Output/{ModelParameters.ScenarioName} {RunTimeStamp:yyyyMMdd} {RunTimeStamp:HHmmss} Results.csv" 
                                     : $"./Output/{ModelParameters.ScenarioName} Results.csv";
 
-            _outputTextFile = File.CreateText(fileName);
+            var outputTextFile = File.CreateText(_outputFileName);
+            outputTextFile.Close();
 
             _headingHasBeenWritten = false;
         }
@@ -33,14 +29,16 @@ namespace Covid19ModelLibrary
         {
             lock (_fileLock)
             {
+                var outputFile = File.AppendText(_outputFileName);
+
                 if (!_headingHasBeenWritten)
                 {
-                    _outputTextFile.WriteLine(simulationResults.CsvHeading());
+                    outputFile.WriteLine(simulationResults.CsvHeading());
                     _headingHasBeenWritten = true;
                 }
 
-                _outputTextFile.Write(simulationResults.CsvString());
-                _outputTextFile.Flush();
+                outputFile.Write(simulationResults.CsvString());
+                outputFile.Close();
             }
         }
 
