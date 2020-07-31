@@ -29,8 +29,10 @@ namespace TestSirModel.Model
         private void InitializeSirSimulation(SirStateModel multiStateModel)
         {
             // Setup the homogeneous population etc.
-            var context = new SirContext("Universe");
-            context.LocalResourceSystem = new EmptyResourceSystem();
+            var context = new SirContext("Universe")
+            {
+                LocalResourceSystem = new EmptyResourceSystem()
+            };
             context.SetDiseaseParameters(_beta, _gamma, _sigma);
             AddLocalArea("root", context);
 

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Text;
 using CsvHelper;
 using Serilog;
 
@@ -48,7 +46,6 @@ namespace Covid19ModelLibrary.Geography
 
             using var reader = new StreamReader(filename);
             using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
-            var records = csv.GetRecords<WardRecord>();
 
             var result = new List<WardRecord>();
 

@@ -76,8 +76,7 @@ namespace Yaabm.generic
             _allTransitions.Add(transition);
             transition.Origin.TransitionsFromThisState.Add(transition);
 
-            if (transition is WithinAgentTransition<T> withinAgentTransition)
-                transition.Origin.WithinHostTransitionsFromState.Add(withinAgentTransition);
+            transition.Origin.WithinHostTransitionsFromState.Add(transition);
 
         }
     }

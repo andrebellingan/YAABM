@@ -1,5 +1,4 @@
-﻿using System;
-using Yaabm.Graph;
+﻿using Yaabm.Graph;
 
 namespace GraphGen
 {

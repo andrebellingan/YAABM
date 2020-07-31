@@ -91,9 +91,14 @@ namespace Yaabm.generic
             try
             {
                 var intervention = (IIntervention) Activator.CreateInstance(interventionType, parameters);
-                intervention.DayOfIntervention = DayToApply;
+                if (intervention != null)
+                {
+                    intervention.DayOfIntervention = DayToApply;
 
-                return intervention;
+                    return intervention;
+                }
+
+                return null;
             }
             catch (Exception paramException)
             {
