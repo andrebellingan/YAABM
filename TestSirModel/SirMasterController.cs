@@ -48,10 +48,6 @@ namespace TestSirModel
             _outputTextFile.Close();
         }
 
-
-
- 
-
         protected override SirSimulation GenerateSimulation(int seed, int iterationNo, object modelParameters)
         {
             var beta = Gamma * RZero;
