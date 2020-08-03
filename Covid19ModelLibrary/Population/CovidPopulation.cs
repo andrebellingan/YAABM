@@ -19,7 +19,7 @@ namespace Covid19ModelLibrary.Population
 
         public override IEnumerable<Human> GetInfectiousAgents()
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException(nameof(GetInfectiousAgents));
         }
     }
 }

@@ -19,24 +19,24 @@ namespace Covid19ModelLibrary
 
         public void InitializeWithStates(MultiStateModel<Human> multiStateModel)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException(nameof(InitializeWithStates));
         }
 
         public void RecordTransition(Human agent, Transition<Human> transition)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException(nameof(RecordTransition));
         }
 
         public void RecordState(Human agent)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException(nameof(RecordState));
         }
 
-        public string CsvHeading => throw new NotImplementedException();
+        public string CsvHeading => throw new NotImplementedException(nameof(CsvHeading));
    
         public string CsvString(int iterationNo, int day)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException(nameof(CsvString));
         }
     }
 }

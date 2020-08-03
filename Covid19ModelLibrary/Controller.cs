@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using Covid19ModelLibrary.Initialization;
 using Covid19ModelLibrary.MultiState;
@@ -14,7 +13,7 @@ namespace Covid19ModelLibrary
         private bool _headingHasBeenWritten;
         private readonly object _fileLock = new object();
 
-        protected override void OpenOutput()
+        protected override void PrepareOutputFiles()
         {
             _outputFileName = SaveFilesWithDates 
                                     ? $"./Output/{Scenario.ScenarioName} {RunTimeStamp:yyyyMMdd} {RunTimeStamp:HHmmss} Results.csv" 

@@ -15,7 +15,7 @@ namespace Yaabm.generic.Random
 
         public int Seed { get; }
 
-        private System.Random RandomSource { get; }
+        public System.Random RandomSource { get; }
 
         public int SamplePoisson(double lambda)
         {

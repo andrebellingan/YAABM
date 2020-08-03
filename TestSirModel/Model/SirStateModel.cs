@@ -34,5 +34,7 @@ namespace TestSirModel.Model
         {
             agent.IsInfectious = true;
         }
+
+        public override ModelState<SirAgent> DefaultState => S;
     }
 }

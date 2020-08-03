@@ -43,7 +43,7 @@ namespace TestSirModel
             return null;
         }
 
-        protected override void OpenOutput()
+        protected override void PrepareOutputFiles()
         {
             _outputFileName = $"SEIRResults {DateTime.Today:yyyyMMdd} {DateTime.Now:HHmmsstt}.csv";
             var outputTextFile = File.CreateText(_outputFileName);

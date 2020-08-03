@@ -6,7 +6,7 @@ namespace UnitTests.Yaabm.Graph
     {
         public TestEdge(TestAgent source, TestAgent target) : base(source, target)
         {
-            Description = $"{source.Uid}--{target.Uid}";
+            Description = $"{source.Id}--{target.Id}";
         }
 
         public string Description { get; }

@@ -5,12 +5,12 @@ using Yaabm.generic.Random;
 
 namespace Yaabm.generic
 {
-    public abstract class Simulation<TAgent, TMultiStateModel, TLocalContext, TPopulationDynamics, TSimulation>
+    public abstract class Simulation<TAgent, TMultiStateModel, TLocalArea, TPopulationDynamics, TSimulation>
         where TAgent : Agent<TAgent>
         where TMultiStateModel : MultiStateModel<TAgent>, new()
-        where TLocalContext : LocalArea<TAgent>             //TODO: Make this a simple construction method as well and remove direct access to children
+        where TLocalArea : LocalArea<TAgent>             //TODO: Make this a simple construction method as well and remove direct access to children
         where TPopulationDynamics : PopulationDynamics<TAgent>, new()
-        where TSimulation : Simulation<TAgent, TMultiStateModel, TLocalContext, TPopulationDynamics, TSimulation>
+        where TSimulation : Simulation<TAgent, TMultiStateModel, TLocalArea, TPopulationDynamics, TSimulation>
     {
         public delegate void DayEventDelegate(int day, DateTime date);
 
@@ -22,8 +22,10 @@ namespace Yaabm.generic
         private readonly List<Tuple<TAgent, Transition<TAgent>>> _infectionsToApply = new List<Tuple<TAgent, Transition<TAgent>>>();
         private readonly Dictionary<int, TAgent> _infectedAgents = new Dictionary<int, TAgent>();
 
-        private readonly IDictionary<string, TLocalContext> _localContexts = new Dictionary<string, TLocalContext>();
+        private readonly IDictionary<string, TLocalArea> _localContexts = new Dictionary<string, TLocalArea>();
         private readonly IDictionary<string, GeographicArea<TAgent>> _allContexts = new Dictionary<string, GeographicArea<TAgent>>();
+
+        public IEnumerable<TLocalArea> LocalAreas => _localContexts.Values;
 
         // this should be set to true in cases where the transitions are based on probabilities.
         // In models where the time the agent will leave a state is determined when the state is entered it can be set to false (but this should be decided on a case-by-case basis
@@ -67,7 +69,7 @@ namespace Yaabm.generic
             _allContexts.Add(newRegion.Name, newRegion);
         }
 
-        protected void AddLocalArea(string parentContextName, TLocalContext newContext)
+        protected void AddLocalArea(string parentContextName, TLocalArea newContext)
         {
             if (!(_allContexts[parentContextName] is Region<TAgent> parentContext)) throw new ArgumentNullException($"Cannot add context as child to {parentContextName}");
 
@@ -144,13 +146,13 @@ namespace Yaabm.generic
                 return;
             }
 
-            var asLocal = (TLocalContext) context;
+            var asLocal = (TLocalArea) context;
             asLocal.Day = Day;
             asLocal.Date = Date;
             UpdateLocalContext(asLocal);
         }
 
-        protected abstract void UpdateLocalContext(TLocalContext asLocal);
+        protected abstract void UpdateLocalContext(TLocalArea asLocal);
 
         private void IterateWithinHostMultiStateModel(TAgent[] populationToSimulate)
         {
@@ -284,19 +286,19 @@ namespace Yaabm.generic
             }
         }
 
-        public TAgent AddAgent(ModelState<TAgent> initialState, TLocalContext context)
+        public TAgent AddAgent(ModelState<TAgent> initialState, TLocalArea context)
         {
             var newAgent = PopulationDynamics.CreateAgent(initialState, context.Day);
             newAgent.Context = context;
             return newAgent;
         }
 
-        public TLocalContext GetContextByName(string contextName)
+        public TLocalArea GetContextByName(string contextName)
         {
             return _localContexts[contextName];
         }
 
-        public void ApplyChangeToAllContexts(Action<TLocalContext> action)
+        public void ApplyChangeToAllContexts(Action<TLocalArea> action)
         {
             foreach (var context in _localContexts)
             {

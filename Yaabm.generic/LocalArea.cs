@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Yaabm.generic
 {
@@ -22,5 +23,7 @@ namespace Yaabm.generic
         {
             LocalResourceSystem.IterateOneDay(this);
         }
+
+        public List<T> Population { get; set; } = new List<T>();
     }
 }

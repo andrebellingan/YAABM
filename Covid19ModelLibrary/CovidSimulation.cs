@@ -17,6 +17,23 @@ namespace Covid19ModelLibrary
             InitializeGeography(parameters.Wards, parameters);
             InitializeHealthCareSystem(parameters); // Need to do this after the geography has been specified
             InitializePopulation(parameters);
+            InitializeContactModel(parameters);
+        }
+
+        private void InitializeContactModel(CovidInitializationInfo parameters)
+        {
+            foreach (var ward in LocalAreas)
+            {
+                var householdDistribution = parameters.HouseHoldSizeDistributions[ward.WardId];
+                ward.GenerateHouseholds(householdDistribution, parameters.HomeContactMatrix, RandomProvider);
+            }
+
+            InitializeOtherContacts(parameters);
+        }
+
+        private void InitializeOtherContacts(CovidInitializationInfo parameters)
+        {
+            throw new NotImplementedException(nameof(InitializeOtherContacts));
         }
 
         private void InitializeHealthCareSystem(CovidInitializationInfo parameters)
@@ -33,7 +50,7 @@ namespace Covid19ModelLibrary
 
             foreach (var ward in wards)
             {
-                var newWard = new Ward(ward.WardId, parameters, PopulationDynamics); // Get the appropriate hospital for this region
+                var newWard = new Ward(ward, "Ward", PopulationDynamics); // Get the appropriate hospital for this region
                 AddLocalArea(ward.LocalMunicipalityCode, newWard);
             }
         }
@@ -51,12 +68,18 @@ namespace Covid19ModelLibrary
 
         private void InitializePopulation(CovidInitializationInfo parameters)
         {
-            throw new NotImplementedException("Need to generate the population");
+            var correctionFactor = parameters.CalcCorrectionFactor();
+            var scalingFactor = 1.0 / correctionFactor;
+            foreach (var ward in LocalAreas)
+            {
+                var ageDistribution = parameters.AgeDistributions[ward.WardId];
+                ward.GeneratePopulation(scalingFactor, ageDistribution, RandomProvider);
+            }
         }
 
         protected override void UpdateLocalContext(Ward asLocal)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException(nameof(UpdateLocalContext));
         }
 
         protected override IDailyRecord<Human> GenerateDailyRecordInstance(int day, DateTime date)

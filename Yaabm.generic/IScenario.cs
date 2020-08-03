@@ -11,6 +11,8 @@ namespace Yaabm.generic
 
         string ScenarioName { get; set; }
 
+        int NumberOfAgents { get; set; }
+
         void SaveToFile(FileInfo scenarioFile);
     }
 }

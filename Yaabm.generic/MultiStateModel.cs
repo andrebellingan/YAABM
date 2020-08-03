@@ -20,6 +20,7 @@ namespace Yaabm.generic
         public IEnumerable<ModelState<T>> States => _modelStates;
 
         public IEnumerable<Transition<T>> AllTransitions => _allTransitions;
+        public abstract ModelState<T> DefaultState { get; }
 
         internal Transition<T> DetermineWithinHostStateTransitions(T agent, IRandomProvider random, bool shuffle)
         {
@@ -61,6 +62,7 @@ namespace Yaabm.generic
         {
             var newState = CreateModelState(name);
             newState.OnStateEntered = stateEntered;
+
             return newState;
         }
 
@@ -77,7 +79,6 @@ namespace Yaabm.generic
             transition.Origin.TransitionsFromThisState.Add(transition);
 
             transition.Origin.WithinHostTransitionsFromState.Add(transition);
-
         }
     }
 }

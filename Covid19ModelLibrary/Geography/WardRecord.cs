@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using CsvHelper;
@@ -40,6 +41,8 @@ namespace Covid19ModelLibrary.Geography
 
         public double Longitude { get; set; }
 
+        public double Population { get; set; }
+
         public static IList<WardRecord> LoadFromCsv(string filename)
         {
             if (!File.Exists(filename)) throw new FileNotFoundException($"Ward file '{filename}' does not exist");
@@ -56,6 +59,11 @@ namespace Covid19ModelLibrary.Geography
 
             Log.Information($"Loaded geographic information from {filename}");
             return result;
+        }
+
+        public int CorrectedPopulation(double scalingFactor)
+        {
+            return Convert.ToInt32(Math.Round(Population * scalingFactor));
         }
     }
 }

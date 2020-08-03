@@ -11,7 +11,7 @@ namespace Covid19ModelLibrary.MultiState
 
         public override bool InfectionOccurs(Human carrierAgent, Human susceptibleAgent, IRandomProvider random)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException(nameof(InfectionOccurs));
         }
 
         public override bool IsInfectionSource(Human agent)

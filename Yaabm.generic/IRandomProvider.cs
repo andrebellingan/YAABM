@@ -25,5 +25,9 @@
         int SamplePoisson(double lambda);
 
         int NextInt(int minValue, int maxValue);
+
+        System.Random RandomSource { get; }
+
+        int[] RandomSelect(int n, int k);
     }
 }

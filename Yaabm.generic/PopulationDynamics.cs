@@ -61,6 +61,15 @@ namespace Yaabm.generic
             return newAgent;
         }
 
+        public TAgent CreateAgent(int day)
+        {
+            var newAgent = GenerateNewAgent(GetNextId());
+            newAgent.SetCurrentState(MultiStateModel.DefaultState, day);
+            newAgent.OnStateChange += HandleAgentStateChange;
+            _allAgents.Add(newAgent);
+            return newAgent;
+        }
+
         protected abstract TAgent GenerateNewAgent(int id);
 
         public Agent<TAgent>.StateChangeDelegate OnAgentStateChange { get; set; }

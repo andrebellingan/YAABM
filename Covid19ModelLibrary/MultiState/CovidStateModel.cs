@@ -1,6 +1,5 @@
 ﻿using System;
 using Yaabm.generic;
-using Yaabm.generic.Random;
 
 namespace Covid19ModelLibrary.MultiState
 {
@@ -27,17 +26,18 @@ namespace Covid19ModelLibrary.MultiState
 
         private void WhenIncubationEnds(Human agent, IRandomProvider random)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException(nameof(WhenIncubationEnds));
         }
 
         private void WhenPersonExposed(Human agent, IRandomProvider random)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException(nameof(WhenPersonExposed));
         }
 
         public ModelState<Human> S { get; }
         public ModelState<Human> E { get; }
         public ModelState<Human> I { get; }
         public ModelState<Human> R { get; }
+        public override ModelState<Human> DefaultState => S;
     }
 }

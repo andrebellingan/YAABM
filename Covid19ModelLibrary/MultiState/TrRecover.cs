@@ -13,7 +13,7 @@ namespace Covid19ModelLibrary.MultiState
 
         public override bool TransitionOccurs(Human agent, IRandomProvider random)
         {
-            throw new System.NotImplementedException();
+            throw new System.NotImplementedException(nameof(TransitionOccurs));
         }
     }
 }

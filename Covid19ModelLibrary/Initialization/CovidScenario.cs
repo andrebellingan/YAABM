@@ -58,7 +58,7 @@ namespace Covid19ModelLibrary.Initialization
         public string GeographyFile { get; set; }
 
         [DataMember]
-        public string PopulationFile { get; set; }
+        public string AgeDistributionsFile { get; set; }
 
         [DataMember]
         public string HouseHoldSizesFile { get; set; }

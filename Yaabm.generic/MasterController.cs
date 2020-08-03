@@ -34,7 +34,7 @@ namespace Yaabm.generic
 
             var initializationInfo = PrepareInitializationInfo(scenario);
             SaveScenario(scenario);
-            OpenOutput();
+            PrepareOutputFiles();
 
             // this is to ensure that the memory requirements don't run away as we generate simulations faster than they can be processed
             _simulations = new BlockingCollection<TSimulation>(maxSimulationQueueSize); 
@@ -81,7 +81,7 @@ namespace Yaabm.generic
 
         protected abstract IInitializationInfo PrepareInitializationInfo(IScenario scenario);
 
-        protected abstract void OpenOutput();
+        protected abstract void PrepareOutputFiles();
 
         private Task ProduceSimulations(int noOfIterations, IInitializationInfo modelParameters, CancellationToken token)
         {

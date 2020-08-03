@@ -6,23 +6,15 @@ namespace Covid19ModelLibrary
 {
     public enum AgeBand
     {
-        Age00To04 = 0,
-        Age05To09 = 1,
-        Age10To14 = 2,
-        Age15To19 = 3,
-        Age20To24 = 4,
-        Age25To29 = 5,
-        Age30To34 = 6,
-        Age35To39 = 7,
-        Age40To44 = 8,
-        Age45To49 = 9,
-        Age50To54 = 10,
-        Age55To59 = 11,
-        Age60To64 = 12,
-        Age65To69 = 13,
-        Age70To74 = 14,
-        Age75To79 = 15,
-        Age80Plus = 16
+        Age00To09 = 0,
+        Age10To19 = 1,
+        Age20To29 = 2,
+        Age30To39 = 3,
+        Age40To49 = 4,
+        Age50To59 = 5,
+        Age60To69 = 6,
+        Age70To79 = 7,
+        Age80Plus = 8
     }
 
 
@@ -31,7 +23,7 @@ namespace Covid19ModelLibrary
         public Human(int id) : base(id) 
         {}
 
-        public AgeBand AgeBand { get; set; } = AgeBand.Age00To04;
+        public AgeBand AgeBand { get; set; } = AgeBand.Age00To09;
 
 
         public bool IsInfectious { get; set; }
@@ -52,6 +44,8 @@ namespace Covid19ModelLibrary
                 Ward = value as Ward;
             }
         }
+
+        public int HouseholdNumber { get; set; }
     }
 }
  
