@@ -6,7 +6,7 @@ using Serilog;
 
 namespace Covid19ModelLibrary.Geography
 {
-    internal class WardRecord
+    public class WardRecord
     {
         public int ObjectId { get; set; }
 
