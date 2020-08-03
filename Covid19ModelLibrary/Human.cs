@@ -25,60 +25,19 @@ namespace Covid19ModelLibrary
         Age80Plus = 16
     }
 
-    public enum DiseaseSymptoms
-    {
-        None,
-        Incubating,
-        Asymptomatic,
-        Mild,
-        Severe,
-    }
-
-    public enum Hospitalization
-    {
-        None,
-        Hospital,
-        IntensiveCare
-    }
-
-    public enum HospitalOutcome
-    {
-        Recover,
-        MoveToIntensiveCare,
-        Die
-    }
-
-    public enum IntensiveCareOutcome
-    {
-        Recover,
-        Die
-    }
 
     public class Human : Agent<Human>
     {
+        public Human(int id) : base(id) 
+        {}
+
         public AgeBand AgeBand { get; set; } = AgeBand.Age00To04;
 
-        public DiseaseSymptoms Symptoms { get; set; } = DiseaseSymptoms.None;
-
-        public Hospitalization Hospitalization { get; set; } = Hospitalization.None;
-
-        public HospitalOutcome HospitalOutcome { get; set; } = HospitalOutcome.Recover;
-
-        public IntensiveCareOutcome IntensiveCareOutcome { get; set; } = IntensiveCareOutcome.Recover;
 
         public bool IsInfectious { get; set; }
 
         public int? IncubationDays { get; set; }
 
-        public int? DaysInInfectedState { get; set; }
-
-        public int? DaysInHospital { get; set; }
-
-        public int? DaysInIcu { get; set; }
-
-        public int? DaysRecoveringAfterIcu { get; set; }
-
-        public bool IsAlive { get; set; }
 
         public Ward Ward { get; private set; }
 
@@ -93,8 +52,6 @@ namespace Covid19ModelLibrary
                 Ward = value as Ward;
             }
         }
-
-        public int? DaysCanSurviveWithoutHospital { get; set; }
     }
 }
  
