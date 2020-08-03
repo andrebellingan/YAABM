@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Covid19ModelLibrary.Initialization;
 using Covid19ModelLibrary.MultiState;
 using Covid19ModelLibrary.Population;
 using Yaabm.generic;
@@ -16,8 +17,8 @@ namespace Covid19ModelLibrary
         protected override void OpenOutput()
         {
             _outputFileName = SaveFilesWithDates 
-                                    ? $"./Output/{ModelParameters.ScenarioName} {RunTimeStamp:yyyyMMdd} {RunTimeStamp:HHmmss} Results.csv" 
-                                    : $"./Output/{ModelParameters.ScenarioName} Results.csv";
+                                    ? $"./Output/{Scenario.ScenarioName} {RunTimeStamp:yyyyMMdd} {RunTimeStamp:HHmmss} Results.csv" 
+                                    : $"./Output/{Scenario.ScenarioName} Results.csv";
 
             var outputTextFile = File.CreateText(_outputFileName);
             outputTextFile.Close();
@@ -42,38 +43,25 @@ namespace Covid19ModelLibrary
             }
         }
 
-        protected override CovidSimulation GenerateSimulation(int seed, int iterationNo, object modelParameters)
+        protected override CovidSimulation GenerateSimulation(int seed, int iterationNo, IInitializationInfo modelParameters)
         {
-            var parameters = (CovidModelParameters) modelParameters;
+            var parameters = (CovidInitializationInfo) modelParameters;
 
             return new CovidSimulation(seed, iterationNo, parameters);
         }
 
-        protected override void SaveParameters(object modelParameters)
+        protected override IInitializationInfo PrepareInitializationInfo(IScenario scenario)
         {
-            RunTimeStamp = DateTime.Now;
-
-            ModelParameters = (CovidModelParameters) modelParameters;
-
-            if (!Directory.Exists("./Output")) Directory.CreateDirectory("./Output");
-
-            ModelParameters.SaveToJson(
-                SaveFilesWithDates
-                    ? $"./Output/{ModelParameters.ScenarioName} {RunTimeStamp:yyyyMMdd HHmmss} parameters.json"
-                    : $"./Output/{ModelParameters.ScenarioName} parameters.json");
+            var initializationInfo = new CovidInitializationInfo();
+            initializationInfo.LoadScenario(scenario);
+            return initializationInfo;
         }
 
-        public DateTime RunTimeStamp { get; private set; }
-
-        public CovidModelParameters ModelParameters { get; set; }
-
-        public bool SaveFilesWithDates { get; set; }
-
-        public void LoadInterventions(InterventionList interventionSpecs)
+        internal void LoadInterventions(CovidInitializationInfo modelParameters)
         {
             var interventions = new List<IIntervention>();
 
-            foreach (var spec in interventionSpecs)
+            foreach (var spec in modelParameters.ModelEvents)
             {
                 var newIntervention = spec.CreateInstance();
                 interventions.Add(newIntervention);
