@@ -1,5 +1,8 @@
 ﻿
 
+using System;
+using System.Runtime.Serialization;
+using System.Xml.Serialization;
 using Yaabm.generic;
 
 namespace Covid19ModelLibrary
@@ -25,6 +28,10 @@ namespace Covid19ModelLibrary
 
         public AgeBand AgeBand { get; set; } = AgeBand.Age00To09;
 
+        [XmlAttribute]
+        public string AgeBandAsString => AgeBand.ToString();
+
+        [XmlAttribute] public int WardId => Ward.WardId;
 
         public bool IsInfectious { get; set; }
 

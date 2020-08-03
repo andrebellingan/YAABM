@@ -18,6 +18,7 @@ namespace Covid19ModelLibrary
             InitializeHealthCareSystem(parameters); // Need to do this after the geography has been specified
             InitializePopulation(parameters);
             InitializeContactModel(parameters);
+            PopulationDynamics.SaveGraphs(IterationNo);
         }
 
         private void InitializeContactModel(CovidInitializationInfo parameters)
@@ -33,7 +34,7 @@ namespace Covid19ModelLibrary
 
         private void InitializeOtherContacts(CovidInitializationInfo parameters)
         {
-            throw new NotImplementedException(nameof(InitializeOtherContacts));
+            throw new NotImplementedException("Generating contacts in 'other' setting is not implemented yet!");
         }
 
         private void InitializeHealthCareSystem(CovidInitializationInfo parameters)

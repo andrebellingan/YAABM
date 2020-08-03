@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Yaabm.generic\Yaabm.generic.csproj" />
+    <ProjectReference Include="..\Yaabm.Graph\Yaabm.Graph.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -58,16 +58,22 @@ namespace Yaabm.generic
             newAgent.SetCurrentState(initialState, day);
             newAgent.OnStateChange += HandleAgentStateChange;
             _allAgents.Add(newAgent);
+            AgentAdded(newAgent);
             return newAgent;
+        }
+
+        public delegate void AgentEvent(TAgent agent);
+
+        public AgentEvent OnAgentAdded { get; set; } 
+
+        private void AgentAdded(TAgent newAgent)
+        {
+            OnAgentAdded?.Invoke(newAgent);
         }
 
         public TAgent CreateAgent(int day)
         {
-            var newAgent = GenerateNewAgent(GetNextId());
-            newAgent.SetCurrentState(MultiStateModel.DefaultState, day);
-            newAgent.OnStateChange += HandleAgentStateChange;
-            _allAgents.Add(newAgent);
-            return newAgent;
+            return CreateAgent(MultiStateModel.DefaultState, day);
         }
 
         protected abstract TAgent GenerateNewAgent(int id);

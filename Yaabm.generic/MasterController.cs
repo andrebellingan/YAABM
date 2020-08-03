@@ -91,12 +91,15 @@ namespace Yaabm.generic
                 {
                     var simulationSeed = _seedGenerator.Next();
 
+#if !DEBUG
                     try
                     {
+#endif
                         var newSimulation = GenerateSimulation(simulationSeed, i, modelParameters);
                         newSimulation.AddInterventions(_interventions);
                         const int milliseconds = 60 * 60 * 1000; //TODO: Hardcoded value for cancellation timeout
                         _simulations.TryAdd(newSimulation, milliseconds, token);
+#if !DEBUG
                     }
                     catch (OperationCanceledException operationCanceledException)
                     {
@@ -116,6 +119,7 @@ namespace Yaabm.generic
                         _simulations.CompleteAdding();
                         throw;
                     }
+#endif
 
                     Log.Information($"Generated simulation {i}");
                 }

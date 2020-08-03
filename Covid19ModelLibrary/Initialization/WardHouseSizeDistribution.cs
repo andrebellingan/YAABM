@@ -33,6 +33,8 @@ namespace Covid19ModelLibrary.Initialization
             }
         }
 
+        public int MaximumSize => _maxHouseholdSize;
+
         internal int Sample(int maximumSize, Random random)
         {
             if (maximumSize == 0) throw new ArgumentOutOfRangeException(nameof(maximumSize), "Cannot sample households with size=0");

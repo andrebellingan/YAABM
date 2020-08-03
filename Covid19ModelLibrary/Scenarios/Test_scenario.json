@@ -2,7 +2,7 @@
   "ScenarioName": "Test scenario",
   "StartDate": "2020-02-06T00:00:00.0000000",
   "DaysToProject": 100,
-  "NumberOfAgents": 1000,
+  "NumberOfAgents": 10000,
   "GeographyFile": "Data/WardsCapeTown.csv",
   "AgeDistributionsFile": "Data/Age distributions.csv",
   "HouseHoldSizesFile": "Data/HHSizes.csv",
