@@ -5,7 +5,7 @@ namespace UnitTests.Yaabm.Graph
 {
     public class TestAgent : Agent<TestAgent>
     {
-        public TestAgent(int uid)
+        public TestAgent(int uid) : base (uid)
         {
             Uid = uid;
         }
