@@ -1,0 +1,13 @@
+{
+  "ScenarioName": "Test scenario",
+  "StartDate": "2020-02-06T00:00:00.0000000",
+  "DaysToProject": 100,
+  "NumberOfAgents": 1000,
+  "GeographyFile": "Data/WardsCapeTown.csv",
+  "PopulationFile": "not set",
+  "HouseSizesFile": "not set",
+  "HomeContactMatrixFile": "not set",
+  "OtherContactMatrixFile": "not set",
+  "DiseaseParametersFile": "not set",
+  "ModelEventsFile": "not set"
+}
