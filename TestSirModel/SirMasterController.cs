@@ -38,6 +38,11 @@ namespace TestSirModel
             }
         }
 
+        protected override IInitializationInfo PrepareInitializationInfo(IScenario scenario)
+        {
+            return null;
+        }
+
         protected override void OpenOutput()
         {
             _outputFileName = $"SEIRResults {DateTime.Today:yyyyMMdd} {DateTime.Now:HHmmsstt}.csv";
@@ -46,7 +51,7 @@ namespace TestSirModel
             _headingHasBeenWritten = false;
         }
 
-        protected override SirSimulation GenerateSimulation(int seed, int iterationNo, object modelParameters)
+        protected override SirSimulation GenerateSimulation(int seed, int iterationNo, IInitializationInfo modelParameters)
         {
             var beta = Gamma * RZero;
             var sirSim = new SirSimulation(seed, SusceptibleZero, ExposedZero, InfectiousZero, ResistantZero, beta, Gamma, Sigma, iterationNo);

@@ -29,7 +29,8 @@ namespace TestSirModel.Model
         private void InitializeSirSimulation(SirStateModel multiStateModel)
         {
             // Setup the homogeneous population etc.
-            var context = new SirContext("Universe")
+            var context = new SirContext("Universe", 
+                PopulationDynamics)
             {
                 LocalResourceSystem = new EmptyResourceSystem()
             };

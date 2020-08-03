@@ -10,7 +10,7 @@ namespace TestSirModel.Model
         public int ResistantTotal { get; set; }
         public int N { get; set; }
 
-        public SirContext(string name) : base(name, name, "SirContext")
+        public SirContext(string name, SirPopulationDynamics dynamics) : base(name, name, "global", dynamics)
         {
         }
 

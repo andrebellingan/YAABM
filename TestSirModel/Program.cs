@@ -24,7 +24,7 @@ namespace TestSirModel
 
             var startTime = DateTime.Now;
 
-            controller.RunAllIterations(iterations, noOfDays, noOfThreads, seed, null);
+            controller.RunAllIterations(null, iterations, noOfDays, noOfThreads, seed);
 
             var endTime = DateTime.Now;
             var timePassed = endTime - startTime;
