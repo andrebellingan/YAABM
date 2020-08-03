@@ -3,12 +3,8 @@ using System.Collections.Generic;
 
 namespace Yaabm.generic
 {
-    public class Agent<T> : IEqualityComparer<Agent<T>>, IComparable<Agent<T>> where T : Agent<T> 
+    public class Agent<T> : IEqualityComparer<Agent<T>>, IComparable<Agent<T>> where T : Agent<T>
     {
-        protected Agent()
-        {
-        }
-
         protected Agent(int id)
         {
             Id = id;

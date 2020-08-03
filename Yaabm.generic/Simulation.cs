@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Serilog;
 using Yaabm.generic.Random;
 
 namespace Yaabm.generic
 {
     public abstract class Simulation<TAgent, TMultiStateModel, TLocalContext, TPopulationDynamics, TSimulation>
-        where TAgent : Agent<TAgent>, new()
+        where TAgent : Agent<TAgent>
         where TMultiStateModel : MultiStateModel<TAgent>, new()
         where TLocalContext : LocalArea<TAgent>             //TODO: Make this a simple construction method as well and remove direct access to children
         where TPopulationDynamics : PopulationDynamics<TAgent>, new()
@@ -104,12 +105,12 @@ namespace Yaabm.generic
             }
             catch (NotImplementedException ex)
             {
-                InternalLog.Error(ex, "Part of the simulation is not implemented!");
+                Log.Error(ex, "Part of the simulation is not implemented!", ex.TargetSite);
                 throw;
             }
             catch (Exception x)
             {
-                InternalLog.Error(x, $"Something went wrong with simulation {IterationNo}\n{x.Message}");
+                Log.Error(x, $"Something went wrong with simulation {IterationNo}\n{x.Message}");
                 throw;
             }
         }

@@ -5,11 +5,9 @@ using System.Linq;
 namespace Yaabm.generic
 {
     public abstract class PopulationDynamics<TAgent> 
-        where TAgent : Agent<TAgent>, new()
+        where TAgent : Agent<TAgent>
     {
         private int _nextAgentId = -1;
-
-        private readonly Dictionary<ModelState<TAgent>, HashSet<TAgent>> _agentsByState = new Dictionary<ModelState<TAgent>, HashSet<TAgent>>();
 
         private bool _hasBeenInitialized;
 
@@ -18,11 +16,6 @@ namespace Yaabm.generic
         public void Initialize(MultiStateModel<TAgent> multiStateModel)
         {
             MultiStateModel = multiStateModel;
-
-            foreach (var state in multiStateModel.States)
-            {
-                _agentsByState.Add(state, new HashSet<TAgent>());
-            }
 
             _hasBeenInitialized = true;
         }
@@ -61,13 +54,14 @@ namespace Yaabm.generic
 
         public TAgent CreateAgent(ModelState<TAgent> initialState, int day)
         {
-            var newAgent = new TAgent();
-            newAgent.SetId(GetNextId());
+            var newAgent = GenerateNewAgent(GetNextId());
             newAgent.SetCurrentState(initialState, day);
             newAgent.OnStateChange += HandleAgentStateChange;
             _allAgents.Add(newAgent);
             return newAgent;
         }
+
+        protected abstract TAgent GenerateNewAgent(int id);
 
         public Agent<TAgent>.StateChangeDelegate OnAgentStateChange { get; set; }
 
