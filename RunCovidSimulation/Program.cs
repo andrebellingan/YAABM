@@ -61,7 +61,11 @@ namespace RunCovidSimulation
             var logFileName = $"{DateTime.Today:yyyy-MM-dd}.log";
 
             Log.Logger = new LoggerConfiguration()
+#if DEBUG
+                .MinimumLevel.Verbose()
+#elif DEBUG
                 .MinimumLevel.Debug()
+#endif
                 .WriteTo.Console(restrictedToMinimumLevel:LogEventLevel.Information)
                 .WriteTo.File($"./logs/{logFileName}", restrictedToMinimumLevel: LogEventLevel.Debug)
                 .CreateLogger();
