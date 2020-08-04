@@ -25,9 +25,10 @@ namespace Covid19ModelLibrary
         public AgeBand AgeBand { get; set; } = AgeBand.Age00To09;
 
         [XmlAttribute(AttributeName = "AgeBand")]
-        public string AgeBandAsString => AgeBand.ToString();
+        public string AgeBandAsString => AgeBand.ToString(); // For output to GraphML file
 
-        [XmlAttribute] public int WardId => Ward.WardId;
+        [XmlAttribute] 
+        public int WardId => Ward.WardId; // For output to GraphML file
 
         public bool IsInfectious { get; set; }
 
