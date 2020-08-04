@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Yaabm.generic
 {
-    public class Agent<T> : IEqualityComparer<Agent<T>>, IComparable<Agent<T>> where T : Agent<T>
+    public class Agent<TAgent> : IEqualityComparer<Agent<TAgent>>, IComparable<Agent<TAgent>> where TAgent : Agent<TAgent>
     {
         protected Agent(int id)
         {
@@ -17,22 +17,22 @@ namespace Yaabm.generic
             Id = id;
         }
 
-        public ModelState<T> CurrentState { get; private set; }
+        public ModelState<TAgent> CurrentState { get; private set; }
 
         public int DayCurrentStateEntered { get; private set; }
 
-        public virtual LocalArea<T> Context { get; set; }
+        public virtual LocalArea<TAgent> Context { get; set; }
 
-        internal void SetCurrentState(ModelState<T> newState, int day)
+        internal void SetCurrentState(ModelState<TAgent> newState, int day)
         {
             var previousState = CurrentState;
             CurrentState = newState;
             DayCurrentStateEntered = day;
 
-            NotifyStateChange(this, previousState);
+            NotifyStateChange((TAgent) this, previousState);
         }
 
-        private void NotifyStateChange(Agent<T> agent, ModelState<T> previousState)
+        private void NotifyStateChange(TAgent agent, ModelState<TAgent> previousState)
         {
             OnStateChange?.Invoke(agent, previousState);
         }
@@ -44,22 +44,22 @@ namespace Yaabm.generic
             //Default behaviour is to do nothing
         }
 
-        public bool Equals(Agent<T> x, Agent<T> y)
+        public bool Equals(Agent<TAgent> x, Agent<TAgent> y)
         {
             return y != null && (x != null && x.Id == y.Id);
         }
 
-        public int GetHashCode(Agent<T> agent)
+        public int GetHashCode(Agent<TAgent> agent)
         {
             return Id;
         }
 
-        public int CompareTo(Agent<T> other)
+        public int CompareTo(Agent<TAgent> other)
         {
             return Id.CompareTo(other.Id);
         }
 
-        public delegate void StateChangeDelegate(Agent<T> agent, ModelState<T> previousState);
+        public delegate void StateChangeDelegate(TAgent agent, ModelState<TAgent> previousState);
 
         public StateChangeDelegate OnStateChange { get; set; }
     }
