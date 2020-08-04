@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml.Xsl;
 using Serilog;
 using Yaabm.generic;
 
@@ -39,15 +40,19 @@ namespace Covid19ModelLibrary.Population
             return new Human(id);
         }
 
-        public override IEnumerable<Human> GetContacts(Human agent, IRandomProvider random)
+        public override IEnumerable<Human> GetContacts(Human agent, IRandomProvider random) //TODO: Change this to also be the agent link with the setting type!
         {
-            //TODO: Actually get the agent's contacts - need to implement a contact model first
-            return EnumeratePopulation(random, false);
-        }
+            var agentContacts = new List<ContactEdge>();
+            agentContacts.AddRange(_graphs[ContactSetting.Home].AdjacentEdges(agent));
+            agentContacts.AddRange(_graphs[ContactSetting.Other].AdjacentEdges(agent));
 
-        public override IEnumerable<Human> GetInfectiousAgents()
-        {
-            throw new NotImplementedException(nameof(GetInfectiousAgents));
+            var result = new List<Human>();
+            foreach (var edge in agentContacts)
+            {
+                result.Add(edge.OtherConnectedAgent(agent));
+            }
+
+            return result;
         }
 
         public void SaveGraphs(in int iterationNo)
