@@ -80,7 +80,7 @@ namespace Covid19ModelLibrary
 
         protected override void UpdateLocalContext(Ward asLocal)
         {
-            Log.Warning("CovidSimulation.UpdateLocalContext() is not implemented!");
+            Log.Verbose("CovidSimulation.UpdateLocalContext() is not implemented!");
         }
 
         protected override IDailyRecord<Human> GenerateDailyRecordInstance(int day, DateTime date)
