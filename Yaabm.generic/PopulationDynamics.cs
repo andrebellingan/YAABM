@@ -22,8 +22,20 @@ namespace Yaabm.generic
 
         private readonly HashSet<TAgent> _allAgents = new HashSet<TAgent>();
 
-        private void HandleAgentStateChange(Agent<TAgent> agent, ModelState<TAgent> previousState)
+        private readonly HashSet<TAgent> _infectiousAgents = new HashSet<TAgent>();
+
+        private void HandleAgentStateChange(TAgent agent, ModelState<TAgent> previousState)
         {
+            if (agent.CurrentState.IsInfectious && !_infectiousAgents.Contains(agent))
+            {
+                _infectiousAgents.Add(agent);
+            }
+
+            if (!agent.CurrentState.IsInfectious && _infectiousAgents.Contains(agent))
+            {
+                _infectiousAgents.Remove(agent);
+            }
+
             OnAgentStateChange?.Invoke(agent, previousState);
         }
 
@@ -55,8 +67,8 @@ namespace Yaabm.generic
         public TAgent CreateAgent(ModelState<TAgent> initialState, int day)
         {
             var newAgent = GenerateNewAgent(GetNextId());
-            newAgent.SetCurrentState(initialState, day);
             newAgent.OnStateChange += HandleAgentStateChange;
+            newAgent.SetCurrentState(initialState, day);
             _allAgents.Add(newAgent);
             AgentAdded(newAgent);
             return newAgent;
@@ -88,6 +100,9 @@ namespace Yaabm.generic
 
         public abstract IEnumerable<TAgent> GetContacts(TAgent agent, IRandomProvider random);
 
-        public abstract IEnumerable<TAgent> GetInfectiousAgents();
+        public IEnumerable<TAgent> GetInfectiousAgents()
+        {
+            return _infectiousAgents;
+        }
     }
 }
