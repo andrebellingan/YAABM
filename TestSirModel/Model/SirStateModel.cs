@@ -14,10 +14,10 @@ namespace TestSirModel.Model
 
         public SirStateModel()
         {
-            S = CreateModelState("S");
-            E = CreateModelState("E");
-            I = CreateModelState("I", AgentInfected);
-            R = CreateModelState("R", AgentRecovered);
+            S = CreateModelState("S", false);
+            E = CreateModelState("E", false);
+            I = CreateModelState("I", true, AgentInfected);
+            R = CreateModelState("R", false, AgentRecovered);
 
             SetInfectionTransition(new InfectionTransition(this));
             // Now the within host transitions

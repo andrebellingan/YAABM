@@ -50,17 +50,17 @@ namespace Yaabm.generic
             return fromState.GetOutgoingWithinHostTransitions(shuffle, random);
         }
 
-        protected ModelState<T> CreateModelState(string name)
+        protected ModelState<T> CreateModelState(string name, bool isInfectiousState)
         {
-            var newState = new ModelState<T> {Name = name};
+            var newState = new ModelState<T>(name, isInfectiousState);
             _modelStates.Add(newState);
 
             return newState;
         }
 
-        protected ModelState<T> CreateModelState(string name, ModelState<T>.StateEnteredDelegate stateEntered)
+        protected ModelState<T> CreateModelState(string name, bool isInfectiousState, ModelState<T>.StateEnteredDelegate stateEntered)
         {
-            var newState = CreateModelState(name);
+            var newState = CreateModelState(name, isInfectiousState);
             newState.OnStateEntered = stateEntered;
 
             return newState;

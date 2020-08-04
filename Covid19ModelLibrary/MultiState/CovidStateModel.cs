@@ -7,10 +7,10 @@ namespace Covid19ModelLibrary.MultiState
     {
         public CovidStateModel()
         {
-            S = CreateModelState("S");
-            E = CreateModelState("E", WhenPersonExposed);
-            I = CreateModelState("I", WhenIncubationEnds);
-            R = CreateModelState("R", WhenPersonRecovers);
+            S = CreateModelState("S", false);
+            E = CreateModelState("E", false, WhenPersonExposed);
+            I = CreateModelState("I", true, WhenIncubationEnds);
+            R = CreateModelState("R", false, WhenPersonRecovers);
 
             SetInfectionTransition(new CovidInfection(this));
             

@@ -51,10 +51,14 @@ namespace Yaabm.generic
 
         private readonly List<WithinAgentTransition<T>[]> _cachedPermutations = new List<WithinAgentTransition<T>[]>();
 
-        public ModelState()
+        public ModelState(string name, bool isInfectiousState)
         {
+            Name = name;
+            IsInfectious = isInfectiousState;
             _cachedPermutations.Add(new WithinAgentTransition<T>[0]);
         }
+
+        public bool IsInfectious { get; set; }
 
         private void GeneratePermutationCache()
         {
