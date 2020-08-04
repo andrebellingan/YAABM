@@ -38,7 +38,7 @@ example: `RunCovidSimulation.exe -n 100 -s ./Scenarios/Baseline_scenario.json -t
 ### Threading
 The default value for the number of threads is `-t 1`. Running single threaded is highly recommended for debugging. Setting `-t 0` will detect the number of logical cores on the system and spawn the corresponding number of threads.
 
-**WARNING:** For performance reasons each thread keeps its own agent population in memory. A large value of the NumberOfAgentsToSimulate parameter in the solution file combined with a large number of processing threads can result in high memory usage. Users should open task manager and keep an eye on memory usage to select the optimal balance between performance and memory usage, given the amount of RAM available.
+**WARNING:** For performance reasons each thread keeps its own agent population in memory. A large value of the NumberOfAgents parameter in the scenario file combined with a large number of processing threads can result in high memory usage. Users should open task manager and keep an eye on memory usage to select the optimal balance between performance and memory usage, given the amount of RAM available.
 
 ### Changing model parameters
 
