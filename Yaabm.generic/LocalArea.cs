@@ -19,11 +19,6 @@ namespace Yaabm.generic
 
         public DateTime Date { get; set; }
 
-        public override void IterateGovernanceSystem()
-        {
-            LocalResourceSystem.IterateOneDay(this);
-        }
-
         public List<T> Population { get; set; } = new List<T>();
     }
 }

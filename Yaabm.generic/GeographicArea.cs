@@ -16,7 +16,5 @@
         public string FullName { get; }
 
         public string AreaType { get; }
-
-        public abstract void IterateGovernanceSystem();
     }
 }

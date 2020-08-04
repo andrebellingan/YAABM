@@ -128,7 +128,6 @@ namespace Yaabm.generic
 
             UpdateContexts(RootContext);
 
-            IterateGoverningSystem();
             IterateAgentBehaviour(populationToSimulate);
 
             SimulateInfections();
@@ -222,11 +221,6 @@ namespace Yaabm.generic
         private static void IterateAgentBehaviour(IEnumerable<TAgent> population)
         {
             foreach (var agent in population) agent.Behave();
-        }
-
-        private void IterateGoverningSystem()
-        {
-            RootContext.IterateGovernanceSystem();
         }
 
         private void TakeCensus(IEnumerable<TAgent> population)
