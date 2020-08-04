@@ -15,10 +15,5 @@ namespace TestSirModel.Model
             return EnumeratePopulation(random, false);
         }
 
-        public override IEnumerable<SirAgent> GetInfectiousAgents()
-        {
-            // Just return a dummy agent since the SEIR model doesn't do real interaction
-            return new[] {new SirAgent(99999999)};
-        }
     }
 }
