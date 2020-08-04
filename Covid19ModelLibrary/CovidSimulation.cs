@@ -34,7 +34,7 @@ namespace Covid19ModelLibrary
 
         private void InitializeOtherContacts(CovidInitializationInfo parameters)
         {
-            throw new NotImplementedException("Generating contacts in 'other' setting is not implemented yet!");
+           Log.Error("CITY-WIDE CONTACT GRAPH IS NOT IMPLEMENTED!");
         }
 
         private void InitializeHealthCareSystem(CovidInitializationInfo parameters)
@@ -80,7 +80,7 @@ namespace Covid19ModelLibrary
 
         protected override void UpdateLocalContext(Ward asLocal)
         {
-            throw new NotImplementedException(nameof(UpdateLocalContext));
+            Log.Warning("CovidSimulation.UpdateLocalContext() is not implemented!");
         }
 
         protected override IDailyRecord<Human> GenerateDailyRecordInstance(int day, DateTime date)
