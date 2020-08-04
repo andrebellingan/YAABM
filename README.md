@@ -10,7 +10,7 @@ This is an agent based model that is being developed to model the impact of the 
 * .NET Core 3.1 runtimes
 * Sufficient RAM given the size of the simulation and the number of processing threads (see below)
 
-### Compiling to code
+### Compiling the code
 
 1. Download or clone the source code
 2. Compiling
