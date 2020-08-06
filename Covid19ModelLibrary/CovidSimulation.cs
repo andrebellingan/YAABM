@@ -34,7 +34,9 @@ namespace Covid19ModelLibrary
 
         private void InitializeOtherContacts(CovidInitializationInfo parameters)
         {
-           Log.Error("CITY-WIDE CONTACT GRAPH IS NOT IMPLEMENTED!");
+            var otherGraphGenerator = new TravelGraphGenerator();
+            otherGraphGenerator.GenerateGraph(PopulationDynamics, LocalAreas, parameters.TravelMatrix, parameters.OtherContactMatrix, RandomProvider);
+
         }
 
         private void InitializeHealthCareSystem(CovidInitializationInfo parameters)

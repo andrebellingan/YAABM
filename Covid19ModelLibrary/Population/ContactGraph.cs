@@ -5,7 +5,7 @@ namespace Covid19ModelLibrary.Population
 {
     public class ContactGraph : SocialContactGraph<Human, ContactEdge>
     {
-        public ContactGraph(ContactSetting setting)
+        public ContactGraph(ContactSetting setting) 
         {
             Setting = setting;
         }

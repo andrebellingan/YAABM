@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Xml.Xsl;
+using System.Linq;
+using Loyc.Collections;
 using Serilog;
 using Yaabm.generic;
+using Yaabm.generic.Random;
 
 namespace Covid19ModelLibrary.Population
 {
@@ -63,6 +65,33 @@ namespace Covid19ModelLibrary.Population
                 ContactGraph.SaveGraphToMl(g, filename);
             }
             Log.Verbose("Saved network files");
+        }
+
+        public static List<Human> SampleWeightedAgents(List<Tuple<Human, double>> candidates, int noOfSamples, IRandomProvider random)
+        {
+            var weights = new List<WeightedItem<Human>>();
+            var numberToSelect = Math.Min(noOfSamples, candidates.Count);
+
+            foreach (var c in candidates)
+            {
+                weights.Add(new WeightedItem<Human>(c.Item1, c.Item2));
+            }
+
+            var selected = WeightedSampler<Human>.PickMultipleItems(weights, numberToSelect, random);
+            return selected;
+        }
+
+        public List<Human> OtherAgentsInArea(Ward ward, Human agent)
+        {
+            var result = new List<Human>();
+            foreach (var otherAgent in ward.Population)
+            {
+                if (agent == otherAgent) continue;
+
+                result.Add(otherAgent);
+            }
+
+            return result;
         }
     }
 }

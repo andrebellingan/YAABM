@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Covid19ModelLibrary.Geography;
 using Covid19ModelLibrary.Population;
+using Covid19ModelLibrary.Scenarios;
 using Yaabm.generic;
 
 namespace Covid19ModelLibrary.Initialization
@@ -26,7 +27,12 @@ namespace Covid19ModelLibrary.Initialization
         public AgeDistributionCollection AgeDistributions { get; private set; }
 
         public HouseSizeDistributionCollection HouseHoldSizeDistributions { get; private set; }
+
         public ContactMatrix HomeContactMatrix { get; private set; }
+
+        public ContactMatrix OtherContactMatrix { get; private set; }
+
+        internal TravelMatrix TravelMatrix { get; private set; }
 
         private void LoadSetupFiles(CovidScenario scenario)
         {
@@ -34,6 +40,8 @@ namespace Covid19ModelLibrary.Initialization
             AgeDistributions = AgeDistributionCollection.LoadFromCsv(scenario.AgeDistributionsFile);
             HouseHoldSizeDistributions = HouseSizeDistributionCollection.LoadFromCsv(scenario.HouseHoldSizesFile);
             HomeContactMatrix = ContactMatrix.LoadFromCsv(scenario.HomeContactMatrixFile);
+            OtherContactMatrix = ContactMatrix.LoadFromCsv(scenario.OtherContactMatrixFile);
+            TravelMatrix = TravelMatrix.LoadFromCsv(scenario.TravelMatrixFile);
         }
 
         public double CalcCorrectionFactor()

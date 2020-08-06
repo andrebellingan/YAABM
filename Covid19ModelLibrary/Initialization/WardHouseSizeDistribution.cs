@@ -13,15 +13,11 @@ namespace Covid19ModelLibrary.Initialization
 
         private bool _valuesChanged = true;
 
-        private readonly int _maxHouseholdSize;
-
         public WardHouseSizeDistribution(int maxHouseHoldSize)
         {
             _householdCounts = new double[maxHouseHoldSize+1];
-            _maxHouseholdSize = maxHouseHoldSize;
+            MaximumSize = maxHouseHoldSize;
         }
-
-
 
         public double this[int size]
         {
@@ -33,12 +29,12 @@ namespace Covid19ModelLibrary.Initialization
             }
         }
 
-        public int MaximumSize => _maxHouseholdSize;
+        public int MaximumSize { get; }
 
         internal int Sample(int maximumSize, Random random)
         {
             if (maximumSize == 0) throw new ArgumentOutOfRangeException(nameof(maximumSize), "Cannot sample households with size=0");
-            if (maximumSize > _maxHouseholdSize) throw new ArgumentOutOfRangeException(nameof(maximumSize), $"Cannot sample household sizes larger than {_maxHouseholdSize}");
+            if (maximumSize > MaximumSize) throw new ArgumentOutOfRangeException(nameof(maximumSize), $"Cannot sample household sizes larger than {MaximumSize}");
 
             if (_valuesChanged)
             {
@@ -54,7 +50,7 @@ namespace Covid19ModelLibrary.Initialization
         {
             _conditionalDistributions.Clear();
 
-            for (var i = 1; i <= _maxHouseholdSize; i++)
+            for (var i = 1; i <= MaximumSize; i++)
             {
                 var weights = GetWeights(i);
                 var scaledWeights = GetScaledWeights(weights);

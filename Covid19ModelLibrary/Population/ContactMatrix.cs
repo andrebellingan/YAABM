@@ -5,12 +5,13 @@ using System.IO;
 using System.Linq;
 using CsvHelper;
 using Serilog;
+using Yaabm.generic;
 
 namespace Covid19ModelLibrary.Population
 {
     public class ContactMatrix
     {
-        private Dictionary<AgeBand, Dictionary<AgeBand, double>> _contactValues = new Dictionary<AgeBand, Dictionary<AgeBand, double>>();
+        private readonly Dictionary<AgeBand, Dictionary<AgeBand, double>> _contactValues = new Dictionary<AgeBand, Dictionary<AgeBand, double>>();
 
         public ContactMatrix()
         {
@@ -69,6 +70,43 @@ namespace Covid19ModelLibrary.Population
         public Dictionary<AgeBand, double> Contacts(AgeBand ageBand)
         {
             return _contactValues[ageBand];
+        }
+
+        public List<Tuple<Human, double>> ContactWeightedAgentList(IEnumerable<Human> potentialContacts, Human agent)
+        {
+            var weights = new List<Tuple<Human, double>>();
+
+            var contracts = Contacts(agent.AgeBand);
+
+            var totalWeight = 0d;
+            foreach (var other in potentialContacts)
+            {
+                var weight = contracts[other.AgeBand];
+                totalWeight += weight;
+                weights.Add(new Tuple<Human, double>(other, weight));
+            }
+
+            var result = new List<Tuple<Human, double>>();
+
+            foreach (var t in weights)
+            {
+                result.Add(new Tuple<Human, double>(t.Item1, t.Item2 / totalWeight));
+            }
+
+            return result;
+        }
+
+        public int SampleNoOfContacts(Human agent, IRandomProvider random)
+        {
+            var contractRow = Contacts(agent.AgeBand);
+
+            var totalContacts = 0;
+            foreach (var item in contractRow)
+            {
+                totalContacts += random.SamplePoisson(item.Value);
+            }
+
+            return totalContacts;
         }
     }
 }

@@ -7,7 +7,6 @@ using Covid19ModelLibrary.Initialization;
 using Covid19ModelLibrary.Population;
 using Serilog;
 using Yaabm.generic;
-using Yaabm.generic.Random;
 
 namespace Covid19ModelLibrary
 {
@@ -37,8 +36,7 @@ namespace Covid19ModelLibrary
             {
                 var newAgent = PopulationDynamics.CreateAgent(0);
                 newAgent.AgeBand = ages[i];
-                newAgent.Context = this;
-                Population.Add(newAgent);
+                newAgent.HomeArea = this;
             }
         }
 
@@ -82,7 +80,6 @@ namespace Covid19ModelLibrary
             {
                 var headAgent = householdHeads[i];
 
-
                 headAgent.HouseholdNumber = i;
                 var newHousehold = new HouseHold(headAgent, headAgent.HouseholdNumber);
                 households.Add(newHousehold);
@@ -90,9 +87,9 @@ namespace Covid19ModelLibrary
                 if (familySize > 1)
                 {
                     // pick n other agents based on probability given their age
-                    var p = ContactWeightedNonHouseholdMembers(homeContactMatrix, notHouseholdHeads, familySize, headAgent);
+                    var p = homeContactMatrix.ContactWeightedAgentList(notHouseholdHeads, headAgent);
 
-                    var familyMembers = SelectFamilyMembers(p, familySize - 1, random.RandomSource);
+                    var familyMembers = CovidPopulation.SampleWeightedAgents(p, familySize - 1, random);
                     SetHouseholdNumber(familyMembers, i);
                     foreach (var family in familyMembers)
                     {
@@ -106,19 +103,6 @@ namespace Covid19ModelLibrary
             }
 
             return households;
-        }
-
-        private List<Human> SelectFamilyMembers(List<Tuple<Human, double>> candidates, int familySize, Random random)
-        {
-            var weights = new List<WeightedItem<Human>>();
-
-            foreach (var c in candidates)
-            {
-                weights.Add(new WeightedItem<Human>(c.Item1, c.Item2));
-            }
-
-            var selected = WeightedSampler<Human>.PickMultipleItems(weights, familySize, random);
-            return selected;
         }
 
         private void SetHouseholdNumber(List<Human> familyMembers, int i)
@@ -137,30 +121,6 @@ namespace Covid19ModelLibrary
             foreach (var pair in p)
             {
                 result.Add(pair.Key, pair.Value / pTotal);
-            }
-
-            return result;
-        }
-
-        private static List<Tuple<Human, double>> ContactWeightedNonHouseholdMembers(ContactMatrix householdContactMatrix, HashSet<Human> notHouseholdHeads, int familySize, Human householdHead)
-        {
-            var weights = new List<Tuple<Human, double>>();
-
-            var contracts = householdContactMatrix.Contacts(householdHead.AgeBand);
-
-            var totalWeight = 0d;
-            foreach (var other in notHouseholdHeads)
-            {
-                var weight = contracts[other.AgeBand];
-                totalWeight += weight;
-                weights.Add(new Tuple<Human, double>(other, weight));
-            }
-
-            var result = new List<Tuple<Human, double>>();
-
-            foreach (var t in weights)
-            {
-                result.Add(new Tuple<Human, double>(t.Item1, t.Item2/totalWeight));
             }
 
             return result;
@@ -189,7 +149,7 @@ namespace Covid19ModelLibrary
             }
 
             return result;
-
         }
+
     }
 }
