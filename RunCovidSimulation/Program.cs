@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using CommandLineParser.Exceptions;
 using Covid19ModelLibrary;
-using Covid19ModelLibrary.Initialization;
 using Covid19ModelLibrary.Scenarios;
 using Serilog;
 using Serilog.Events;
@@ -68,7 +67,11 @@ namespace RunCovidSimulation
                 .MinimumLevel.Debug()
 #endif
                 .WriteTo.Console(restrictedToMinimumLevel:LogEventLevel.Information)
+#if DEBUG
+                .WriteTo.File($"./logs/{logFileName}", restrictedToMinimumLevel: LogEventLevel.Verbose)
+#elif DEBUG
                 .WriteTo.File($"./logs/{logFileName}", restrictedToMinimumLevel: LogEventLevel.Debug)
+#endif
                 .CreateLogger();
         }
 
