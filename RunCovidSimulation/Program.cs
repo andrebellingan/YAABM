@@ -5,6 +5,7 @@ using System.Reflection;
 using CommandLineParser.Exceptions;
 using Covid19ModelLibrary;
 using Covid19ModelLibrary.Initialization;
+using Covid19ModelLibrary.Scenarios;
 using Serilog;
 using Serilog.Events;
 
