@@ -66,8 +66,6 @@ namespace Yaabm.generic.Random
         {
             if (k > n) throw new ArgumentException("k cannot be larger than n");
 
-            if (n==1 && k==1) return new int[1] {0}; // only one choice
-
             var result = new int[k];
             if (k == 0) return result;
 
@@ -77,7 +75,7 @@ namespace Yaabm.generic.Random
 
             while (itemsSelected < k)
             {
-                var i = NextInt(n - 1);
+                var i = NextInt(n);
                 if (arr[i]) continue;
 
                 result[itemsSelected] = i;
