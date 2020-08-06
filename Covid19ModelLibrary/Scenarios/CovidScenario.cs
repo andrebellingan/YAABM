@@ -5,7 +5,7 @@ using System.Runtime.Serialization.Json;
 using Serilog;
 using Yaabm.generic;
 
-namespace Covid19ModelLibrary.Initialization
+namespace Covid19ModelLibrary.Scenarios
 {
     [DataContract(Namespace = "https://YACABM/")]
     public class CovidScenario : IScenario
@@ -74,5 +74,8 @@ namespace Covid19ModelLibrary.Initialization
 
         [DataMember]
         public string ModelEventsFile { get; set; }
+
+        [DataMember]
+        public string TravelMatrixFile { get; set; }
     }
 }
