@@ -2,12 +2,13 @@
   "ScenarioName": "Test scenario",
   "StartDate": "2020-02-06T00:00:00.0000000",
   "DaysToProject": 100,
-  "NumberOfAgents": 10000,
+  "NumberOfAgents": 1000,
   "GeographyFile": "Data/WardsCapeTown.csv",
   "AgeDistributionsFile": "Data/Age distributions.csv",
   "HouseHoldSizesFile": "Data/HHSizes.csv",
   "HomeContactMatrixFile": "Data/HomeContactMatrix.csv",
-  "OtherContactMatrixFile": "not set",
+  "OtherContactMatrixFile": "Data/Other contact matrix.csv",
   "DiseaseParametersFile": "not set",
-  "ModelEventsFile": "not set"
+  "ModelEventsFile": "not set",
+  "TravelMatrixFile":  "Data/TravelMatrixCapeTown.csv" 
 }
