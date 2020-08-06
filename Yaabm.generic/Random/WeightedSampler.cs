@@ -34,7 +34,7 @@ namespace Yaabm.generic.Random
 
     public class WeightedSampler<T>
     {
-        public static List<T> PickMultipleItems(List<WeightedItem<T>> cards, int numberToDraw, System.Random random)
+        public static List<T> PickMultipleItems(List<WeightedItem<T>> cards, int numberToDraw, IRandomProvider random)
         {
             var pickedCards = new List<WeightedItem<T>>();
 
@@ -66,7 +66,7 @@ namespace Yaabm.generic.Random
             return nodes;
         }
 
-        private static WeightedItem<T> PopFromHeap(List<Node<T>> heap, System.Random random)
+        private static WeightedItem<T> PopFromHeap(List<Node<T>> heap, IRandomProvider random)
         {
             WeightedItem<T> card = null;
 
