@@ -14,7 +14,7 @@ namespace TestSirModel.Model
 
         public override bool InfectionOccurs(SirAgent carrierAgent, SirAgent susceptibleAgent, IRandomProvider random)
         {
-            var sirContext = (SirContext)susceptibleAgent.Context;
+            var sirContext = (SirContext)susceptibleAgent.HomeArea;
 
             var p = sirContext.ProbabilityOfInfection;
 
