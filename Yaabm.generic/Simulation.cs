@@ -283,7 +283,7 @@ namespace Yaabm.generic
         public TAgent AddAgent(ModelState<TAgent> initialState, TLocalArea context)
         {
             var newAgent = PopulationDynamics.CreateAgent(initialState, context.Day);
-            newAgent.Context = context;
+            newAgent.HomeArea = context;
             return newAgent;
         }
 

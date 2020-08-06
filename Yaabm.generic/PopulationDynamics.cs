@@ -68,10 +68,20 @@ namespace Yaabm.generic
         {
             var newAgent = GenerateNewAgent(GetNextId());
             newAgent.OnStateChange += HandleAgentStateChange;
+            newAgent.OnHomeAreaChanged += HandleAgentHomeAreaChange;
             newAgent.SetCurrentState(initialState, day);
             _allAgents.Add(newAgent);
             AgentAdded(newAgent);
             return newAgent;
+        }
+
+        private void HandleAgentHomeAreaChange(TAgent agent, LocalArea<TAgent> previousArea)
+        {
+            if (agent.HomeArea == previousArea) return;
+
+            agent.HomeArea.Population.Add(agent);
+
+            previousArea?.Population.Remove(agent);
         }
 
         public delegate void AgentEvent(TAgent agent);

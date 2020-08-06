@@ -34,20 +34,7 @@ namespace Covid19ModelLibrary
 
         public int? IncubationDays { get; set; }
 
-
-        public Ward Ward { get; private set; }
-
-        private LocalArea<Human> _localContext;
-
-        public override LocalArea<Human> Context
-        {
-            get => _localContext;
-            set
-            {
-                _localContext = value;
-                Ward = value as Ward;
-            }
-        }
+        public Ward Ward => (Ward) HomeArea;
 
         public int HouseholdNumber { get; set; }
     }

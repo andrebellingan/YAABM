@@ -1,4 +1,5 @@
-﻿namespace Yaabm.generic
+﻿
+namespace Yaabm.generic
 {
     public abstract class GeographicArea<T> where T : Agent<T>
     {
