@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -58,7 +59,7 @@ namespace RunCovidSimulation
 
         private static void SetupLogging()
         {
-            var logFileName = $"{DateTime.Today:yyyy-MM-dd}.log";
+            var logFileName = $"{DateTime.Now:yyyyMMdd hh-mm-ss}.log";
 
             Log.Logger = new LoggerConfiguration()
 #if DEBUG
