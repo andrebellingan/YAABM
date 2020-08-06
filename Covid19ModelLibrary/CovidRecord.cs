@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Serilog;
 using Yaabm.generic;
 
 namespace Covid19ModelLibrary
@@ -18,26 +17,26 @@ namespace Covid19ModelLibrary
 
         private readonly Dictionary<Transition<Human>, int[]> _transitionCounts = new Dictionary<Transition<Human>, int[]>();
 
+
         public void InitializeWithStates(MultiStateModel<Human> multiStateModel)
         {
-            Log.Error("CovidRecord. InitializeWithStates() not implemented");
+            //TODO: Initialize
         }
 
         public void RecordTransition(Human agent, Transition<Human> transition)
         {
-            Log.Verbose("CovidRecord.RecordTransition() not implemented");
+            //TODO: Record transition
         }
 
         public void RecordState(Human agent)
         {
-            Log.Verbose("CovidRecord.RecordState() not implemented");
+            //TODO: Record state
         }
 
         public string CsvHeading => "NOT IMPLEMENTED!!!";
    
         public string CsvString(int iterationNo, int day)
         {
-            Log.Verbose("CovidRecord.CsvString() not implemented");
             return "not implemented";
         }
     }
