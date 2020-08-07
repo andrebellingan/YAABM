@@ -12,30 +12,20 @@ namespace Covid19ModelLibrary.Population
     {
         public CovidPopulation()
         {
-            var allSettings = (ContactSetting[]) Enum.GetValues(typeof(ContactSetting));
-            foreach (var setting in allSettings)
-            {
-                _graphs.Add(setting, new ContactGraph(setting));
-            }
-
             OnAgentAdded += AggAgentToGraphs;
         }
 
         private void AggAgentToGraphs(Human agent)
         {
-            foreach (var g in _graphs.Values)
-            {
-                g.AddVertex(agent);
-            }
+            _contactGraph.AddVertex(agent);
         }
 
-        public void AddConnection(ContactSetting setting, Human agent1, Human agent2)
+        public void AddConnection(Human agent1, Human agent2, ContactSetting setting)
         {
-            var contactGraph = _graphs[setting];
-            contactGraph.ConnectAgents(agent1, agent2);
+            _contactGraph.ConnectAgents(agent1, agent2, new {Setting = setting});
         }
 
-        private readonly Dictionary<ContactSetting, ContactGraph> _graphs = new Dictionary<ContactSetting, ContactGraph>();
+        private readonly ContactGraph _contactGraph = new ContactGraph();
 
         protected override Human GenerateNewAgent(int id)
         {
@@ -45,8 +35,7 @@ namespace Covid19ModelLibrary.Population
         public override IEnumerable<Human> GetContacts(Human agent, IRandomProvider random) //TODO: Change this to also be the agent link with the setting type!
         {
             var agentContacts = new List<ContactEdge>();
-            agentContacts.AddRange(_graphs[ContactSetting.Home].AdjacentEdges(agent));
-            agentContacts.AddRange(_graphs[ContactSetting.Other].AdjacentEdges(agent));
+            agentContacts.AddRange(_contactGraph.AdjacentEdges(agent));
 
             var result = new List<Human>();
             foreach (var edge in agentContacts)
@@ -59,11 +48,8 @@ namespace Covid19ModelLibrary.Population
 
         public void SaveGraphs(in int iterationNo)
         {
-            foreach (var g in _graphs.Values)
-            {
-                var filename = $"Output/graph_{iterationNo}_{g.Setting}.xml";
-                ContactGraph.SaveGraphToMl(g, filename);
-            }
+            var filename = $"Output/Contact_graph_{iterationNo}.xml";
+            ContactGraph.SaveGraphToMl(_contactGraph, filename);
             Log.Verbose("Saved network files");
         }
 
@@ -81,12 +67,12 @@ namespace Covid19ModelLibrary.Population
             return selected;
         }
 
-        public List<Human> OtherAgentsInArea(Ward ward, Human agent)
+        public List<Human> OtherAgentsInArea(Ward ward, List<Human> agentsToExclude)
         {
             var result = new List<Human>();
-            foreach (var otherAgent in ward.Population)
+            foreach (var otherAgent in ward.Residents)
             {
-                if (agent == otherAgent) continue;
+                if (agentsToExclude.Contains(otherAgent)) continue;
 
                 result.Add(otherAgent);
             }

@@ -5,13 +5,20 @@ namespace Yaabm.Graph
 {
     public abstract class SocialContactGraph<TAgent, TEdge> : UndirectedGraph<TAgent, TEdge> where TAgent : Agent<TAgent> where TEdge : AgentLink<TAgent>
     {
-        public void ConnectAgents(TAgent agent1, TAgent agent2)
+        public TEdge ConnectAgents(TAgent agent1, TAgent agent2, dynamic parameters)
         {
-            var newLink = CreateEdgeInstance(agent1, agent2);
+            var newLink = CreateEdgeInstance(agent1, agent2, parameters);
             AddEdge(newLink);
+            return newLink;
         }
 
-        protected abstract TEdge CreateEdgeInstance(TAgent agent1, TAgent agent2);
+        public TEdge ConnectAgents(TAgent agent1, TAgent agent2)
+        {
+            return ConnectAgents(agent1, agent2, null);
+        }
+
+
+        protected abstract TEdge CreateEdgeInstance(TAgent agent1, TAgent agent2, object parameters);
 
         protected SocialContactGraph() : base(false, BiDirectionalEdgeComparer)
         {

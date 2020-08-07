@@ -16,7 +16,7 @@ namespace Covid19ModelLibrary.Geography
             {
                 var travelWardId = travelMatrix.RandomDestination(agent.WardId, random);
                 var destinationWard = localAreas.First(p => p.WardId == travelWardId);
-                var potentialContacts = populationDynamics.OtherAgentsInArea(destinationWard, agent);
+                var potentialContacts = populationDynamics.OtherAgentsInArea(destinationWard, agent.HouseHold.Members);
                 if (potentialContacts.Count > 0)
                 {
                     var p = contactMatrix.ContactWeightedAgentList(potentialContacts, agent);
@@ -25,7 +25,7 @@ namespace Covid19ModelLibrary.Geography
 
                     foreach (var contact in contactsAtDestination)
                     {
-                        populationDynamics.AddConnection(ContactSetting.Other, agent, contact);
+                        populationDynamics.AddConnection(agent, contact, ContactSetting.Other);
                     }
                 }
 

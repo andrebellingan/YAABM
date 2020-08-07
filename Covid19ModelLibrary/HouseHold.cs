@@ -34,7 +34,7 @@ namespace Covid19ModelLibrary
                         throw new Exception("This would create a self loop!");
                     }
 
-                    populationDynamics.AddConnection(ContactSetting.Home, agent1, agent2);
+                    populationDynamics.AddConnection( agent1, agent2, ContactSetting.Home);
                 }
             }
         }

@@ -79,9 +79,9 @@ namespace Yaabm.generic
         {
             if (agent.HomeArea == previousArea) return;
 
-            agent.HomeArea.Population.Add(agent);
+            agent.HomeArea.Residents.Add(agent);
 
-            previousArea?.Population.Remove(agent);
+            previousArea?.Residents.Remove(agent);
         }
 
         public delegate void AgentEvent(TAgent agent);

@@ -5,13 +5,13 @@ namespace Yaabm.generic
 {
     public abstract class LocalArea<T> : GeographicArea<T> where T : Agent<T>
     {
-        protected LocalArea(string name, string fullName, string areaType, PopulationDynamics<T> populationDynamics) 
+        protected LocalArea(string name, string fullName, string areaType, PopulationDynamics<T> environment) 
             : base(name, fullName, areaType)
         {
-            PopulationDynamics = populationDynamics;
+            Environment = environment;
         }
 
-        public PopulationDynamics<T> PopulationDynamics { get; }
+        public PopulationDynamics<T> Environment { get; }
 
         public int Day { get; set; }
 
@@ -19,6 +19,6 @@ namespace Yaabm.generic
 
         public DateTime Date { get; set; }
 
-        public List<T> Population { get; set; } = new List<T>();
+        public List<T> Residents { get; set; } = new List<T>();
     }
 }
