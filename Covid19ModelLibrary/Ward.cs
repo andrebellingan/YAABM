@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using Covid19ModelLibrary.Geography;
 using Covid19ModelLibrary.Initialization;
 using Covid19ModelLibrary.Population;
@@ -91,7 +90,6 @@ namespace Covid19ModelLibrary
                     var p = homeContactMatrix.ContactWeightedAgentList(notHouseholdHeads, headAgent);
 
                     var familyMembers = CovidPopulation.SampleWeightedAgents(p, familySize - 1, random);
-                    SetHouseholdNumber(familyMembers, i);
                     foreach (var family in familyMembers)
                     {
                         notHouseholdHeads.Remove(family);
@@ -107,28 +105,7 @@ namespace Covid19ModelLibrary
             return households;
         }
 
-        private void SetHouseholdNumber(List<Human> familyMembers, int i)
-        {
-            foreach (var dude in familyMembers)
-            {
-                dude.HouseholdNumber = i;
-            }
-        }
-
-        private Dictionary<Human, double> NormalizeP(Dictionary<Human, double> p)
-        {
-            var pTotal = p.Values.Sum();
-            var result = new Dictionary<Human, double>();
-
-            foreach (var pair in p)
-            {
-                result.Add(pair.Key, pair.Value / pTotal);
-            }
-
-            return result;
-        }
-
-        private HashSet<Human> SelectNotHouseHoldHeads(List<Human> householdHeads)
+        private HashSet<Human> SelectNotHouseHoldHeads(ICollection<Human> householdHeads)
         {
             var result = new HashSet<Human>();
 

@@ -36,7 +36,6 @@ namespace Covid19ModelLibrary
 
         public Ward Ward => (Ward) HomeArea;
 
-        public int HouseholdNumber { get; set; }
         public HouseHold HouseHold { get; set; }
     }
 }
