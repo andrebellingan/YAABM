@@ -1,43 +1,121 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using Covid19ModelLibrary.MultiState;
+using Loyc.Collections;
 using Yaabm.generic;
 
 namespace Covid19ModelLibrary
 {
+    internal class WardCounts
+    {
+        public WardCounts(MultiStateModel<Human> model)
+        {
+            foreach (var state in model.States)
+            {
+                StateCounts.Add(state, 0);
+            }
+
+            foreach (var transit in model.AllTransitions)
+            {
+                TransitionCounts.Add(transit, 0);
+            }
+        }
+
+        public Dictionary<ModelState<Human>, int> StateCounts { get; } = new Dictionary<ModelState<Human>, int>();
+
+        public Dictionary<Transition<Human>, int> TransitionCounts { get; } = new Dictionary<Transition<Human>, int>();
+
+        public string CsvString(int wardId, in int iterationNo, in int day, in DateTime date)
+        {
+            var valueStrings = new List<string>
+            {
+                iterationNo.ToString(), day.ToString(), date.ToString(CultureInfo.InvariantCulture.DateTimeFormat.ShortDatePattern), wardId.ToString()
+            };
+
+            var n = 0;
+            foreach (var (modelState, value) in StateCounts)
+            {
+                n += value;
+                valueStrings.Add(value.ToString());
+            }
+            valueStrings.Add(n.ToString());
+
+            foreach (var transitPair in TransitionCounts)
+            {
+                valueStrings.Add(transitPair.Value.ToString());
+            }
+
+            return string.Join(',', valueStrings);
+        }
+    }
+
     public class CovidRecord : IDailyRecord<Human>
     {
-        public CovidRecord(DateTime date)
+        public CovidRecord(DateTime date, IEnumerable<Ward> wards)
         {
             Date = date;
+            _wards = wards;
         }
 
         public DateTime Date { get; set; }
 
-        private readonly Dictionary<ModelState<Human>, int[]> _stateCounts = new Dictionary<ModelState<Human>, int[]>();
+        private readonly Dictionary<int, WardCounts> _counts = new Dictionary<int, WardCounts>();
 
-        private readonly Dictionary<Transition<Human>, int[]> _transitionCounts = new Dictionary<Transition<Human>, int[]>();
+        private readonly IEnumerable<Ward> _wards;
+        private MultiStateModel<Human> _model;
 
 
         public void InitializeWithStates(MultiStateModel<Human> multiStateModel)
         {
-            //TODO: Initialize
+            _model = multiStateModel;
+            foreach (var ward in _wards)
+            {
+                _counts.Add(ward.WardId, new WardCounts(multiStateModel));
+            }
         }
 
         public void RecordTransition(Human agent, Transition<Human> transition)
         {
-            //TODO: Record transition
+            var wardToUpdate = _counts[agent.WardId];
+            wardToUpdate.TransitionCounts[transition]++;
         }
 
         public void RecordState(Human agent)
         {
-            //TODO: Record state
+            _counts[agent.WardId].StateCounts[agent.CurrentState]++;
         }
 
-        public string CsvHeading => "NOT IMPLEMENTED!!!";
-   
+        public string CsvHeading
+        {
+            get
+            {
+                var listColumns = new List<string> {"WardId"};
+
+                var stateNames =  _model.States.Select(state => state.Name).ToArray();
+                listColumns.AddRange(stateNames);
+
+                listColumns.Add("N");
+
+                var transitNames = _model.AllTransitions.Select(transit => transit.Description).ToArray();
+                listColumns.AddRange(transitNames);
+
+                return string.Join(',', listColumns);
+            }
+        }
+
         public string CsvString(int iterationNo, int day)
         {
-            return "not implemented";
+            var rowstring = new List<string>();
+
+            foreach (var wardRecord in _counts)
+            {
+                rowstring.Add(wardRecord.Value.CsvString(wardRecord.Key, iterationNo, day, Date));
+            }
+
+            return string.Join('\n', rowstring);
+
         }
     }
 }
