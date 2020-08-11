@@ -58,7 +58,7 @@ If the --saveDate switch is used then the date and time the model was run will b
 ## Solution project structure
 
 * *Yaabm.generic* contains the base generic classes for constructing an agent based model.
-* *TestSirModel* is a simple command line application that contains a simple implementation of an agent model and shows how to apply the code in *Yaabm.generic*
+* *TestSirModel* is a simple command line application that contains a simple implementation of an agent model and shows how to apply the code in *Yaabm.generic*. This is also used to compare the results to a theoretical SEIR model with the same parameters.
 * *Covid19ModelLibrary* is a class library containing the implementation of a COVID-19 agent based model.
 * *RunCovidSimulation* is a command line application that will execute the model defined in *Covid19ModelLibrary*
 * *Yaabm.Graph* and *GraphGen* are projects where the graph generation code that will be used to model agent contacts is being developed and tested (see below)
@@ -71,17 +71,6 @@ The Covid19 model will run successfully but is not ready for real-world simulati
 
 The major outstanding issues are:
 
-### Contacts and transmissions
-
-Modelling of contacts between agents and virus transmission is not complete and produces incorrect results.
-
-Agents are currently assigned to provinces and each province is essentially a separate bucket with no interaction with the other buckets. 
-Future development plans include 
-
-* Modelling contacts beween agents as an undirected graph, based on household structure and contact matrix input
-* Modelling on a more granular level geographically, most likely based on wards
-* Explicitly modelling travel between regions
-
 ### Output format
 
 Output is currently written in CSV format, which makes it easy to import into whatever analysis software you would like. Unfortunatly the file sizes can get very large depending on the number of monte-carlo iterations.
@@ -89,7 +78,7 @@ Output is currently written in CSV format, which makes it easy to import into wh
 ### Model assumptions
 
 * The model assumptions are not based on any calibration or reliable sources and the results therefore do not approximate reality.
-* Some of the assumption names are based on more traditional [Compartmental models](https://en.wikipedia.org/wiki/Compartmental_models_in_epidemiology) that are based on differntial equations. The parameter names used in such models the underlying concepts do not necessarily translate to agent based models.
+* Some of the assumption names are based on more traditional [Compartmental models](https://en.wikipedia.org/wiki/Compartmental_models_in_epidemiology) that are based on differential equations. The parameter names used in such models the underlying concepts do not necessarily translate to agent based models.
 * Model parameters are currently specific in a JSON formatted file. Some of the aspects, such as specifying interventions (used to model changes such as non-healthcare interventions) is not user friendly at all and needs some work.
 
 ### Unit testing
