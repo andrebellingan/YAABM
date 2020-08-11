@@ -14,7 +14,7 @@ namespace TestSirModel.Model
         private readonly double _gamma;
         private readonly double _sigma;
 
-        public SirSimulation(int seed, int popSizeS, int popSizeE, int popSizeI, int popSizeR, double beta, double gamma, double sigma, int iterationNo) : base( DateTime.Today, iterationNo, seed, true)
+        public SirSimulation(int seed, int popSizeS, int popSizeE, int popSizeI, int popSizeR, double beta, double gamma, double sigma, int iterationNo) : base( DateTime.Today, iterationNo, seed, true, new InterventionList())
         {
             _popSizeS = popSizeS;
             _popSizeE = popSizeE;
@@ -23,7 +23,6 @@ namespace TestSirModel.Model
             _beta = beta;
             _gamma = gamma;
             _sigma = sigma;
-            InitializeSirSimulation(MultiStateModel);
         }
 
         private void InitializeSirSimulation(SirStateModel multiStateModel)
@@ -62,6 +61,11 @@ namespace TestSirModel.Model
             localContext.N = todayCensus.N;
 
             localContext.ProbabilityOfInfection = localContext.BetaParam * localContext.InfectiousTotal / localContext.N;
+        }
+
+        protected override void PrepareSimulation(in int numberOfDays)
+        {
+            InitializeSirSimulation(MultiStateModel);
         }
 
         protected override IDailyRecord<SirAgent> GenerateDailyRecordInstance(int day, DateTime date)

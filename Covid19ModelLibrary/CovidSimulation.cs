@@ -13,19 +13,25 @@ namespace Covid19ModelLibrary
 {
     public class CovidSimulation : Simulation<Human, CovidStateModel, Ward, CovidPopulation, CovidSimulation>
     {
+        private readonly CovidInitializationInfo _covidInitInfo;
+
         public CovidSimulation(int seed, int iterationNo, CovidInitializationInfo parameters) : base(parameters.Scenario.StartDate, iterationNo, seed, false, parameters.ModelEvents)
         {
-            var asCovidSenario = parameters.Scenario as CovidScenario;
-            DiseaseParameters = asCovidSenario.DiseaseParameters;
+            _covidInitInfo = parameters;
+            var covidScenario = (CovidScenario) parameters.Scenario;
+            DiseaseParameters = covidScenario.DiseaseParameters;
+        }
 
-            InitializeGeography(parameters.Wards, parameters);
-            InitializeHealthCareSystem(parameters); // Need to do this after the geography has been specified
-            InitializePopulation(parameters);
-            InitializeContactModel(parameters);
+        protected override void PrepareSimulation(in int numberOfDays)
+        {
+            InitializeGeography(_covidInitInfo.Wards, _covidInitInfo);
+            InitializeHealthCareSystem(_covidInitInfo); // Need to do this after the geography has been specified
+            InitializePopulation(_covidInitInfo);
+            InitializeContactModel(_covidInitInfo);
             PopulationDynamics.SaveGraphs(IterationNo);
         }
 
-        public DiseaseParameters DiseaseParameters { get; private set; }
+        public DiseaseParameters DiseaseParameters { get; }
 
         private void InitializeContactModel(CovidInitializationInfo parameters)
         {
@@ -86,14 +92,11 @@ namespace Covid19ModelLibrary
             }
         }
 
-        protected override void UpdateLocalContext(Ward asLocal)
-        { 
-            // Nothing updated
-        }
+
 
         protected override IDailyRecord<Human> GenerateDailyRecordInstance(int day, DateTime date)
         {
-            return new CovidRecord(date);
+            return new CovidRecord(date, LocalAreas);
         }
 
         public void RandomlyInfect(in int numberToInfect)
