@@ -19,8 +19,6 @@ namespace Yaabm.generic
 
         private bool _hasBeenRun;
         private readonly List<Tuple<TAgent, Transition<TAgent>>> _transitionsToApply = new List<Tuple<TAgent, Transition<TAgent>>>();
-        private readonly List<Tuple<TAgent, Transition<TAgent>>> _infectionsToApply = new List<Tuple<TAgent, Transition<TAgent>>>();
-        private readonly Dictionary<int, TAgent> _infectedAgents = new Dictionary<int, TAgent>();
 
         private readonly IDictionary<string, TLocalArea> _localContexts = new Dictionary<string, TLocalArea>();
         private readonly IDictionary<string, GeographicArea<TAgent>> _allContexts = new Dictionary<string, GeographicArea<TAgent>>();
@@ -98,13 +96,16 @@ namespace Yaabm.generic
 
         private void Iterate(int numberOfDays)
         {
+#if !DEBUG
             try
             {
+#endif
                 for (var d = 0; d < numberOfDays; d++)
                 {
                     IterateOneDay();
                 }
-            }
+#if !DEBUG
+        }
             catch (NotImplementedException ex)
             {
                 Log.Error(ex, "Part of the simulation is not implemented!", ex.TargetSite);
@@ -115,13 +116,14 @@ namespace Yaabm.generic
                 Log.Error(x, $"Something went wrong with simulation {IterationNo}\n{x.Message}");
                 throw;
             }
+#endif
         }
 
         public SimulationResults<TAgent, TMultiStateModel> SimulationResults { get; private set; }
 
         private void IterateOneDay()
         {
-            var populationToSimulate = PopulationDynamics.EnumeratePopulation(RandomProvider, false);
+            var populationToSimulate = PopulationDynamics.EnumeratePopulation();
 
             ApplyInterventions();
             TakeCensus(populationToSimulate);
@@ -130,8 +132,11 @@ namespace Yaabm.generic
 
             IterateAgentBehaviour(populationToSimulate);
 
+            _transitionsToApply.Clear();
             SimulateInfections();
             IterateWithinHostMultiStateModel(populationToSimulate);
+            foreach (var transit in _transitionsToApply)
+                ApplyTransitionToPerson(transit.Item1, transit.Item2);
 
             DayCompleted();
             Day++;
@@ -153,60 +158,49 @@ namespace Yaabm.generic
 
         protected abstract void UpdateLocalContext(TLocalArea asLocal);
 
-        private void IterateWithinHostMultiStateModel(TAgent[] populationToSimulate)
+        private void IterateWithinHostMultiStateModel(IEnumerable<TAgent> populationToSimulate)
         {
-            _transitionsToApply.Clear();
-
             // Do this single threaded
             foreach (var agent in populationToSimulate)
                 ModelMultiStateModelOnAgent(agent);
-
-            foreach (var transit in _transitionsToApply)
-                ApplyTransitionToPerson(transit);
         }
 
         private void ModelMultiStateModelOnAgent(TAgent agent)
         {
-            if (_infectedAgents.ContainsKey(agent.Id)) return; // This agent already had it's one transition for the day
+            if (agent.TransitionReserved) return; // This agent already had it's one transition for the day
             var transition = MultiStateModel.DetermineWithinHostStateTransitions(agent, RandomProvider, _shuffleTransitions);
 
             if (transition == null) return;
+            agent.TransitionReserved = true;
 
             _transitionsToApply.Add(new Tuple<TAgent, Transition<TAgent>>(agent, transition));
         }
 
         private void SimulateInfections()
         {
-            _infectionsToApply.Clear();
-            _infectedAgents.Clear();
-
             foreach (var agent in PopulationDynamics.GetInfectiousAgents())
             {
-                var contacts = PopulationDynamics.GetContacts(agent, RandomProvider);
+                var encounters = PopulationDynamics.GetEncounters(agent, RandomProvider);
 
-                foreach (var contact in contacts)
+                foreach (var contact in encounters)
                 {
-                    if (contact == agent) continue; // can't infect yourself
-                    if (!MultiStateModel.InfectionTransition.IsSusceptible(contact)) continue;
+                    if (contact.Agent == agent) continue; // can't infect yourself
+                    if (contact.Agent.TransitionReserved) continue;
+                    if (!contact.Agent.CurrentState.IsSusceptible) continue;
 
                     var transition = MultiStateModel.DetermineAgentInteractionTransition(agent, contact, RandomProvider);
 
                     if (transition == null) continue;
 
-                    _infectionsToApply.Add(new Tuple<TAgent, Transition<TAgent>>(contact, transition));
-                }
-            }
+                    contact.Agent.TransitionReserved = true;
 
-            foreach (var transit in _infectionsToApply)
-            {
-                _infectedAgents.Add(transit.Item1.Id, transit.Item1);
-                ApplyTransitionToPerson(transit);
+                    _transitionsToApply.Add(new Tuple<TAgent, Transition<TAgent>>(contact.Agent, transition));
+                }
             }
         }
 
-        private void ApplyTransitionToPerson(Tuple<TAgent, Transition<TAgent>> transitionInfo)
+        private void ApplyTransitionToPerson(TAgent agent, Transition<TAgent> transition)
         {
-            var (agent, transition) = transitionInfo;
             MoveAgentToState(agent, transition.Destination, RandomProvider);
 
             SimulationResults.RecordTransition(agent, transition, Day);
@@ -282,22 +276,15 @@ namespace Yaabm.generic
 
         public TAgent AddAgent(ModelState<TAgent> initialState, TLocalArea context)
         {
-            var newAgent = PopulationDynamics.CreateAgent(initialState, context.Day);
+            var newAgent = PopulationDynamics.CreateAgent();
             newAgent.HomeArea = context;
+            MoveAgentToState(newAgent, initialState, RandomProvider);
             return newAgent;
         }
 
         public TLocalArea GetContextByName(string contextName)
         {
             return _localContexts[contextName];
-        }
-
-        public void ApplyChangeToAllContexts(Action<TLocalArea> action)
-        {
-            foreach (var context in _localContexts)
-            {
-                action(context.Value);
-            }
         }
     }
 }

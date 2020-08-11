@@ -38,9 +38,9 @@ namespace Yaabm.generic
         }
 
 
-        public Transition<T> DetermineAgentInteractionTransition(T agent, T otherAgent, IRandomProvider randomProvider)
+        public Transition<T> DetermineAgentInteractionTransition(T agent, Encounter<T> encounter, IRandomProvider randomProvider)
         {
-            var transitionOccurs = InfectionTransition.InfectionOccurs(agent, otherAgent, randomProvider);
+            var transitionOccurs = InfectionTransition.InfectionOccurs(agent, encounter, randomProvider);
 
             return !transitionOccurs ? null : InfectionTransition;
         }
@@ -50,17 +50,17 @@ namespace Yaabm.generic
             return fromState.GetOutgoingWithinHostTransitions(shuffle, random);
         }
 
-        protected ModelState<T> CreateModelState(string name, bool isInfectiousState)
+        protected ModelState<T> CreateModelState(string name, bool isInfectiousState, bool isSusceptibleState)
         {
-            var newState = new ModelState<T>(name, isInfectiousState);
+            var newState = new ModelState<T>(name, isInfectiousState, isSusceptibleState);
             _modelStates.Add(newState);
 
             return newState;
         }
 
-        protected ModelState<T> CreateModelState(string name, bool isInfectiousState, ModelState<T>.StateEnteredDelegate stateEntered)
+        protected ModelState<T> CreateModelState(string name, bool isInfectiousState, bool isSusceptibleState, ModelState<T>.StateEnteredDelegate stateEntered)
         {
-            var newState = CreateModelState(name, isInfectiousState);
+            var newState = CreateModelState(name, isInfectiousState, isSusceptibleState);
             newState.OnStateEntered = stateEntered;
 
             return newState;

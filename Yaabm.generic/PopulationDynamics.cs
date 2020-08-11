@@ -9,15 +9,11 @@ namespace Yaabm.generic
     {
         private int _nextAgentId = -1;
 
-        private bool _hasBeenInitialized;
-
         protected MultiStateModel<TAgent> MultiStateModel { get; private set; }
 
         public void Initialize(MultiStateModel<TAgent> multiStateModel)
         {
             MultiStateModel = multiStateModel;
-
-            _hasBeenInitialized = true;
         }
 
         private readonly HashSet<TAgent> _allAgents = new HashSet<TAgent>();
@@ -39,37 +35,16 @@ namespace Yaabm.generic
             OnAgentStateChange?.Invoke(agent, previousState);
         }
 
-        public TAgent[] EnumeratePopulation(IRandomProvider randomProvider, bool shuffled = true)
+        public HashSet<TAgent> EnumeratePopulation()
         {
-            if (!_hasBeenInitialized) throw new InvalidOperationException("Population dynamics has not been initialized. Call Initialize");
-
-
-            if (!shuffled)
-            {
-                return _allAgents.ToArray();
-            }
-
-            var randomOrder = randomProvider.Shuffle(_allAgents.Count);
-            var agentsArray = _allAgents.ToArray();
-            var shuffledPopulation = new TAgent[_allAgents.Count];
-
-            // ReSharper disable once ForCanBeConvertedToForeach
-            // ReSharper disable once LoopCanBeConvertedToQuery
-            for (var index = 0; index < _allAgents.Count; index++)
-            {
-                var personToChoose = randomOrder[index];
-                shuffledPopulation[index] = agentsArray[personToChoose];
-            }
-
-            return shuffledPopulation;
+            return new HashSet<TAgent>(_allAgents);
         }
 
-        public TAgent CreateAgent(ModelState<TAgent> initialState, int day)
+        public TAgent CreateAgent()
         {
             var newAgent = GenerateNewAgent(GetNextId());
             newAgent.OnStateChange += HandleAgentStateChange;
             newAgent.OnHomeAreaChanged += HandleAgentHomeAreaChange;
-            newAgent.SetCurrentState(initialState, day);
             _allAgents.Add(newAgent);
             AgentAdded(newAgent);
             return newAgent;
@@ -95,7 +70,7 @@ namespace Yaabm.generic
 
         public TAgent CreateAgent(int day)
         {
-            return CreateAgent(MultiStateModel.DefaultState, day);
+            return CreateAgent();
         }
 
         protected abstract TAgent GenerateNewAgent(int id);
@@ -108,9 +83,9 @@ namespace Yaabm.generic
             return _nextAgentId;
         }
 
-        public abstract IEnumerable<TAgent> GetContacts(TAgent agent, IRandomProvider random);
+        public abstract IEnumerable<Encounter<TAgent>> GetEncounters(TAgent agent, IRandomProvider random);
 
-        public IEnumerable<TAgent> GetInfectiousAgents()
+        public virtual IEnumerable<TAgent> GetInfectiousAgents()
         {
             return _infectiousAgents;
         }

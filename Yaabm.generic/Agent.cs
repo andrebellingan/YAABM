@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Serilog;
 
 namespace Yaabm.generic
 {
@@ -39,6 +40,7 @@ namespace Yaabm.generic
             var previousState = CurrentState;
             CurrentState = newState;
             DayCurrentStateEntered = day;
+            TransitionReserved = false;
 
             NotifyStateChange((TAgent) this, previousState);
         }
@@ -77,6 +79,8 @@ namespace Yaabm.generic
         public StateChangeDelegate OnStateChange { get; set; }
 
         public LocalAreaChangeDelegate OnHomeAreaChanged { get; set; }
+
+        public bool TransitionReserved { get; internal set; }
 
         public override string ToString()
         {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Yaabm.generic.Random;
 
 namespace Yaabm.generic
@@ -51,14 +52,20 @@ namespace Yaabm.generic
 
         private readonly List<WithinAgentTransition<T>[]> _cachedPermutations = new List<WithinAgentTransition<T>[]>();
 
-        public ModelState(string name, bool isInfectiousState)
+        public ModelState(string name, bool isInfectiousState, bool isSusceptible)
         {
             Name = name;
+
+            if (isInfectiousState && IsSusceptible) throw new ArgumentException("A state cannot be an infectious state and a susceptible one at the same time");
             IsInfectious = isInfectiousState;
+            IsSusceptible = isSusceptible;
+
             _cachedPermutations.Add(new WithinAgentTransition<T>[0]);
         }
 
-        public bool IsInfectious { get; set; }
+        public bool IsInfectious { get; }
+
+        public bool IsSusceptible { get; }
 
         private void GeneratePermutationCache()
         {

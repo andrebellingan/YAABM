@@ -136,17 +136,21 @@ namespace Yaabm.generic
 
                 Log.Information($"Started simulation {sim.IterationNo}");
 
+#if !DEBUG
                 try
                 {
+#endif
                     sim.Run(_numberOfDays);
 
                     Task.Factory.StartNew(() => AppendSimulationResultsToOutput(sim.SimulationResults));
+#if !DEBUG
                 }
                 catch (Exception ex)
                 {
                     Log.Error(ex, $"Something went wrong with simulation {sim.IterationNo}");
                     throw;
                 }
+#endif
 
                 Log.Information($"Finished simulation {sim.IterationNo}");
             }
