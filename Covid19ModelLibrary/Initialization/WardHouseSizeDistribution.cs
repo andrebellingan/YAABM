@@ -31,19 +31,24 @@ namespace Covid19ModelLibrary.Initialization
 
         public int MaximumSize { get; }
 
+        private object SampleLock = new object();
+
         internal int Sample(int maximumSize, Random random)
         {
             if (maximumSize == 0) throw new ArgumentOutOfRangeException(nameof(maximumSize), "Cannot sample households with size=0");
             if (maximumSize > MaximumSize) throw new ArgumentOutOfRangeException(nameof(maximumSize), $"Cannot sample household sizes larger than {MaximumSize}");
 
-            if (_valuesChanged)
+            lock (SampleLock)
             {
-                CalculateConditionalDistributions();
-                _valuesChanged = false;
-            }
+                if (_valuesChanged)
+                {
+                    CalculateConditionalDistributions();
+                    _valuesChanged = false;
+                }
 
-            var distribution = _conditionalDistributions[maximumSize];
-            return distribution.Sample();
+                var distribution = _conditionalDistributions[maximumSize];
+                return distribution.Sample();
+            }
         }
 
         private void CalculateConditionalDistributions()
