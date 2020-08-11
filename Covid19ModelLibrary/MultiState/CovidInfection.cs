@@ -5,7 +5,7 @@ namespace Covid19ModelLibrary.MultiState
 {
     public class CovidInfection : InfectionTransition<Human>
     {
-        public CovidInfection(CovidStateModel stateModel) : base("tr_S_to_E", stateModel.S, stateModel.E)
+        public CovidInfection(CovidStateModel stateModel) : base("S->E", stateModel.S, stateModel.E)
         {
         }
 
