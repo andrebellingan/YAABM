@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Serilog;
 using Yaabm.generic.Random;
 
 namespace Yaabm.generic
@@ -7,7 +8,7 @@ namespace Yaabm.generic
     public abstract class Simulation<TAgent, TMultiStateModel, TLocalArea, TPopulationDynamics, TSimulation>
         where TAgent : Agent<TAgent>
         where TMultiStateModel : MultiStateModel<TAgent>, new()
-        where TLocalArea : LocalArea<TAgent>             //TODO: Make this a simple construction method as well and remove direct access to children
+        where TLocalArea : LocalArea<TAgent>
         where TPopulationDynamics : PopulationDynamics<TAgent>, new()
         where TSimulation : Simulation<TAgent, TMultiStateModel, TLocalArea, TPopulationDynamics, TSimulation>
     {
@@ -27,7 +28,7 @@ namespace Yaabm.generic
         // this should be set to true in cases where the transitions are based on probabilities.
         // In models where the time the agent will leave a state is determined when the state is entered it can be set to false (but this should be decided on a case-by-case basis
         // Obviously the shuffling process adds to the CPU overhead
-        private readonly bool _shuffleTransitions; 
+        private readonly bool _shuffleTransitions;
 
         /// <summary>
         /// Construct a new instance of the Simulation class
@@ -36,18 +37,31 @@ namespace Yaabm.generic
         /// <param name="iterationNo">The iteration of this simulation</param>
         /// <param name="seed">the seed value for the random generator</param>
         /// <param name="shuffleTransitions">Sets whether the order in which state transitions are tested is shuffled randomly</param>
-        protected Simulation(DateTime startDate, int iterationNo, int seed, bool shuffleTransitions)
+        /// <param name="parametersModelEvents"></param>
+        protected Simulation(DateTime startDate, int iterationNo, int seed, bool shuffleTransitions, InterventionList modelEvents)
         {
             IterationNo = iterationNo;
             MultiStateModel = new TMultiStateModel();
             PopulationDynamics = new TPopulationDynamics();
             PopulationDynamics.Initialize(MultiStateModel);
+            PrepareModelEvents(modelEvents);
             StartDate = startDate;
             RandomProvider = new DefaultRandom(seed);
-            _shuffleTransitions = shuffleTransitions; 
+            _shuffleTransitions = shuffleTransitions;
 
             RootContext = new Region<TAgent>("root", "root", "Global"); // This is fine because it is only a grouped context - not an instance of TG
             _allContexts.Add(RootContext.Name, RootContext);
+        }
+
+        private void PrepareModelEvents(InterventionList modelEvents)
+        {
+            foreach (var eventSpec in modelEvents)
+            {
+                if (!_interventions.ContainsKey(eventSpec.DayToApply)) _interventions.Add(eventSpec.DayToApply, new List<IIntervention>());
+
+                var newIntervention = eventSpec.CreateInstance();
+                _interventions[newIntervention.DayOfIntervention].Add(newIntervention);
+            }
         }
 
         protected void AddRegion(RegionSpec regionSpec)
@@ -155,11 +169,13 @@ namespace Yaabm.generic
             UpdateLocalContext(asLocal);
         }
 
-        protected abstract void UpdateLocalContext(TLocalArea asLocal);
+        protected virtual void UpdateLocalContext(TLocalArea asLocal)
+        {
+            // By default nothing is updated
+        }
 
         private void IterateWithinHostMultiStateModel(IEnumerable<TAgent> populationToSimulate)
         {
-            // Do this single threaded
             foreach (var agent in populationToSimulate)
                 ModelMultiStateModelOnAgent(agent);
         }
@@ -205,7 +221,7 @@ namespace Yaabm.generic
             SimulationResults.RecordTransition(agent, transition, Day);
         }
 
-        private void MoveAgentToState(TAgent agent, ModelState<TAgent> destinationState, IRandomProvider random)
+        protected void MoveAgentToState(TAgent agent, ModelState<TAgent> destinationState, IRandomProvider random)
         {
             destinationState.StateEntered(agent, random);
             agent.SetCurrentState(destinationState, Day);
@@ -242,6 +258,8 @@ namespace Yaabm.generic
 
         public bool Run(int numberOfDays)
         {
+            PrepareSimulation(numberOfDays);
+
             if (_hasBeenRun)
             {
                 throw new InvalidOperationException("The simulation has already been run");
@@ -253,6 +271,8 @@ namespace Yaabm.generic
 
             return _hasBeenRun;
         }
+
+        protected abstract void PrepareSimulation(in int numberOfDays);
 
         protected abstract IDailyRecord<TAgent> GenerateDailyRecordInstance(int day, DateTime date);
 

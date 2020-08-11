@@ -22,6 +22,8 @@ namespace UnitTests.Yaabm.generic
 
         public string Value3 { get; set; }
 
+        public string InterventionName => "LabTest";
+
         public int DayOfIntervention { get; set; }
 
         public string Description => "Lab testing intervention";

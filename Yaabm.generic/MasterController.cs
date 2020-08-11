@@ -160,8 +160,6 @@ namespace Yaabm.generic
 
         protected abstract TSimulation GenerateSimulation(int seed, int iterationNo, IInitializationInfo modelParameters);
 
-        protected IInitializationInfo InitializationInfo { get; set; }
-
         public void Dispose()
         {
             Dispose(true);

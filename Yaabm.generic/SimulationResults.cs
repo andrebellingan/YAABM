@@ -14,7 +14,8 @@ namespace Yaabm.generic
 
         private readonly Func<int, DateTime, IDailyRecord<TAgent>> _dailyRecordGeneratorFunc;
 
-        public SimulationResults(TModel multiStateModel, int numberOfDays, DateTime startDate, int iterationNumber, Func<int, DateTime, IDailyRecord<TAgent> > dailyRecordGeneratorFunc)
+        public SimulationResults(TModel multiStateModel, int numberOfDays, DateTime startDate, int iterationNumber,
+            Func<int, DateTime, IDailyRecord<TAgent>> dailyRecordGeneratorFunc)
         {
             MultiStateModel = multiStateModel;
             IterationNumber = iterationNumber;

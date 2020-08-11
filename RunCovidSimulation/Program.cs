@@ -63,13 +63,13 @@ namespace RunCovidSimulation
             Log.Logger = new LoggerConfiguration()
 #if DEBUG
                 .MinimumLevel.Verbose()
-#elif DEBUG
+#elif !DEBUG
                 .MinimumLevel.Debug()
 #endif
                 .WriteTo.Console(restrictedToMinimumLevel:LogEventLevel.Information)
 #if DEBUG
                 .WriteTo.File($"./logs/{logFileName}", restrictedToMinimumLevel: LogEventLevel.Verbose)
-#elif DEBUG
+#elif !DEBUG
                 .WriteTo.File($"./logs/{logFileName}", restrictedToMinimumLevel: LogEventLevel.Debug)
 #endif
                 .CreateLogger();

@@ -8,6 +8,6 @@ namespace Yaabm.generic
 
         void LoadScenario(IScenario scenario);
 
-        public List<InterventionSpec> ModelEvents { get; }
+        public InterventionList ModelEvents { get; }
     }
 }
