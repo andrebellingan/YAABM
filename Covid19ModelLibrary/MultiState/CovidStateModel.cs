@@ -8,30 +8,14 @@ namespace Covid19ModelLibrary.MultiState
         public CovidStateModel()
         {
             S = CreateModelState("S", false, true);
-            E = CreateModelState("E", false, false, WhenPersonExposed);
-            I = CreateModelState("I", true, false, WhenIncubationEnds);
-            R = CreateModelState("R", false, false, WhenPersonRecovers);
+            E = CreateModelState("E", false, false);
+            I = CreateModelState("I", true, false);
+            R = CreateModelState("R", false, false);
 
             SetInfectionTransition(new CovidInfection(this));
             
             AddTransition(new TrEndIncubationPeriod(this));
             AddTransition(new TrRecover(this));
-        }
-
-        private void WhenPersonRecovers(Human agent, IRandomProvider random)
-        {
-            agent.IsInfectious = false;
-            agent.Ward.HospitalSystem.DischargePatient(agent);
-        }
-
-        private void WhenIncubationEnds(Human agent, IRandomProvider random)
-        {
-            throw new NotImplementedException(nameof(WhenIncubationEnds));
-        }
-
-        private void WhenPersonExposed(Human agent, IRandomProvider random)
-        {
-            throw new NotImplementedException(nameof(WhenPersonExposed));
         }
 
         public ModelState<Human> S { get; }

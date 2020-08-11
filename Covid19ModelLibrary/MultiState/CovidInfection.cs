@@ -11,7 +11,8 @@ namespace Covid19ModelLibrary.MultiState
 
         public override bool InfectionOccurs(Human carrierAgent, Encounter<Human> encounter, IRandomProvider randomProvider)
         {
-            throw new NotImplementedException(nameof(InfectionOccurs));
+            var beta = carrierAgent.Ward.DiseaseParameters.RZero * carrierAgent.Ward.DiseaseParameters.Gamma;
+            return randomProvider.Chance(beta);
         }
 
     }

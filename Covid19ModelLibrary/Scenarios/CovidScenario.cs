@@ -77,5 +77,8 @@ namespace Covid19ModelLibrary.Scenarios
 
         [DataMember]
         public string TravelMatrixFile { get; set; }
+
+        [DataMember]
+        public DiseaseParameters DiseaseParameters { get; set; }
     }
 }

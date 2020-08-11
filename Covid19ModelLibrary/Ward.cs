@@ -4,6 +4,7 @@ using System.Data;
 using Covid19ModelLibrary.Geography;
 using Covid19ModelLibrary.Initialization;
 using Covid19ModelLibrary.Population;
+using Covid19ModelLibrary.Scenarios;
 using Serilog;
 using Yaabm.generic;
 
@@ -26,6 +27,7 @@ namespace Covid19ModelLibrary
         public BasicHospitalSystem HospitalSystem => LocalResourceSystem as BasicHospitalSystem;
 
         public WardRecord WardRecord { get; }
+        public DiseaseParameters DiseaseParameters => OwnerSimulation.DiseaseParameters;
 
         public void GeneratePopulation(in double scalingFactor, WardAgeDistribution ageDistribution, IRandomProvider random)
         {

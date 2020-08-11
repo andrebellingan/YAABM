@@ -5,6 +5,7 @@ using Covid19ModelLibrary.Geography;
 using Covid19ModelLibrary.Initialization;
 using Covid19ModelLibrary.MultiState;
 using Covid19ModelLibrary.Population;
+using Covid19ModelLibrary.Scenarios;
 using Serilog;
 using Yaabm.generic;
 
@@ -12,14 +13,19 @@ namespace Covid19ModelLibrary
 {
     public class CovidSimulation : Simulation<Human, CovidStateModel, Ward, CovidPopulation, CovidSimulation>
     {
-        public CovidSimulation(int seed, int iterationNo, CovidInitializationInfo parameters) : base(parameters.Scenario.StartDate, iterationNo, seed, false)
+        public CovidSimulation(int seed, int iterationNo, CovidInitializationInfo parameters) : base(parameters.Scenario.StartDate, iterationNo, seed, false, parameters.ModelEvents)
         {
+            var asCovidSenario = parameters.Scenario as CovidScenario;
+            DiseaseParameters = asCovidSenario.DiseaseParameters;
+
             InitializeGeography(parameters.Wards, parameters);
             InitializeHealthCareSystem(parameters); // Need to do this after the geography has been specified
             InitializePopulation(parameters);
             InitializeContactModel(parameters);
             PopulationDynamics.SaveGraphs(IterationNo);
         }
+
+        public DiseaseParameters DiseaseParameters { get; private set; }
 
         private void InitializeContactModel(CovidInitializationInfo parameters)
         {
@@ -81,13 +87,24 @@ namespace Covid19ModelLibrary
         }
 
         protected override void UpdateLocalContext(Ward asLocal)
-        {
-            Log.Verbose("CovidSimulation.UpdateLocalContext() is not implemented!");
+        { 
+            // Nothing updated
         }
 
         protected override IDailyRecord<Human> GenerateDailyRecordInstance(int day, DateTime date)
         {
             return new CovidRecord(date);
+        }
+
+        public void RandomlyInfect(in int numberToInfect)
+        {
+            var totalPopulation = PopulationDynamics.EnumeratePopulation().ToList();
+            var sample = RandomProvider.RandomSelect(totalPopulation.Count, numberToInfect);
+            foreach (var idx in sample)
+            {
+                var agentToInfect = totalPopulation[idx];
+                base.MoveAgentToState(agentToInfect, MultiStateModel.I, RandomProvider);
+            }
         }
     }
 }

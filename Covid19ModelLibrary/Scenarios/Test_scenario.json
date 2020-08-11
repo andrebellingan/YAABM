@@ -9,6 +9,11 @@
   "HomeContactMatrixFile": "Data/HomeContactMatrix.csv",
   "OtherContactMatrixFile": "Data/Other contact matrix.csv",
   "DiseaseParametersFile": "not set",
-  "ModelEventsFile": "not set",
-  "TravelMatrixFile":  "Data/TravelMatrixCapeTown.csv" 
+  "ModelEventsFile": "Scenarios/Test_events.json",
+  "TravelMatrixFile": "Data/TravelMatrixCapeTown.csv",
+  "DiseaseParameters": {
+    "RZero": 3.5,
+    "Gamma": 0.04761904761904760,
+    "Sigma": 0.25
+    } 
 }

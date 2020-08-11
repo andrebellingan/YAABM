@@ -30,10 +30,6 @@ namespace Covid19ModelLibrary
         [XmlAttribute] 
         public int WardId => Ward.WardId; // For output to GraphML file
 
-        public bool IsInfectious { get; set; }
-
-        public int? IncubationDays { get; set; }
-
         public Ward Ward => (Ward) HomeArea;
 
         public HouseHold HouseHold { get; set; }
