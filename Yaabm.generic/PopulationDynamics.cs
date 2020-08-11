@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 
 namespace Yaabm.generic
 {
@@ -40,7 +38,7 @@ namespace Yaabm.generic
             return new HashSet<TAgent>(_allAgents);
         }
 
-        public TAgent CreateAgent()
+        internal TAgent CreateAgent()
         {
             var newAgent = GenerateNewAgent(GetNextId());
             newAgent.OnStateChange += HandleAgentStateChange;
@@ -66,11 +64,6 @@ namespace Yaabm.generic
         private void AgentAdded(TAgent newAgent)
         {
             OnAgentAdded?.Invoke(newAgent);
-        }
-
-        public TAgent CreateAgent(int day)
-        {
-            return CreateAgent();
         }
 
         protected abstract TAgent GenerateNewAgent(int id);

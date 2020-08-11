@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Serilog;
 using Yaabm.generic.Random;
 
 namespace Yaabm.generic
