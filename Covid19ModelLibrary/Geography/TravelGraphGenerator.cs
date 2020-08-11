@@ -10,7 +10,7 @@ namespace Covid19ModelLibrary.Geography
         public void GenerateGraph(CovidPopulation populationDynamics, IEnumerable<Ward> localAreas,
             TravelMatrix travelMatrix, ContactMatrix contactMatrix, IRandomProvider random)
         {
-            var allAgents = populationDynamics.EnumeratePopulation(random, false);
+            var allAgents = populationDynamics.EnumeratePopulation();
 
             foreach (var agent in allAgents)
             {

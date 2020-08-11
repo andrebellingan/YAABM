@@ -32,18 +32,22 @@ namespace Covid19ModelLibrary.Population
             return new Human(id);
         }
 
-        public override IEnumerable<Human> GetContacts(Human agent, IRandomProvider random) //TODO: Change this to also be the agent link with the setting type!
+        public override IEnumerable<Encounter<Human>> GetEncounters(Human agent, IRandomProvider random)
         {
-            var agentContacts = new List<ContactEdge>();
-            agentContacts.AddRange(_contactGraph.AdjacentEdges(agent));
+            var agentContacts = new List<Encounter<Human>>();
 
-            var result = new List<Human>();
-            foreach (var edge in agentContacts)
+            foreach (var adjacentEdge in _contactGraph.AdjacentEdges(agent))
             {
-                result.Add(edge.OtherConnectedAgent(agent));
+                var encounter = new Encounter<Human>
+                {
+                    Agent = adjacentEdge.OtherConnectedAgent(agent),
+                    EncounterInformation = new {Setting = adjacentEdge.ContactSetting}
+                };
+
+                agentContacts.Add(encounter);
             }
 
-            return result;
+            return agentContacts;
         }
 
         public void SaveGraphs(in int iterationNo)
