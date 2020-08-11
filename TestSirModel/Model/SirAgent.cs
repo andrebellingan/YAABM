@@ -8,6 +8,10 @@ namespace TestSirModel.Model
         {
         }
 
-        public bool IsInfectious { get; set; }
+        public SirContext SirContext => (SirContext) HomeArea;
+
+        public int IncubationTime { get; set; }
+
+        public int InfectiousDays { get; set; }
     }
 }

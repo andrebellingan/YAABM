@@ -5,14 +5,14 @@ using Yaabm.generic;
 
 namespace TestSirModel
 {
-    public class SirMasterController : MasterController<SirAgent, SirStateModel, SirContext, SirPopulationDynamics, SirSimulation>
+    public class SirMasterController : MasterController<SirAgent, SirStateModel, SirContext, SirEnvironment, SirSimulation>
     {
         private bool _headingHasBeenWritten;
         private readonly object _fileLock = new object();
         private string _outputFileName;
-        public int SusceptibleZero { get; set; } = 9900;
+        public int SusceptibleZero { get; set; } = 100;
         public int ExposedZero { get; set; } = 0;
-        public int InfectiousZero { get; set; } = 100;
+        public int InfectiousZero { get; set; } = 1;
         public int ResistantZero { get; set; } = 0;
 
         public double RZero { get; set; } = 3.5;

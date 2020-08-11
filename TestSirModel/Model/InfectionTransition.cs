@@ -12,25 +12,15 @@ namespace TestSirModel.Model
 
         public SirStateModel StateModel { get; }
 
-        public override bool InfectionOccurs(SirAgent carrierAgent, SirAgent susceptibleAgent, IRandomProvider random)
+        public override bool InfectionOccurs(SirAgent carrierAgent, Encounter<SirAgent> encounter, IRandomProvider random)
         {
-            var sirContext = (SirContext)susceptibleAgent.HomeArea;
+            var sirContext = (SirContext) encounter.Agent.HomeArea;
 
             var p = sirContext.ProbabilityOfInfection;
 
             if (p < 0d || p > 1d) throw new InvalidOperationException("Probability must be in [0, 1]");
 
             return random.Chance(p);
-        }
-
-        public override bool IsInfectionSource(SirAgent agent)
-        {
-            return agent.IsInfectious;
-        }
-
-        public override bool IsSusceptible(SirAgent agent)
-        {
-            return agent.CurrentState == StateModel.S;
         }
     }
 }

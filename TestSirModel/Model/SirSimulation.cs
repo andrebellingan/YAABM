@@ -3,7 +3,7 @@ using Yaabm.generic;
 
 namespace TestSirModel.Model
 {
-    public class SirSimulation : Simulation<SirAgent, SirStateModel, SirContext, SirPopulationDynamics, SirSimulation>
+    public class SirSimulation : Simulation<SirAgent, SirStateModel, SirContext, SirEnvironment, SirSimulation>
     {
         private readonly int _popSizeS;
         private readonly int _popSizeE;
@@ -66,7 +66,7 @@ namespace TestSirModel.Model
 
         protected override IDailyRecord<SirAgent> GenerateDailyRecordInstance(int day, DateTime date)
         {
-            return new SirDailyRecord();
+            return new SirDailyRecord(Date);
         }
     }
 }

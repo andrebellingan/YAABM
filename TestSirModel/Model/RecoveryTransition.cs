@@ -11,10 +11,7 @@ namespace TestSirModel.Model
 
         public override bool TransitionOccurs(SirAgent agent, IRandomProvider random)
         {
-            if (!(agent.HomeArea is SirContext asSirContext)) throw new InvalidCastException("Context must be an instance of SirContext");
-
-            var probabilityOfRecovery = asSirContext.GammaParam; // Convert from rate to single day
-            return random.Chance(probabilityOfRecovery);
+            return random.Chance(agent.SirContext.GammaParam);
         }
     }
 }

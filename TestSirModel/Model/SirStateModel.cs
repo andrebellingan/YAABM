@@ -14,10 +14,10 @@ namespace TestSirModel.Model
 
         public SirStateModel()
         {
-            S = CreateModelState("S", false);
-            E = CreateModelState("E", false);
-            I = CreateModelState("I", true, AgentInfected);
-            R = CreateModelState("R", false, AgentRecovered);
+            S = CreateModelState("S", false, true);
+            E = CreateModelState("E", false, false, AgentExposed);
+            I = CreateModelState("I", true, false, AgentBecomesInfectious);
+            R = CreateModelState("R", false, false);
 
             SetInfectionTransition(new InfectionTransition(this));
             // Now the within host transitions
@@ -25,14 +25,17 @@ namespace TestSirModel.Model
             AddTransition(new RecoveryTransition(this));
         }
 
-        private void AgentRecovered(SirAgent agent, IRandomProvider random)
+        private void AgentBecomesInfectious(SirAgent agent, IRandomProvider random)
         {
-            agent.IsInfectious = false;
+            var mean = 1d / agent.SirContext.GammaParam;
+            agent.InfectiousDays = random.SamplePoisson(mean);
         }
 
-        private void AgentInfected(SirAgent agent, IRandomProvider random)
+        private void AgentExposed(SirAgent agent, IRandomProvider random)
         {
-            agent.IsInfectious = true;
+            var p = agent.SirContext.SigmaParam;
+            var invP = 1d / p;
+            agent.IncubationTime = random.SamplePoisson(invP);
         }
 
         public override ModelState<SirAgent> DefaultState => S;
