@@ -9,27 +9,10 @@ namespace Covid19ModelLibrary.MultiState
         {
         }
 
-        public override bool InfectionOccurs(Human carrierAgent, Human susceptibleAgent, IRandomProvider random)
+        public override bool InfectionOccurs(Human carrierAgent, Encounter<Human> encounter, IRandomProvider randomProvider)
         {
-            var p = susceptibleAgent.CovidContext.ProbabilityOfInfection;
-            var s = susceptibleAgent.CovidContext.SusceptibilityFactor(susceptibleAgent);
-
-            var probOfTransition = p * s;
-            if (double.IsNaN(probOfTransition)) throw new NotFiniteNumberException("Probability of infection is NaN");
-
-            if (probOfTransition < 0d || probOfTransition > 1d) throw new ArgumentOutOfRangeException(nameof(probOfTransition), probOfTransition, "Probability of infection must be in range [0,1]");
-
-            return random.Chance(probOfTransition);
+            throw new NotImplementedException(nameof(InfectionOccurs));
         }
 
-        public override bool IsInfectionSource(Human agent)
-        {
-            return agent.IsInfectious = true;
-        }
-
-        public override bool IsSusceptible(Human agent)
-        {
-            return agent.CurrentState == Origin; // origin is S (from constructor)
-        }
     }
 }

@@ -10,12 +10,12 @@ This is an agent based model that is being developed to model the impact of the 
 * .NET Core 3.1 runtimes
 * Sufficient RAM given the size of the simulation and the number of processing threads (see below)
 
-### Compiling to code
+### Compiling the code
 
 1. Download or clone the source code
 2. Compiling
 	* It is recommended to open the solution in Visual Studio 2019 and build the projected from there (The Visual Studio Community editions are free to download for non-commercial use). Visual Studio code works too.
-	* Alternatively you can download the .NET Core 3.1 SDK and use ```dotnet build CAMB.sln``` from the command line
+	* Alternatively you can download the .NET Core 3.1 SDK and use ```dotnet build YAABM.sln``` from the command line
 3. Note that the nuget package manager may indicate that there is an update available for the "CommandLineArgumentsParser" package. Due to a bug in version 3.0.20 of the package when handling default argument values you should not upgrade to this specific version.
 
 ### Running the model
@@ -32,13 +32,12 @@ The application has the following command line arguments:
 
 	-d, --saveDate    [Optional] Switch to add the date and time to output file names
 
-
 example: `RunCovidSimulation.exe -n 100 -s ./Scenarios/Baseline_scenario.json -t 4`
 
 ### Threading
 The default value for the number of threads is `-t 1`. Running single threaded is highly recommended for debugging. Setting `-t 0` will detect the number of logical cores on the system and spawn the corresponding number of threads.
 
-**WARNING:** For performance reasons each thread keeps its own agent population in memory. A large value of the NumberOfAgentsToSimulate parameter in the solution file combined with a large number of processing threads can result in high memory usage. Users should open task manager and keep an eye on memory usage to select the optimal balance between performance and memory usage, given the amount of RAM available.
+**WARNING:** For performance reasons each thread keeps its own agent population in memory. A large value of the NumberOfAgents parameter in the scenario file combined with a large number of processing threads can result in high memory usage. Users should open task manager and keep an eye on memory usage to select the optimal balance between performance and memory usage, given the amount of RAM available.
 
 ### Changing model parameters
 
@@ -108,10 +107,11 @@ Unit test coverage is currently very poor.
 This solution gratefully relies on code developed by the following projects:
 
 * [Command Line Parser Library for CLR and NetStandard](https://github.com/commandlineparser/commandline#command-line-parser-library-for-clr-and-netstandard)
+* [CSVHelper](https://joshclose.github.io/CsvHelper/)
 * [The Loyc Core project ](http://core.loyc.net/)
 * [Math.NET Numerics](https://numerics.mathdotnet.com/)
-* [Serilog](https://serilog.net/)
 * [QuickGraph.NETStandard](https://github.com/deepakkumar1984/QuickGraph.NETStandard)
+* [Serilog](https://serilog.net/)
 
 ---
 

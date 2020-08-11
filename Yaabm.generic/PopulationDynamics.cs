@@ -4,74 +4,78 @@ using System.Linq;
 
 namespace Yaabm.generic
 {
-    public abstract class PopulationDynamics<T> where T : Agent<T>
+    public abstract class PopulationDynamics<TAgent> 
+        where TAgent : Agent<TAgent>
     {
         private int _nextAgentId = -1;
 
-        private readonly Dictionary<ModelState<T>, Dictionary<int, T>> _agentsByState = new Dictionary<ModelState<T>, Dictionary<int, T>>();
+        protected MultiStateModel<TAgent> MultiStateModel { get; private set; }
 
-        private bool _hasBeenInitialized;
-
-        protected MultiStateModel<T> MultiStateModel { get; private set; }
-
-        public void Initialize(MultiStateModel<T> multiStateModel)
+        public void Initialize(MultiStateModel<TAgent> multiStateModel)
         {
             MultiStateModel = multiStateModel;
-
-            foreach (var state in multiStateModel.States)
-            {
-                _agentsByState.Add(state, new Dictionary<int, T>());
-            }
-
-            _hasBeenInitialized = true;
         }
 
-        private readonly Dictionary<int, T> _allAgents = new Dictionary<int, T>();
+        private readonly HashSet<TAgent> _allAgents = new HashSet<TAgent>();
 
-        internal void ProcessAgentMovingState(T agent, ModelState<T> destinationState)
+        private readonly HashSet<TAgent> _infectiousAgents = new HashSet<TAgent>();
+
+        private void HandleAgentStateChange(TAgent agent, ModelState<TAgent> previousState)
         {
-            if (!_hasBeenInitialized) throw new InvalidOperationException("Population dynamics has not been initialized. Call Initialize");
-
-            foreach (var state in MultiStateModel.States)
+            if (agent.CurrentState.IsInfectious && !_infectiousAgents.Contains(agent))
             {
-                if (_agentsByState[state].ContainsKey(agent.Id)) _agentsByState[state].Remove(agent.Id);
+                _infectiousAgents.Add(agent);
             }
 
-            _agentsByState[destinationState].Add(agent.Id, agent);
+            if (!agent.CurrentState.IsInfectious && _infectiousAgents.Contains(agent))
+            {
+                _infectiousAgents.Remove(agent);
+            }
+
+            OnAgentStateChange?.Invoke(agent, previousState);
         }
 
-        public T[] EnumeratePopulation(IRandomProvider randomProvider, bool shuffled = true)
+        public HashSet<TAgent> EnumeratePopulation()
         {
-            if (!_hasBeenInitialized) throw new InvalidOperationException("Population dynamics has not been initialized. Call Initialize");
-
-            if (!shuffled)
-            {
-                return _allAgents.Values.ToArray();
-            }
-
-            var randomOrder = randomProvider.Shuffle(_allAgents.Count);
-
-            var shuffledPopulation = new T[_allAgents.Count];
-            var allPersonIds = _allAgents.Keys.ToArray();
-
-            // ReSharper disable once ForCanBeConvertedToForeach
-            // ReSharper disable once LoopCanBeConvertedToQuery
-            for (var index = 0; index < _allAgents.Count; index++)
-            {
-                var personToChoose = randomOrder[index];
-                var personId = allPersonIds[personToChoose];
-                shuffledPopulation[index] = _allAgents[personId];
-            }
-
-            return shuffledPopulation;
+            return new HashSet<TAgent>(_allAgents);
         }
 
-        internal void AddAgent(T agent)
+        public TAgent CreateAgent()
         {
-            if (!_hasBeenInitialized) throw new InvalidOperationException("Population dynamics has not been initialized. Call Initialize");
-            agent.SetId(GetNextId());
-            _allAgents.Add(agent.Id, agent);
+            var newAgent = GenerateNewAgent(GetNextId());
+            newAgent.OnStateChange += HandleAgentStateChange;
+            newAgent.OnHomeAreaChanged += HandleAgentHomeAreaChange;
+            _allAgents.Add(newAgent);
+            AgentAdded(newAgent);
+            return newAgent;
         }
+
+        private void HandleAgentHomeAreaChange(TAgent agent, LocalArea<TAgent> previousArea)
+        {
+            if (agent.HomeArea == previousArea) return;
+
+            agent.HomeArea.Residents.Add(agent);
+
+            previousArea?.Residents.Remove(agent);
+        }
+
+        public delegate void AgentEvent(TAgent agent);
+
+        public AgentEvent OnAgentAdded { get; set; } 
+
+        private void AgentAdded(TAgent newAgent)
+        {
+            OnAgentAdded?.Invoke(newAgent);
+        }
+
+        public TAgent CreateAgent(int day)
+        {
+            return CreateAgent();
+        }
+
+        protected abstract TAgent GenerateNewAgent(int id);
+
+        public Agent<TAgent>.StateChangeDelegate OnAgentStateChange { get; set; }
 
         private int GetNextId()
         {
@@ -79,8 +83,11 @@ namespace Yaabm.generic
             return _nextAgentId;
         }
 
-        public abstract IEnumerable<T> GetContacts(T agent, IRandomProvider random);
+        public abstract IEnumerable<Encounter<TAgent>> GetEncounters(TAgent agent, IRandomProvider random);
 
-        public abstract IEnumerable<T> GetInfectiousAgents();
+        public virtual IEnumerable<TAgent> GetInfectiousAgents()
+        {
+            return _infectiousAgents;
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Yaabm.generic;
+﻿using System;
+using Yaabm.generic;
 
 namespace TestSirModel.Model
 {
@@ -12,6 +13,13 @@ namespace TestSirModel.Model
         public int TransitSToE { get; private set; }
         public int TransitEToI { get; private set; }
         public int TransitIToR { get; private set; }
+
+        public SirDailyRecord(DateTime date)
+        {
+            Date = date;
+        }
+
+        public DateTime Date { get; set; }
 
         public void InitializeWithStates(MultiStateModel<SirAgent> multiStateModel)
         {
@@ -39,7 +47,7 @@ namespace TestSirModel.Model
 
         public string CsvString(int iterationNumber, int day)
         {
-            return $"{iterationNumber},{day},{S},{E},{I},{R},{N},{TransitSToE},{TransitEToI},{TransitIToR}";
+            return $"{iterationNumber},{day},{Date},{S},{E},{I},{R},{N},{TransitSToE},{TransitEToI},{TransitIToR}";
         }
     }
 }

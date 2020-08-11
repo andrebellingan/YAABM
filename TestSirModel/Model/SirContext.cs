@@ -2,7 +2,7 @@
 
 namespace TestSirModel.Model
 {
-    public class SirContext : LocalContext<SirAgent>
+    public class SirContext : LocalArea<SirAgent>
     {
         public int SusceptibleTotal { get; set; }
         public int ExposedTotal { get; set; }
@@ -10,7 +10,7 @@ namespace TestSirModel.Model
         public int ResistantTotal { get; set; }
         public int N { get; set; }
 
-        public SirContext(ILocalResourceSystem<SirAgent> localResource, string name, GroupedContext<SirAgent> parentContext) : base(localResource, name, parentContext)
+        public SirContext(string name, SirEnvironment dynamics) : base(name, name, "global", dynamics)
         {
         }
 
@@ -26,6 +26,7 @@ namespace TestSirModel.Model
         public double BetaParam { get; private set; }
 
         public double SigmaParam { get; private set; }
+
         public double ProbabilityOfInfection { get; set; }
     }
 }
