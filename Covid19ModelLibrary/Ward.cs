@@ -11,12 +11,15 @@ namespace Covid19ModelLibrary
 {
     public class Ward : LocalArea<Human>
     {
-        public Ward(WardRecord ward, string areaType, CovidPopulation environment) 
+        public Ward(WardRecord ward, string areaType, CovidPopulation environment, CovidSimulation simulation) 
             : base(ward.WardId.ToString(), ward.WardId.ToString(), areaType, environment)
         {
             WardRecord = ward;
             WardId = ward.WardId;
+            OwnerSimulation = simulation;
         }
+
+        public CovidSimulation OwnerSimulation { get; }
 
         public int WardId { get; set; }
 
@@ -33,7 +36,7 @@ namespace Covid19ModelLibrary
 
             for (var i = 0; i < agentsInThisWard; i++)
             {
-                var newAgent = Environment.CreateAgent(0);
+                var newAgent = OwnerSimulation.AddAgent(OwnerSimulation.MultiStateModel.S, this);
                 newAgent.AgeBand = ages[i];
                 newAgent.HomeArea = this;
             }

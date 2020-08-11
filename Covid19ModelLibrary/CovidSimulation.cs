@@ -53,7 +53,7 @@ namespace Covid19ModelLibrary
 
             foreach (var ward in wards)
             {
-                var newWard = new Ward(ward, "Ward", PopulationDynamics); // Get the appropriate hospital for this region
+                var newWard = new Ward(ward, "Ward", PopulationDynamics, this); // Get the appropriate hospital for this region
                 AddLocalArea(ward.LocalMunicipalityCode, newWard);
             }
         }
