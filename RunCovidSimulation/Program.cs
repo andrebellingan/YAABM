@@ -1,8 +1,10 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using CommandLineParser.Exceptions;
 using Covid19ModelLibrary;
+using Covid19ModelLibrary.Scenarios;
 using Serilog;
 using Serilog.Events;
 
@@ -41,11 +43,9 @@ namespace RunCovidSimulation
 
             var startTime = DateTime.Now;
 
-            var modelParameters = CovidModelParameters.LoadFromJson(runSettings.ScenarioFile);
+            var scenario = CovidScenario.LoadFromFile(runSettings.ScenarioFile);
 
-            controller.LoadInterventions(modelParameters.Interventions);
-
-            controller.RunAllIterations(iterations, modelParameters.DaysToProject, noOfThreads, seed, maximumQueueSize, modelParameters);
+            controller.RunAllIterations(scenario, iterations, noOfThreads, seed, maximumQueueSize);
 
             var endTime = DateTime.Now;
             var timePassed = endTime - startTime;
@@ -58,12 +58,20 @@ namespace RunCovidSimulation
 
         private static void SetupLogging()
         {
-            var logFileName = $"{DateTime.Today:yyyy-MM-dd}.log";
+            var logFileName = $"{DateTime.Now:yyyyMMdd hh-mm-ss}.log";
 
             Log.Logger = new LoggerConfiguration()
+#if DEBUG
+                .MinimumLevel.Verbose()
+#elif DEBUG
                 .MinimumLevel.Debug()
+#endif
                 .WriteTo.Console(restrictedToMinimumLevel:LogEventLevel.Information)
+#if DEBUG
+                .WriteTo.File($"./logs/{logFileName}", restrictedToMinimumLevel: LogEventLevel.Verbose)
+#elif DEBUG
                 .WriteTo.File($"./logs/{logFileName}", restrictedToMinimumLevel: LogEventLevel.Debug)
+#endif
                 .CreateLogger();
         }
 
@@ -103,7 +111,7 @@ namespace RunCovidSimulation
             {
                 parser.PrintUsage(Console.Out);
                 return false;
-            } 
+            }
 
             try
             {
@@ -117,6 +125,11 @@ namespace RunCovidSimulation
                 Log.Error(m, "Command line parsing error");
                 Console.WriteLine($"A mandatory argument {m.Argument} was not set");
                 parser.PrintUsage(Console.Out);
+                return false;
+            }
+            catch (FileNotFoundException f)
+            {
+                Log.Error(f, "Specified file does not exist", f.FileName);
                 return false;
             }
             catch (CommandLineException e)

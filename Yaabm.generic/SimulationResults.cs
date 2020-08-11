@@ -5,7 +5,7 @@ using System.Text;
 namespace Yaabm.generic
 {
     public class SimulationResults<TAgent, TModel> 
-        where TAgent : Agent<TAgent> 
+        where TAgent : Agent<TAgent>
         where TModel : MultiStateModel<TAgent>
     {
         private readonly Dictionary<int, IDailyRecord<TAgent>> _dailyRecords = new Dictionary<int, IDailyRecord<TAgent>>();

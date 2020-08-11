@@ -17,7 +17,7 @@ namespace Covid19ModelLibrary
 
         public double BedsPerThousand { get; set; }
 
-        public void IterateOneDay(LocalContext<Human> localContext)
+        public void IterateOneDay(LocalArea<Human> localContext)
         {
             //TODO: Implement hospital system
         }

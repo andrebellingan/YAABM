@@ -15,7 +15,7 @@ namespace Yaabm.generic.Random
 
         public int Seed { get; }
 
-        private System.Random RandomSource { get; }
+        public System.Random RandomSource { get; }
 
         public int SamplePoisson(double lambda)
         {
@@ -75,7 +75,7 @@ namespace Yaabm.generic.Random
 
             while (itemsSelected < k)
             {
-                var i = NextInt(n - 1);
+                var i = NextInt(n);
                 if (arr[i]) continue;
 
                 result[itemsSelected] = i;

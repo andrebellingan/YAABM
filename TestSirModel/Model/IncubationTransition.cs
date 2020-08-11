@@ -11,10 +11,7 @@ namespace TestSirModel.Model
 
         public override bool TransitionOccurs(SirAgent agent, IRandomProvider random)
         {
-            if (!(agent.Context is SirContext asSirContext)) throw new InvalidCastException("Context must be an instance of SirContext");
-
-            var probabilityOfDevelopingSymptoms = asSirContext.SigmaParam;
-            return random.Chance(probabilityOfDevelopingSymptoms);
+            return random.Chance(agent.SirContext.SigmaParam);
         }
     }
 }

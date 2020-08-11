@@ -1,56 +1,88 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Covid19ModelLibrary.Geography;
+using Covid19ModelLibrary.Initialization;
 using Covid19ModelLibrary.MultiState;
 using Covid19ModelLibrary.Population;
+using Serilog;
 using Yaabm.generic;
 
 namespace Covid19ModelLibrary
 {
-    public class CovidSimulation : Simulation<Human, CovidStateModel, CovidContext, CovidPopulation, CovidSimulation>
+    public class CovidSimulation : Simulation<Human, CovidStateModel, Ward, CovidPopulation, CovidSimulation>
     {
-        public CovidSimulation(int seed, int iterationNo, CovidModelParameters parameters) : base(parameters.StartDate, iterationNo, seed, false)
+        public CovidSimulation(int seed, int iterationNo, CovidInitializationInfo parameters) : base(parameters.Scenario.StartDate, iterationNo, seed, false)
         {
+            InitializeGeography(parameters.Wards, parameters);
+            InitializeHealthCareSystem(parameters); // Need to do this after the geography has been specified
             InitializePopulation(parameters);
+            InitializeContactModel(parameters);
+            PopulationDynamics.SaveGraphs(IterationNo);
         }
 
-        private void InitializePopulation(CovidModelParameters parameters)
+        private void InitializeContactModel(CovidInitializationInfo parameters)
         {
-            foreach (var province in (Province[]) Enum.GetValues(typeof(Province)))
+            foreach (var ward in LocalAreas)
             {
-                var provinceHospitalSystem = new BasicHospitalSystem(parameters.HospitalBedsPerThousand);
-                var provinceContext = new CovidContext(provinceHospitalSystem, province, RootContext, parameters.Clone());
-
-                AddLocalContext("root", provinceContext);
+                var householdDistribution = parameters.HouseHoldSizeDistributions[ward.WardId];
+                ward.GenerateHouseholds(householdDistribution, parameters.HomeContactMatrix, RandomProvider);
             }
 
-            var populationPyramid = PopulationPyramid.LoadFromFile(parameters.PopulationFile);
-
-            populationPyramid.GeneratePopulation(parameters.NumberOfAgentsToSimulate, this);
-            PopulationDynamics.GenerateContacts(parameters.ContactMatrix);
+            InitializeOtherContacts(parameters);
         }
 
-        protected override void UpdateLocalContext(CovidContext asLocal)
+        private void InitializeOtherContacts(CovidInitializationInfo parameters)
         {
-            /*
-             * THIS CODE IS VERY, VERY WRONG
-             *
-             * For a start it can result in probabilities > 1, which is impossible
-             * It is also causing the number of infections to spike hard.
-             * I suspect this is mainly because the concept of a beta parameter doesn't translate to an agent based model
-             */
+            var otherGraphGenerator = new TravelGraphGenerator();
+            otherGraphGenerator.GenerateGraph(PopulationDynamics, LocalAreas, parameters.TravelMatrix, parameters.OtherContactMatrix, RandomProvider);
 
-            var currentDayResults = (CovidRecord) SimulationResults.Result(Day);
+        }
 
-            var susceptibleTotal = currentDayResults.GetSusceptibleTotal(asLocal.Province);
-            var infectiousTotal = currentDayResults.GetInfectiousTotal(asLocal.Province);
+        private void InitializeHealthCareSystem(CovidInitializationInfo parameters)
+        {
+            Log.Warning("Healthcare system initialization is not implemented!");
+        }
 
-            var iAsymptomatic = PopulationDynamics.GetInfectiousBySymptoms(DiseaseSymptoms.Asymptomatic, asLocal.Province);
-            var iMild = PopulationDynamics.GetInfectiousBySymptoms(DiseaseSymptoms.Mild, asLocal.Province);
-            var iSevere = PopulationDynamics.GetInfectiousBySymptoms(DiseaseSymptoms.Severe, asLocal.Province);
+        private void InitializeGeography(IList<WardRecord> wards, CovidInitializationInfo parameters)
+        {
+            AddRegions(wards, w => new RegionSpec("root", w.CountryCode, w.CountryName, "Country"));
+            AddRegions(wards, w => new RegionSpec(w.CountryCode, w.ProvinceCode, w.ProvinceName, "Province"));
+            AddRegions(wards, w => new RegionSpec(w.ProvinceCode, $"dm_{w.DistrictMunicipalityCode}", w.DistrictMunicipalityName, "DistrictMunicipality")); // Add "dm_" prefix because of duplicate district and local municipality codes
+            AddRegions(wards, w => new RegionSpec($"dm_{w.DistrictMunicipalityCode}", w.LocalMunicipalityCode, w.LocalMunicipalityName, "LocalMunicipality"));
 
-            var infectiousStrength = asLocal.RelativeBetaAsymptomatic * iAsymptomatic + iMild + iSevere;
+            foreach (var ward in wards)
+            {
+                var newWard = new Ward(ward, "Ward", PopulationDynamics); // Get the appropriate hospital for this region
+                AddLocalArea(ward.LocalMunicipalityCode, newWard);
+            }
+        }
 
-            var n = susceptibleTotal + infectiousTotal;
-            asLocal.ProbabilityOfInfection = Math.Min(asLocal.BetaParam * asLocal.RelativeLockDownBeta * infectiousStrength / n, 1d); // probability cannot be greater than 1
+        private void AddRegions(IEnumerable<WardRecord> wardRecords, Func<WardRecord, RegionSpec> regionFunc)
+        {
+            var regionsToAdd = wardRecords.Select(regionFunc).Distinct();
+
+            foreach (var region in regionsToAdd)
+            {
+                Log.Logger.Debug($"Adding region {region.LogString()}");
+                AddRegion(region);
+            }
+        }
+
+        private void InitializePopulation(CovidInitializationInfo parameters)
+        {
+            var correctionFactor = parameters.CalcCorrectionFactor();
+            var scalingFactor = 1.0 / correctionFactor;
+            foreach (var ward in LocalAreas)
+            {
+                var ageDistribution = parameters.AgeDistributions[ward.WardId];
+                ward.GeneratePopulation(scalingFactor, ageDistribution, RandomProvider);
+            }
+        }
+
+        protected override void UpdateLocalContext(Ward asLocal)
+        {
+            Log.Verbose("CovidSimulation.UpdateLocalContext() is not implemented!");
         }
 
         protected override IDailyRecord<Human> GenerateDailyRecordInstance(int day, DateTime date)

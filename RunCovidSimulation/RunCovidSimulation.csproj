@@ -25,10 +25,4 @@
     <ProjectReference Include="..\Covid19ModelLibrary\Covid19ModelLibrary.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="Scenarios\Baseline_scenario.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>

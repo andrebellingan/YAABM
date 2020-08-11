@@ -7,14 +7,13 @@ namespace Covid19ModelLibrary.Interventions
         private readonly int _v;
 
         private readonly AgeBand _ageBand;
+        private string _wardId;
 
-        private readonly Province _province;
-
-        public ImportCasesToProvince(int numberOfImports, AgeBand ageBand, Province province)
+        public ImportCasesToProvince(int numberOfImports, AgeBand ageBand, string wardId)
         {
             _v = numberOfImports;
             _ageBand = ageBand;
-            _province = province;
+            _wardId = wardId;
         }
 
         public int DayOfIntervention { get; set; }
@@ -27,10 +26,10 @@ namespace Covid19ModelLibrary.Interventions
 
              for (var i = 0; i < _v; i++)
             {
-                var newDude = new Human {AgeBand = _ageBand};
-                var newContext = simulation.GetContextByName(_province.ToString());
                 var newState = simulation.MultiStateModel.E;
-                simulation.AddAgent(newDude, newState, newContext);
+                var newContext = simulation.GetContextByName(_wardId);
+                var newDude = simulation.AddAgent(newState, newContext);
+                newDude.AgeBand = _ageBand;
             }
         }
     }

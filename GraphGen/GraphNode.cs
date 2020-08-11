@@ -14,11 +14,6 @@ namespace GraphGen
         [XmlAttribute]
         public int GroupId { get; set; }
 
-        public override void Behave()
-        {
-            throw new NotImplementedException();
-        }
-
         public override string ToString()
         {
             return Id.ToString();

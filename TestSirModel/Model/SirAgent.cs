@@ -4,11 +4,14 @@ namespace TestSirModel.Model
 {
     public class SirAgent : Agent<SirAgent>
     {
-        public bool IsInfectious { get; set; }
-
-        public override void Behave()
+        public SirAgent(int id) : base(id)
         {
-            //Do nothing
         }
+
+        public SirContext SirContext => (SirContext) HomeArea;
+
+        public int IncubationTime { get; set; }
+
+        public int InfectiousDays { get; set; }
     }
 }

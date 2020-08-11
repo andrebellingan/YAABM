@@ -1,6 +1,5 @@
 ﻿using System;
 using Yaabm.generic;
-using Yaabm.generic.Random;
 
 namespace Covid19ModelLibrary.MultiState
 {
@@ -8,113 +7,37 @@ namespace Covid19ModelLibrary.MultiState
     {
         public CovidStateModel()
         {
-            S = CreateModelState("S");
-            E = CreateModelState("E", WhenPersonExposed);
-            I = CreateModelState("I", WhenIncubationEnds);
-            R = CreateModelState("R", WhenPersonRecovers);
-            Ih = CreateModelState("IH", WhenPersonAdmitted);
-            Qih = CreateModelState("QIH", WhenPersonQueuesForHospital);
-            Icu = CreateModelState("Icu", WhenPersonEntersIcu);
-            QIcu = CreateModelState("QICU", WhenPersonQueuesForIcu);
-            RIcu = CreateModelState("RICU", WhenPersonExitsIcu);
-            D = CreateModelState("D", WhenPersonDies);
+            S = CreateModelState("S", false, true);
+            E = CreateModelState("E", false, false, WhenPersonExposed);
+            I = CreateModelState("I", true, false, WhenIncubationEnds);
+            R = CreateModelState("R", false, false, WhenPersonRecovers);
 
             SetInfectionTransition(new CovidInfection(this));
             
             AddTransition(new TrEndIncubationPeriod(this));
-            AddTransition(new TrRecoverOutOfHospital(this));
-            AddTransition(new TrAdmitToHospital(this));
-            AddTransition(new TrQueueForHospital(this));
-            AddTransition(new TrFinallyAdmittedToHospital(this));
-            AddTransition(new TrDieWaitingForHospital(this));
-            AddTransition(new TrAdmitToIcu(this));
-            AddTransition(new TrRecoverInHospital(this));
-            AddTransition(new TrDieInHospital(this));
-            AddTransition(new TrMovedToIcu(this));
-            AddTransition(new TrDieInIcu(this));
-            AddTransition(new TrExitIcu(this));
-            AddTransition(new TrDischargeAfterIcu(this));
-        }
-
-        private void WhenPersonDies(Human agent, IRandomProvider random)
-        {
-            agent.IsInfectious = false;
-            agent.IsAlive = false;
-            agent.CovidContext.HospitalSystem.DischargePatient(agent);
-        }
-
-        private void WhenPersonExitsIcu(Human agent, IRandomProvider random)
-        {
-            var avgDays = agent.CovidContext.GetMeanDaysRecoveringAfterIcu(agent);
-            agent.DaysRecoveringAfterIcu = random.SamplePoisson(avgDays);
-        }
-
-        private void WhenPersonQueuesForIcu(Human agent, IRandomProvider random)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void WhenPersonEntersIcu(Human agent, IRandomProvider random)
-        {
-            var icuOutcomeWeights = agent.CovidContext.GetIntensiveCareOutcomeWeights(agent);
-            agent.IntensiveCareOutcome = RandomChooser<IntensiveCareOutcome>.RandomChoice(icuOutcomeWeights, random);
-
-            var avgTimeInIcu = agent.CovidContext.GetAvgTimeInIcu(agent);
-            agent.DaysInIcu = random.SamplePoisson(avgTimeInIcu);
-        }
-
-        private void WhenPersonQueuesForHospital(Human agent, IRandomProvider random)
-        {
-            var lambda = agent.CovidContext.MeanSurvivalWaitingForHospital;
-            agent.DaysCanSurviveWithoutHospital = random.SamplePoisson(lambda);
-        }
-
-        private void WhenPersonAdmitted(Human agent, IRandomProvider random)
-        {
-            agent.CovidContext.HospitalSystem.AdmitPatient(agent);
-            var outcomeWeights = agent.CovidContext.GetHospitalOutcomeWeights(agent);
-            agent.HospitalOutcome = RandomChooser<HospitalOutcome>.RandomChoice(outcomeWeights, random);
-
-            var averageDaysInHospital = agent.CovidContext.GetAverageHospitalStay(agent.HospitalOutcome);
-            agent.DaysInHospital = random.SamplePoisson(averageDaysInHospital);
+            AddTransition(new TrRecover(this));
         }
 
         private void WhenPersonRecovers(Human agent, IRandomProvider random)
         {
             agent.IsInfectious = false;
-            agent.Symptoms = DiseaseSymptoms.None;
-            agent.Hospitalization = Hospitalization.None;
-            agent.CovidContext.HospitalSystem.DischargePatient(agent);
+            agent.Ward.HospitalSystem.DischargePatient(agent);
         }
 
         private void WhenIncubationEnds(Human agent, IRandomProvider random)
         {
-            agent.IsInfectious = true;
-            var symptomProportions = agent.CovidContext.GetSymptomWeights(agent);
-            agent.Symptoms = RandomChooser<DiseaseSymptoms>.RandomChoice(symptomProportions, random);
-            var hospitalizationWeights = agent.CovidContext.GetHospitalizationWeights(agent);
-
-            agent.Hospitalization = RandomChooser<Hospitalization>.RandomChoice(hospitalizationWeights, random);
-
-            var averageDays = agent.CovidContext.GetMeanInfectedTime(agent);
-            agent.DaysInInfectedState = random.SamplePoisson(averageDays);
+            throw new NotImplementedException(nameof(WhenIncubationEnds));
         }
 
         private void WhenPersonExposed(Human agent, IRandomProvider random)
         {
-            agent.IncubationDays = random.SamplePoisson(agent.CovidContext.MeanIncubationPeriod);
-            agent.Symptoms = DiseaseSymptoms.Incubating;
+            throw new NotImplementedException(nameof(WhenPersonExposed));
         }
 
         public ModelState<Human> S { get; }
         public ModelState<Human> E { get; }
         public ModelState<Human> I { get; }
         public ModelState<Human> R { get; }
-        public ModelState<Human> Ih { get; }
-        public ModelState<Human> Qih { get; }
-        public ModelState<Human> Icu { get; }
-        public ModelState<Human> QIcu { get; }
-        public ModelState<Human> RIcu { get; }
-        public ModelState<Human> D { get; }
+        public override ModelState<Human> DefaultState => S;
     }
 }
