@@ -46,8 +46,6 @@ namespace Covid19ModelLibrary
 
         public List<int> SampleHouseholdSizes(WardHouseSizeDistribution householdDistribution, IRandomProvider random)
         {
-            Log.Verbose($"Generating households for ward {WardId} with population size {Residents.Count}");
-
             var sizes = new List<int>();
             var cumulativeSizes = 0;
             while (cumulativeSizes < Residents.Count)
