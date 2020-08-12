@@ -1,4 +1,5 @@
-﻿using Yaabm.generic;
+﻿using System;
+using Yaabm.generic;
 
 namespace TestSirModel.Model
 {
@@ -27,15 +28,12 @@ namespace TestSirModel.Model
 
         private void AgentBecomesInfectious(SirAgent agent, IRandomProvider random)
         {
-            var mean = 1d / agent.SirContext.GammaParam;
-            agent.InfectiousDays = random.SamplePoisson(mean);
+           agent.InfectiousDays = random.SampleDaysInState(agent.SirContext.GammaParam);
         }
 
         private void AgentExposed(SirAgent agent, IRandomProvider random)
         {
-            var p = agent.SirContext.SigmaParam;
-            var invP = 1d / p;
-            agent.IncubationTime = random.SamplePoisson(invP);
+            agent.IncubationTime = random.SampleDaysInState(agent.SirContext.SigmaParam);
         }
 
         public override ModelState<SirAgent> DefaultState => S;

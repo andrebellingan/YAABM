@@ -10,7 +10,7 @@ namespace TestSirModel.Model
 
         public override bool TransitionOccurs(SirAgent agent, IRandomProvider random)
         {
-            return random.Chance(agent.SirContext.SigmaParam);
+            return agent.NumberOfDaysInCurrentState >= agent.IncubationTime;
         }
     }
 }
