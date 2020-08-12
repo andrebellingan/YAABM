@@ -12,6 +12,7 @@ namespace Covid19ModelLibrary
         private string _outputFileName;
         private bool _headingHasBeenWritten;
         private readonly object _fileLock = new object();
+        public bool SaveContactGraphs { get; set; }
 
         protected override void PrepareOutputFiles()
         {
@@ -47,7 +48,7 @@ namespace Covid19ModelLibrary
         {
             var parameters = (CovidInitializationInfo) modelParameters;
 
-            return new CovidSimulation(seed, iterationNo, parameters);
+            return new CovidSimulation(seed, iterationNo, parameters, SaveContactGraphs);
         }
 
         protected override IInitializationInfo PrepareInitializationInfo(IScenario scenario)

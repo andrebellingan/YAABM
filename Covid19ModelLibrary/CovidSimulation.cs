@@ -14,10 +14,12 @@ namespace Covid19ModelLibrary
     public class CovidSimulation : Simulation<Human, CovidStateModel, Ward, CovidPopulation, CovidSimulation>
     {
         private readonly CovidInitializationInfo _covidInitInfo;
+        private readonly bool _saveContactGraphs;
 
-        public CovidSimulation(int seed, int iterationNo, CovidInitializationInfo parameters) : base(parameters.Scenario.StartDate, iterationNo, seed, false, parameters.ModelEvents)
+        public CovidSimulation(int seed, int iterationNo, CovidInitializationInfo parameters, bool saveContactGraphs) : base(parameters.Scenario.StartDate, iterationNo, seed, false, parameters.ModelEvents)
         {
             _covidInitInfo = parameters;
+            _saveContactGraphs = saveContactGraphs;
             var covidScenario = (CovidScenario) parameters.Scenario;
             DiseaseParameters = covidScenario.DiseaseParameters;
         }
@@ -28,7 +30,8 @@ namespace Covid19ModelLibrary
             InitializeHealthCareSystem(_covidInitInfo); // Need to do this after the geography has been specified
             InitializePopulation(_covidInitInfo);
             InitializeContactModel(_covidInitInfo);
-            PopulationDynamics.SaveGraphs(IterationNo);
+
+            if (_saveContactGraphs) PopulationDynamics.SaveGraphs(IterationNo);
         }
 
         public DiseaseParameters DiseaseParameters { get; }

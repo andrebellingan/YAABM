@@ -39,7 +39,10 @@ namespace RunCovidSimulation
 
             var maximumQueueSize = Math.Min(noOfThreads, 3);
 
-            var controller = new Controller();
+            var controller = new Controller()
+            {
+                SaveContactGraphs = runSettings.SaveContactGraphs
+            };
 
             var startTime = DateTime.Now;
 
