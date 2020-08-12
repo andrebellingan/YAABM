@@ -8,6 +8,7 @@ namespace Covid19ModelLibrary.Initialization
 {
     public class AgeDistributionCollection : Dictionary<int, WardAgeDistribution>
     {
+        // ReSharper disable once ClassNeverInstantiated.Local
         private class AgeDistRecord
         {
             public int WardId { get; set; }
@@ -28,6 +29,8 @@ namespace Covid19ModelLibrary.Initialization
                 wardAges[record.AgeBand] = record.Probability;
             }
 
+            Log.Verbose($"Loaded age distributions from {fileName}");
+
             return ageDistributions;
         }
 
@@ -45,7 +48,7 @@ namespace Covid19ModelLibrary.Initialization
                 records.Add(csv.GetRecord<AgeDistRecord>());
             }
 
-            Log.Information($"Loaded age distributions from {fileName}");
+            Log.Verbose($"Loaded age distributions from {fileName}");
             return records;
         }
     }

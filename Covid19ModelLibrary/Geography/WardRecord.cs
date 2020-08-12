@@ -64,7 +64,8 @@ namespace Covid19ModelLibrary.Geography
                 result.Add(csv.GetRecord<WardRecord>());
             }
 
-            Log.Information($"Loaded geographic information from {filename}");
+            Log.Verbose($"Loaded ward information from {filename}");
+
             return result;
         }
 

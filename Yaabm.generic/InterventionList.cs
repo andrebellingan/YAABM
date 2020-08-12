@@ -33,6 +33,8 @@ namespace Yaabm.generic
 
             var deserializer = new DataContractJsonSerializer(typeof(InterventionList), settings);
 
+            Log.Verbose($"Loaded model events from {file.Name}");
+
             return (InterventionList)deserializer.ReadObject(fileStream);
         }
 

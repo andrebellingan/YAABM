@@ -57,7 +57,7 @@ namespace Covid19ModelLibrary.Geography
                 records.Add(csv.GetRecord<TravelMatrixEntry>());
             }
 
-            Log.Information($"Loaded age distributions from {fileName}");
+            Log.Verbose($"Loaded age distributions from {fileName}");
             return records;
         }
 

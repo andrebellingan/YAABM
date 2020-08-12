@@ -9,6 +9,7 @@ namespace Covid19ModelLibrary.Initialization
 {
     public class HouseSizeDistributionCollection : Dictionary<int, WardHouseSizeDistribution>
     {
+        // ReSharper disable once ClassNeverInstantiated.Local
         private class HhSizeRecord
         {
             public int WardId { get; set; }
@@ -30,6 +31,8 @@ namespace Covid19ModelLibrary.Initialization
                 wardHouseSizeDist[sizeRec.Size] = sizeRec.NoOfHouseholds;
             }
 
+            Log.Verbose($"Loaded household sizes from {fileName}");
+
             return householdSizes;
         }
 
@@ -48,7 +51,7 @@ namespace Covid19ModelLibrary.Initialization
                 records.Add(csv.GetRecord<HhSizeRecord>());
             }
 
-            Log.Information($"Loaded age distributions from {fileName}");
+            Log.Verbose($"Loaded age distributions from {fileName}");
             return records;
         }
     }
