@@ -12,8 +12,8 @@
   "ModelEventsFile": "Scenarios/Test_events.json",
   "TravelMatrixFile": "Data/TravelMatrixCapeTown.csv",
   "DiseaseParameters": {
-    "RZero": 2.0,
+    "ProbInfection": 0.02,
     "Gamma": 0.04761904761904760,
     "Sigma": 0.25
-    } 
+  } 
 }
