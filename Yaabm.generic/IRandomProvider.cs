@@ -29,5 +29,7 @@
         System.Random RandomSource { get; }
 
         int[] RandomSelect(int n, int k);
+
+        int SampleDaysInState(double rate);
     }
 }

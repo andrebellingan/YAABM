@@ -85,5 +85,19 @@ namespace Yaabm.generic.Random
 
             return result;
         }
+
+        public int SampleDaysInState(double rate)
+        {
+            // Need to adjust for the fact that only one transition is allowed per day
+            // Then we need to convert from a continuous decrement rate to a daily one.
+            var pStar = (1 - Math.Exp(-rate)) / Math.Exp(-rate);
+            var p = (1 - Math.Exp(-pStar));
+
+            // This uses the geometric distribution
+            // This is the discrete equivalent of a exponential decay model
+            var geometricDistribution = new Geometric(p, RandomSource);
+
+            return geometricDistribution.Sample();
+        }
     }
 }
