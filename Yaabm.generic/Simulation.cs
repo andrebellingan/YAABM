@@ -114,7 +114,8 @@ namespace Yaabm.generic
             {
 #endif
                 for (var d = 0; d < numberOfDays; d++)
-                {
+                { 
+                    Log.Verbose($"Simulation {IterationNo} iterating day {d} days");
                     IterateOneDay();
                 }
 #if !DEBUG
@@ -258,6 +259,7 @@ namespace Yaabm.generic
 
         public bool Run(int numberOfDays)
         {
+            Log.Verbose($"Simulation {IterationNo} preparing environment");
             PrepareSimulation(numberOfDays);
 
             if (_hasBeenRun)
@@ -268,6 +270,8 @@ namespace Yaabm.generic
 
             Iterate(numberOfDays);
             _hasBeenRun = true;
+
+            Log.Verbose($"Simulation {IterationNo} finished running");
 
             return _hasBeenRun;
         }
