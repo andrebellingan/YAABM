@@ -5,14 +5,13 @@ namespace Covid19ModelLibrary.MultiState
 {
     public class CovidInfection : InfectionTransition<Human>
     {
-        public CovidInfection(CovidStateModel stateModel) : base("S->E", stateModel.S, stateModel.E)
+        public CovidInfection(CovidStateModel stateModel) : base("S_to_E", stateModel.S, stateModel.E)
         {
         }
 
         public override bool InfectionOccurs(Human carrierAgent, Encounter<Human> encounter, IRandomProvider randomProvider)
         {
-            var beta = carrierAgent.Ward.DiseaseParameters.RZero * carrierAgent.Ward.DiseaseParameters.Gamma;
-            return randomProvider.Chance(beta);
+            return randomProvider.Chance(carrierAgent.Ward.DiseaseParameters.ProbInfection);
         }
 
     }

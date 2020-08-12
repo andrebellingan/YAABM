@@ -6,7 +6,7 @@ namespace Covid19ModelLibrary.Scenarios
     public class DiseaseParameters
     {
         [DataMember]
-        public double RZero { get; set; }
+        public double ProbInfection { get; set; }
 
         [DataMember]
         public double Gamma { get; set; }
