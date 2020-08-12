@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using Covid19ModelLibrary.Initialization;
 using Covid19ModelLibrary.MultiState;
 using Covid19ModelLibrary.Population;
+using Serilog;
 using Yaabm.generic;
 
 namespace Covid19ModelLibrary
@@ -29,6 +29,7 @@ namespace Covid19ModelLibrary
         {
             lock (_fileLock)
             {
+                Log.Verbose($"Saving results for Simulation {simulationResults.IterationNumber}");
                 var outputFile = File.AppendText(_outputFileName);
 
                 if (!_headingHasBeenWritten)
@@ -54,19 +55,6 @@ namespace Covid19ModelLibrary
             var initializationInfo = new CovidInitializationInfo();
             initializationInfo.LoadScenario(scenario);
             return initializationInfo;
-        }
-
-        internal void LoadInterventions(CovidInitializationInfo modelParameters)
-        {
-            var interventions = new List<IIntervention>();
-
-            foreach (var spec in modelParameters.ModelEvents)
-            {
-                var newIntervention = spec.CreateInstance();
-                interventions.Add(newIntervention);
-            }
-
-            base.LoadInterventions(interventions);
         }
     }
 }
