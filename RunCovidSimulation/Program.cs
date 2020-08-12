@@ -39,13 +39,13 @@ namespace RunCovidSimulation
 
             var maximumQueueSize = Math.Min(noOfThreads, 3);
 
-            var controller = new Controller {SaveFilesWithDates = runSettings.SaveDate};
+            var controller = new Controller();
 
             var startTime = DateTime.Now;
 
             var scenario = CovidScenario.LoadFromFile(runSettings.ScenarioFile);
 
-            controller.RunAllIterations(scenario, iterations, noOfThreads, seed, maximumQueueSize);
+            controller.RunAllIterations(scenario, iterations, noOfThreads, seed, maximumQueueSize, runSettings.SaveDate);
 
             var endTime = DateTime.Now;
             var timePassed = endTime - startTime;

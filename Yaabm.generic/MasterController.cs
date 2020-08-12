@@ -58,7 +58,7 @@ namespace Yaabm.generic
 
         public DateTime RunTimeStamp { get; private set; }
 
-        public bool SaveFilesWithDates { get; set; }
+        public bool SaveFilesWithDates { get; private set; }
 
         private void SaveScenario(IScenario scenario)
         {
