@@ -4,7 +4,7 @@ namespace Covid19ModelLibrary.MultiState
 {
     internal class TrRecover : WithinAgentTransition<Human>
     {
-        public TrRecover(CovidStateModel covidStateModel) : base("I->R", covidStateModel.I, covidStateModel.R)
+        public TrRecover(CovidStateModel covidStateModel) : base("I_to_R", covidStateModel.I, covidStateModel.R)
         {
         }
 

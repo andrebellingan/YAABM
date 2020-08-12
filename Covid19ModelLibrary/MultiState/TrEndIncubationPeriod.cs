@@ -4,7 +4,7 @@ namespace Covid19ModelLibrary.MultiState
 {
     public class TrEndIncubationPeriod : WithinAgentTransition<Human>
     {
-        public TrEndIncubationPeriod(CovidStateModel diseaseModel) : base("E->I", diseaseModel.E, diseaseModel.I)
+        public TrEndIncubationPeriod(CovidStateModel diseaseModel) : base("E_to_I", diseaseModel.E, diseaseModel.I)
         {
         }
 
