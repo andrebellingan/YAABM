@@ -46,7 +46,7 @@ namespace Covid19ModelLibrary
 
         protected override CovidSimulation GenerateSimulation(int seed, int iterationNo, IInitializationInfo modelParameters)
         {
-            var parameters = (CovidInitializationInfo) modelParameters;
+            var parameters = (CovidInitializationInfo) PrepareInitializationInfo(Scenario);
 
             return new CovidSimulation(seed, iterationNo, parameters, SaveContactGraphs);
         }
