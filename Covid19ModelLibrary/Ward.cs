@@ -5,7 +5,6 @@ using Covid19ModelLibrary.Geography;
 using Covid19ModelLibrary.Initialization;
 using Covid19ModelLibrary.Population;
 using Covid19ModelLibrary.Scenarios;
-using Serilog;
 using Yaabm.generic;
 
 namespace Covid19ModelLibrary
