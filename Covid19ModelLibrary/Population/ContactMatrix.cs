@@ -23,6 +23,7 @@ namespace Covid19ModelLibrary.Population
             }
         }
 
+        // ReSharper disable once ClassNeverInstantiated.Local
         private class ContactRecord
         {
             public AgeBand AgeBand { get; set; }
@@ -63,7 +64,7 @@ namespace Covid19ModelLibrary.Population
                 records.Add(csv.GetRecord<ContactRecord>());
             }
 
-            Log.Information($"Loaded contact matrix from {fileName}");
+            Log.Verbose($"Loaded contact matrix from {fileName}");
             return records;
         }
 
