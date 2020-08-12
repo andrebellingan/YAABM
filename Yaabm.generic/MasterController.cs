@@ -142,7 +142,7 @@ namespace Yaabm.generic
 #endif
                     sim.Run(_numberOfDays);
 
-                    Task.Factory.StartNew(() => AppendSimulationResultsToOutput(sim.SimulationResults));
+                    AppendSimulationResultsToOutput(sim.SimulationResults);
 #if !DEBUG
                 }
                 catch (Exception ex)
