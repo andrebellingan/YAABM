@@ -31,7 +31,7 @@ namespace Covid19ModelLibrary
         {
             var valueStrings = new List<string>
             {
-                iterationNo.ToString(), day.ToString(), date.ToString(CultureInfo.InvariantCulture.DateTimeFormat.ShortDatePattern), wardId.ToString()
+                iterationNo.ToString(), day.ToString(), date.ToString("yyyy-MM-dd"), wardId.ToString()
             };
 
             var n = 0;
