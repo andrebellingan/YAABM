@@ -1,5 +1,4 @@
-﻿using System;
-using Yaabm.generic;
+﻿using Yaabm.generic;
 
 namespace UnitTests.Yaabm.Graph
 {

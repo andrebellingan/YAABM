@@ -6,7 +6,7 @@ namespace Covid19ModelLibrary.Geography
 {
     internal class TravelMatrixRow
     {
-        private Dictionary<int, double> _rowEntries = new Dictionary<int, double>();
+        private readonly Dictionary<int, double> _rowEntries = new Dictionary<int, double>();
 
         private bool _valuesChanged;
         private int[] _wards;

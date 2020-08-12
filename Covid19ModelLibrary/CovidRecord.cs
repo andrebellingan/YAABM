@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using Covid19ModelLibrary.MultiState;
-using Loyc.Collections;
 using Yaabm.generic;
 
 namespace Covid19ModelLibrary
@@ -35,7 +32,7 @@ namespace Covid19ModelLibrary
             };
 
             var n = 0;
-            foreach (var (modelState, value) in StateCounts)
+            foreach (var (_, value) in StateCounts)
             {
                 n += value;
                 valueStrings.Add(value.ToString());

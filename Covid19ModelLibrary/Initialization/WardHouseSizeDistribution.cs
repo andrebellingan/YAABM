@@ -31,18 +31,18 @@ namespace Covid19ModelLibrary.Initialization
 
         public int MaximumSize { get; }
 
-        private object SampleLock = new object();
+        private readonly object _sampleLock = new object();
 
         internal int Sample(int maximumSize, Random random)
         {
             if (maximumSize == 0) throw new ArgumentOutOfRangeException(nameof(maximumSize), "Cannot sample households with size=0");
             if (maximumSize > MaximumSize) throw new ArgumentOutOfRangeException(nameof(maximumSize), $"Cannot sample household sizes larger than {MaximumSize}");
 
-            lock (SampleLock)
+            lock (_sampleLock)
             {
                 if (_valuesChanged)
                 {
-                    CalculateConditionalDistributions();
+                    CalculateConditionalDistributions(random);
                     _valuesChanged = false;
                 }
 
@@ -51,7 +51,7 @@ namespace Covid19ModelLibrary.Initialization
             }
         }
 
-        private void CalculateConditionalDistributions()
+        private void CalculateConditionalDistributions(Random random)
         {
             _conditionalDistributions.Clear();
 
@@ -59,16 +59,16 @@ namespace Covid19ModelLibrary.Initialization
             {
                 var weights = GetWeights(i);
                 var scaledWeights = GetScaledWeights(weights);
-                var distribution = new Categorical(scaledWeights);
+                var distribution = new Categorical(scaledWeights, random);
                 _conditionalDistributions.Add(i, distribution);
             }
         }
 
-        private static double[] GetScaledWeights(double[] weights)
+        private static double[] GetScaledWeights(IReadOnlyList<double> weights)
         {
-            var scaled = new double[weights.Length];
+            var scaled = new double[weights.Count];
             var grandTotal = weights.Sum();
-            for (var i = 0; i < weights.Length; i++)
+            for (var i = 0; i < weights.Count; i++)
             {
                 scaled[i] = weights[i] / grandTotal;
             }

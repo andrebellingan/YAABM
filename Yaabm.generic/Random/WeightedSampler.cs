@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Yaabm.generic.Random
 {
@@ -50,8 +48,7 @@ namespace Yaabm.generic.Random
 
         private static List<Node<T>> GenerateHeap(List<WeightedItem<T>> cards)
         {
-            var nodes = new List<Node<T>>();
-            nodes.Add(null);
+            var nodes = new List<Node<T>> {null};
 
             foreach (var card in cards)
             {
@@ -68,8 +65,6 @@ namespace Yaabm.generic.Random
 
         private static WeightedItem<T> PopFromHeap(List<Node<T>> heap, IRandomProvider random)
         {
-            WeightedItem<T> card = null;
-
             var gas = random.NextDouble() * heap[1].TotalWeight;
             var i = 1;
 
@@ -86,7 +81,7 @@ namespace Yaabm.generic.Random
             }
 
             var weight = heap[i].Weight;
-            card = heap[i].Value;
+            var card = heap[i].Value;
 
             heap[i].Weight = 0;
 

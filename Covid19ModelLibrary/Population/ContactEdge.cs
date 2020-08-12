@@ -13,6 +13,7 @@ namespace Covid19ModelLibrary.Population
         public ContactSetting ContactSetting { get; set; }
 
         [XmlAttribute] 
+        // ReSharper disable once UnusedMember.Global
         public string Setting => ContactSetting.ToString();
     }
 }

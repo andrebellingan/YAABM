@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Covid19ModelLibrary.Population;
-using Yaabm.generic;
 
 namespace Covid19ModelLibrary
 {

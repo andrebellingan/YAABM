@@ -26,8 +26,8 @@ namespace Covid19ModelLibrary
 
         protected override void PrepareSimulation(in int numberOfDays)
         {
-            InitializeGeography(_covidInitInfo.Wards, _covidInitInfo);
-            InitializeHealthCareSystem(_covidInitInfo); // Need to do this after the geography has been specified
+            InitializeGeography(_covidInitInfo.Wards);
+            InitializeHealthCareSystem(); // Need to do this after the geography has been specified
             InitializePopulation(_covidInitInfo);
             InitializeContactModel(_covidInitInfo);
 
@@ -54,12 +54,12 @@ namespace Covid19ModelLibrary
 
         }
 
-        private void InitializeHealthCareSystem(CovidInitializationInfo parameters)
+        private void InitializeHealthCareSystem()
         {
             Log.Warning("Healthcare system initialization is not implemented!");
         }
 
-        private void InitializeGeography(IList<WardRecord> wards, CovidInitializationInfo parameters)
+        private void InitializeGeography(IList<WardRecord> wards)
         {
             AddRegions(wards, w => new RegionSpec("root", w.CountryCode, w.CountryName, "Country"));
             AddRegions(wards, w => new RegionSpec(w.CountryCode, w.ProvinceCode, w.ProvinceName, "Province"));
@@ -109,7 +109,7 @@ namespace Covid19ModelLibrary
             foreach (var idx in sample)
             {
                 var agentToInfect = totalPopulation[idx];
-                base.MoveAgentToState(agentToInfect, MultiStateModel.I, RandomProvider);
+                MoveAgentToState(agentToInfect, MultiStateModel.I, RandomProvider);
             }
         }
     }

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Yaabm.generic
+﻿namespace Yaabm.generic
 {
     public interface IInitializationInfo
     {

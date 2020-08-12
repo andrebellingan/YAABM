@@ -9,6 +9,7 @@ namespace Covid19ModelLibrary.Geography
 {
     public class WardRecord
     {
+        // ReSharper disable once UnusedMember.Global
         public int ObjectId { get; set; }
 
         public string CountryCode { get; set; }
@@ -21,6 +22,7 @@ namespace Covid19ModelLibrary.Geography
 
         public string LocalMunicipalityCode { get; set; }
 
+        // ReSharper disable once UnusedMember.Global
         public int WardNumber { get; set; }
 
         public int WardId { get; set; }
@@ -31,14 +33,19 @@ namespace Covid19ModelLibrary.Geography
 
         public string DistrictMunicipalityName { get; set; }
 
+        // ReSharper disable once UnusedMember.Global
         public int Year { get; set; }
 
+        // ReSharper disable once UnusedMember.Global
         public double ShapeArea { get; set; }
 
+        // ReSharper disable once UnusedMember.Global
         public double ShapeLength { get; set; }
 
+        // ReSharper disable once UnusedMember.Global
         public double Latitude { get; set; }
 
+        // ReSharper disable once UnusedMember.Global
         public double Longitude { get; set; }
 
         public double Population { get; set; }

@@ -1,7 +1,7 @@
 {
   "ScenarioName": "Test scenario",
   "StartDate": "2020-02-06T00:00:00.0000000",
-  "DaysToProject": 100,
+  "DaysToProject": 365,
   "NumberOfAgents": 100000,
   "GeographyFile": "Data/WardsCapeTown.csv",
   "AgeDistributionsFile": "Data/Age distributions.csv",
@@ -12,7 +12,7 @@
   "ModelEventsFile": "Scenarios/Test_events.json",
   "TravelMatrixFile": "Data/TravelMatrixCapeTown.csv",
   "DiseaseParameters": {
-    "ProbInfection": 0.02,
+    "ProbInfection": 0.004,
     "Gamma": 0.04761904761904760,
     "Sigma": 0.25
   } 

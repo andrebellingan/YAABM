@@ -36,7 +36,7 @@ namespace TestSirModel
             };
 
 
-            controller.RunAllIterations(scenario, iterations, noOfThreads, seed, maxQueueSize, false);
+            controller.RunAllIterations(scenario, iterations, noOfThreads, seed, maxQueueSize);
 
             var endTime = DateTime.Now;
             var timePassed = endTime - startTime;

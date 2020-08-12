@@ -37,7 +37,7 @@ namespace Yaabm.generic
         /// <param name="iterationNo">The iteration of this simulation</param>
         /// <param name="seed">the seed value for the random generator</param>
         /// <param name="shuffleTransitions">Sets whether the order in which state transitions are tested is shuffled randomly</param>
-        /// <param name="parametersModelEvents"></param>
+        /// <param name="modelEvents">List of events that apply changes to the simulation</param>
         protected Simulation(DateTime startDate, int iterationNo, int seed, bool shuffleTransitions, InterventionList modelEvents)
         {
             IterationNo = iterationNo;

@@ -23,9 +23,8 @@ namespace Covid19ModelLibrary
 
         public int WardId { get; set; }
 
-        public BasicHospitalSystem HospitalSystem => LocalResourceSystem as BasicHospitalSystem;
-
         public WardRecord WardRecord { get; }
+
         public DiseaseParameters DiseaseParameters => OwnerSimulation.DiseaseParameters;
 
         public void GeneratePopulation(in double scalingFactor, WardAgeDistribution ageDistribution, IRandomProvider random)
