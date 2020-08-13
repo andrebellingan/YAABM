@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
+
 
 namespace Yaabm.generic.Random
 {
@@ -34,28 +34,32 @@ namespace Yaabm.generic.Random
     {
         public static List<T> PickMultipleItems(List<WeightedItem<T>> cards, int numberToDraw, IRandomProvider random)
         {
-            var pickedCards = new List<WeightedItem<T>>();
+            var pickedCards = new List<T>(numberToDraw);
 
             var heap = GenerateHeap(cards);
 
             for (var i = 0; i < numberToDraw; i++)
             {
-                pickedCards.Add(PopFromHeap(heap, random));
+                var poppedItem = PopFromHeap(heap, random);
+                pickedCards.Add(poppedItem.Item);
             }
 
-            return pickedCards.Select(p => p.Item).ToList();
+            return pickedCards;
         }
 
-        private static List<Node<T>> GenerateHeap(List<WeightedItem<T>> cards)
+        private static Node<T>[] GenerateHeap(List<WeightedItem<T>> cards)
         {
-            var nodes = new List<Node<T>> {null};
+            var nodes = new Node<T>[cards.Count + 1];
+            nodes[0] = null;
 
+            var k = 1;
             foreach (var card in cards)
             {
-                nodes.Add(new Node<T>(card.Weight, card, card.Weight));
+                nodes[k] = new Node<T>(card.Weight, card, card.Weight);
+                k++;
             }
 
-            for (var i = nodes.Count - 1; i > 1; i--)
+            for (var i = nodes.Length - 1; i > 1; i--)
             {
                 nodes[i >> 1].TotalWeight += nodes[i].TotalWeight;
             }
@@ -63,7 +67,7 @@ namespace Yaabm.generic.Random
             return nodes;
         }
 
-        private static WeightedItem<T> PopFromHeap(List<Node<T>> heap, IRandomProvider random)
+        private static WeightedItem<T> PopFromHeap(IReadOnlyList<Node<T>> heap, IRandomProvider random)
         {
             var gas = random.NextDouble() * heap[1].TotalWeight;
             var i = 1;

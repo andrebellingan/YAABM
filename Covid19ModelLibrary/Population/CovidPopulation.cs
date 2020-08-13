@@ -55,17 +55,11 @@ namespace Covid19ModelLibrary.Population
             Log.Verbose("Saved network files");
         }
 
-        public static List<Human> SampleWeightedAgents(List<Tuple<Human, double>> candidates, int noOfSamples, IRandomProvider random)
+        public static List<Human> SampleWeightedAgents(List<WeightedItem<Human>> candidates, int noOfSamples, IRandomProvider random)
         {
-            var weights = new List<WeightedItem<Human>>();
             var numberToSelect = Math.Min(noOfSamples, candidates.Count);
 
-            foreach (var c in candidates)
-            {
-                weights.Add(new WeightedItem<Human>(c.Item1, c.Item2));
-            }
-
-            var selected = WeightedSampler<Human>.PickMultipleItems(weights, numberToSelect, random);
+            var selected = WeightedSampler<Human>.PickMultipleItems(candidates, numberToSelect, random);
             return selected;
         }
 

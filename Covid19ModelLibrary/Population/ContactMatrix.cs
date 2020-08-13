@@ -6,6 +6,7 @@ using System.Linq;
 using CsvHelper;
 using Serilog;
 using Yaabm.generic;
+using Yaabm.generic.Random;
 
 namespace Covid19ModelLibrary.Population
 {
@@ -73,9 +74,9 @@ namespace Covid19ModelLibrary.Population
             return _contactValues[ageBand];
         }
 
-        public List<Tuple<Human, double>> ContactWeightedAgentList(IEnumerable<Human> potentialContacts, Human agent)
+        public List<WeightedItem<Human>> ContactWeightedAgentList(List<Human> potentialContacts, Human agent)
         {
-            var weights = new List<Tuple<Human, double>>();
+            var weights = new List<Tuple<Human, double>>(potentialContacts.Count);
 
             var contracts = Contacts(agent.AgeBand);
 
@@ -87,11 +88,11 @@ namespace Covid19ModelLibrary.Population
                 weights.Add(new Tuple<Human, double>(other, weight));
             }
 
-            var result = new List<Tuple<Human, double>>();
+            var result = new List<WeightedItem<Human>>(potentialContacts.Count);
 
-            foreach (var t in weights)
+            foreach (var (human, weight) in weights)
             {
-                result.Add(new Tuple<Human, double>(t.Item1, t.Item2 / totalWeight));
+                result.Add(new WeightedItem<Human>(human, weight / totalWeight));
             }
 
             return result;

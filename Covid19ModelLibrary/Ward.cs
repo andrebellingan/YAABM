@@ -106,9 +106,9 @@ namespace Covid19ModelLibrary
             return households;
         }
 
-        private HashSet<Human> SelectNotHouseHoldHeads(ICollection<Human> householdHeads)
+        private List<Human> SelectNotHouseHoldHeads(ICollection<Human> householdHeads)
         {
-            var result = new HashSet<Human>();
+            var result = new List<Human>();
 
             foreach (var agent in Residents)
             {
