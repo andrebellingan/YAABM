@@ -65,7 +65,7 @@ namespace Covid19ModelLibrary.Population
 
         public List<Human> OtherAgentsInArea(Ward ward, List<Human> agentsToExclude)
         {
-            var result = new List<Human>();
+            var result = new List<Human>(ward.Residents.Count);
             foreach (var otherAgent in ward.Residents)
             {
                 if (agentsToExclude.Contains(otherAgent)) continue;

@@ -80,5 +80,12 @@ namespace Yaabm.generic
 
             transition.Origin.WithinHostTransitionsFromState.Add(transition);
         }
+
+        protected void CreateConditionalTransition(ModelState<T> origin, ModelState<T> destination,
+            Func<T, bool> transitionCondition)
+        {
+            var transition = new ConditionalTransition<T>(origin, destination, transitionCondition);
+            AddTransition(transition);
+        }
     }
 }

@@ -16,6 +16,14 @@ namespace Covid19ModelLibrary
         Age80Plus = 8
     }
 
+    public enum Symptoms
+    {
+        None,
+        Asymptomatic,
+        Mild,
+        Severe
+    }
+
 
     public class Human : Agent<Human>
     {
@@ -24,15 +32,19 @@ namespace Covid19ModelLibrary
 
         public AgeBand AgeBand { get; set; } = AgeBand.Age00To09;
 
+        public Symptoms Symptoms { get; set; } = Symptoms.None;
+
         [XmlAttribute(AttributeName = "AgeBand")]
         public string AgeBandAsString => AgeBand.ToString(); // For output to GraphML file
+
+        public Ward Ward => (Ward)HomeArea;
 
         [XmlAttribute] 
         public int WardId => Ward.WardId; // For output to GraphML file
 
-        public Ward Ward => (Ward) HomeArea;
-
         public HouseHold HouseHold { get; set; }
+
+        public int IncubationPeriod { get; set; }
     }
 }
  

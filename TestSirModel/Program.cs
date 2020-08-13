@@ -13,7 +13,7 @@ namespace TestSirModel
             const int iterations = 1000;
             const int noOfDays = 100;
             const int seed = 879375928;
-            const int noOfThreads = 11;
+            const int noOfThreads = 10;
             const int maxQueueSize = 3;
 
             var controller = new SirMasterController

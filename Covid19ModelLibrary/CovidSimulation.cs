@@ -21,7 +21,7 @@ namespace Covid19ModelLibrary
             _covidInitInfo = parameters;
             _saveContactGraphs = saveContactGraphs;
             var covidScenario = (CovidScenario) parameters.Scenario;
-            DiseaseParameters = covidScenario.DiseaseParameters;
+            MultiStateModel = new CovidStateModel(covidScenario.DiseaseParameters);
         }
 
         protected override void PrepareSimulation(in int numberOfDays)
@@ -33,8 +33,6 @@ namespace Covid19ModelLibrary
 
             if (_saveContactGraphs) PopulationDynamics.SaveGraphs(IterationNo);
         }
-
-        public DiseaseParameters DiseaseParameters { get; }
 
         private void InitializeContactModel(CovidInitializationInfo parameters)
         {
@@ -109,7 +107,7 @@ namespace Covid19ModelLibrary
             foreach (var idx in sample)
             {
                 var agentToInfect = totalPopulation[idx];
-                MoveAgentToState(agentToInfect, MultiStateModel.I, RandomProvider);
+                MoveAgentToState(agentToInfect, MultiStateModel.E, RandomProvider);
             }
         }
     }

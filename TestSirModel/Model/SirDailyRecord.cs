@@ -28,9 +28,9 @@ namespace TestSirModel.Model
 
         public void RecordTransition(SirAgent agent, Transition<SirAgent> transition)
         {
-            if (transition.Description == "S->E") TransitSToE++;
-            if (transition.Description == "E->I") TransitEToI++;
-            if (transition.Description == "I->R") TransitIToR++;
+            if (transition.Description == "S_to_E") TransitSToE++;
+            if (transition.Description == "E_to_I") TransitEToI++;
+            if (transition.Description == "I_to_R") TransitIToR++;
         }
 
         public void RecordState(SirAgent agent)
@@ -41,7 +41,7 @@ namespace TestSirModel.Model
             if (agent.CurrentState.Name == "R") R++;
         }
 
-        public string CsvHeading => "S,E,I,R,N,S->E,E->I,I->R";
+        public string CsvHeading => "S,E,I,R,N,S_to_E,E_to_I,I_to_R";
 
         public int N => S + E + I + R;
 

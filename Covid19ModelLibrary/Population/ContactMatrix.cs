@@ -76,16 +76,17 @@ namespace Covid19ModelLibrary.Population
 
         public List<WeightedItem<Human>> ContactWeightedAgentList(List<Human> potentialContacts, Human agent)
         {
-            var weights = new List<Tuple<Human, double>>(potentialContacts.Count);
+            var weights = new Tuple<Human, double>[potentialContacts.Count];
 
             var contracts = Contacts(agent.AgeBand);
 
             var totalWeight = 0d;
-            foreach (var other in potentialContacts)
+            for (var k = 0; k < potentialContacts.Count; k++)
             {
-                var weight = contracts[other.AgeBand];
+                var otherContact = potentialContacts[k];
+                var weight = contracts[otherContact.AgeBand];
                 totalWeight += weight;
-                weights.Add(new Tuple<Human, double>(other, weight));
+                weights[k] = new Tuple<Human, double>(otherContact, weight);
             }
 
             var result = new List<WeightedItem<Human>>(potentialContacts.Count);

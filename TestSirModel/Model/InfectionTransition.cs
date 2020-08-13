@@ -5,7 +5,7 @@ namespace TestSirModel.Model
 {
     internal class InfectionTransition : InfectionTransition<SirAgent>
     {
-        public InfectionTransition(SirStateModel sirStateModel) : base("S->E", sirStateModel.S, sirStateModel.E)
+        public InfectionTransition(SirStateModel sirStateModel) : base("S_to_E", sirStateModel.S, sirStateModel.E)
         {
             StateModel = sirStateModel;
         }

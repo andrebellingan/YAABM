@@ -11,7 +11,7 @@ namespace Yaabm.generic
 {
     public abstract class MasterController<TAgent, TMultiStateModel, TLocalContext, TPopulationDynamics, TSimulation> : IDisposable
             where TAgent : Agent<TAgent>
-            where TMultiStateModel : MultiStateModel<TAgent>, new()
+            where TMultiStateModel : MultiStateModel<TAgent>
             where TLocalContext : LocalArea<TAgent>
             where TPopulationDynamics : PopulationDynamics<TAgent>, new()
             where TSimulation : Simulation<TAgent, TMultiStateModel, TLocalContext, TPopulationDynamics, TSimulation>

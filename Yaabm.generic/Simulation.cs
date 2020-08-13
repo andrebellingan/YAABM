@@ -7,7 +7,7 @@ namespace Yaabm.generic
 {
     public abstract class Simulation<TAgent, TMultiStateModel, TLocalArea, TPopulationDynamics, TSimulation>
         where TAgent : Agent<TAgent>
-        where TMultiStateModel : MultiStateModel<TAgent>, new()
+        where TMultiStateModel : MultiStateModel<TAgent>
         where TLocalArea : LocalArea<TAgent>
         where TPopulationDynamics : PopulationDynamics<TAgent>, new()
         where TSimulation : Simulation<TAgent, TMultiStateModel, TLocalArea, TPopulationDynamics, TSimulation>
@@ -41,7 +41,6 @@ namespace Yaabm.generic
         protected Simulation(DateTime startDate, int iterationNo, int seed, bool shuffleTransitions, InterventionList modelEvents)
         {
             IterationNo = iterationNo;
-            MultiStateModel = new TMultiStateModel();
             PopulationDynamics = new TPopulationDynamics();
             PopulationDynamics.Initialize(MultiStateModel);
             PrepareModelEvents(modelEvents);
@@ -89,7 +88,7 @@ namespace Yaabm.generic
             _localContexts.Add(newContext.Name, newContext);
         }
 
-        public TMultiStateModel MultiStateModel { get; }
+        public TMultiStateModel MultiStateModel { get; protected set; }
 
         public IRandomProvider RandomProvider { get; }
 

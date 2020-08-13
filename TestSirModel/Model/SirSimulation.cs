@@ -23,6 +23,7 @@ namespace TestSirModel.Model
             _beta = beta;
             _gamma = gamma;
             _sigma = sigma;
+            MultiStateModel = new SirStateModel();
         }
 
         private void InitializeSirSimulation(SirStateModel multiStateModel)

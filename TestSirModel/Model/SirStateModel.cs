@@ -1,5 +1,4 @@
-﻿using System;
-using Yaabm.generic;
+﻿using Yaabm.generic;
 
 namespace TestSirModel.Model
 {
@@ -22,8 +21,8 @@ namespace TestSirModel.Model
 
             SetInfectionTransition(new InfectionTransition(this));
             // Now the within host transitions
-            AddTransition(new IncubationTransition(this));
-            AddTransition(new RecoveryTransition(this));
+            CreateConditionalTransition(E, I, agent => agent.NumberOfDaysInCurrentState >= agent.IncubationTime);
+            CreateConditionalTransition(I, R, agent => agent.NumberOfDaysInCurrentState >= agent.InfectiousDays);
         }
 
         private void AgentBecomesInfectious(SirAgent agent, IRandomProvider random)
