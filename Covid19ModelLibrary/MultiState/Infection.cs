@@ -1,19 +1,21 @@
-﻿using Yaabm.generic;
+﻿using System;
+using Yaabm.generic;
 
 namespace Covid19ModelLibrary.MultiState
 {
     public class Infection : InfectionTransition<Human>
     {
-        private readonly CovidStateModel _stateModel;
+        private readonly Func<Human, double> _infectiousness;
 
-        public Infection(CovidStateModel stateModel) : base("S_to_E", stateModel.S, stateModel.E)
+        public Infection(CovidStateModel stateModel, Func<Human, double> infectiousness) : base("S_to_E", stateModel.S, stateModel.E)
         {
-            _stateModel = stateModel;
+            _infectiousness = infectiousness;
         }
 
         public override bool InfectionOccurs(Human carrierAgent, Encounter<Human> encounter, IRandomProvider randomProvider)
         {
-            return randomProvider.Chance(_stateModel.Parameters.ProbInfection);
+            var p = _infectiousness(carrierAgent);
+            return randomProvider.Chance(p);
         }
 
     }
