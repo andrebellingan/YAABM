@@ -63,7 +63,7 @@ If the --saveDate switch is used then the date and time the model was run will b
 * *TestSirModel* is a simple command line application that contains a simple implementation of an agent model and shows how to apply the code in *Yaabm.generic*. This is also used to compare the results to a theoretical SEIR model with the same parameters.
 * *Covid19ModelLibrary* is a class library containing the implementation of a COVID-19 agent based model.
 * *RunCovidSimulation* is a command line application that will execute the model defined in *Covid19ModelLibrary*
-* *Yaabm.Graph* and *GraphGen* are projects where the graph generation code that will be used to model agent contacts is being developed and tested (see below)
+* *Yaabm.Graph* contains the code used for modelling connections between agents as an undirected graph
 
 ---
 
@@ -91,7 +91,7 @@ Unit test coverage is currently very poor.
 
 ## References:
 
-1. Grouped graph generation algorithm used in `MultiConfigModelGenerator` class in the *Yaabm.Graph* library is partly based on the r code in [kklot/gennet](https://github.com/kklot/gennet)
+1. Contact graph generation is based on the [SABCOM model](https://github.com/blackrhinoabm/sabcom)
 
 ## Dependencies
 
