@@ -1,28 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 
 namespace Yaabm.generic.Random
 {
-    public class WeightedItem<T>
-    {
-        public WeightedItem(T item, double weight)
-        {
-            Item = item;
-            Weight = weight;
-        }
-
-        public T Item { get; }
-
-        public double Weight { get; }
-    }
-
     public class Node<T>
     {
         public double Weight { get; set; }
-        public WeightedItem<T> Value { get; set; }
+        public WeightedChoice<T> Value { get; set; }
         public double TotalWeight { get; set; }
 
-        public Node(double weight, WeightedItem<T> value, double totalWeight)
+        public Node(double weight, WeightedChoice<T> value, double totalWeight)
         {
             Weight = weight;
             Value = value;
@@ -32,7 +20,37 @@ namespace Yaabm.generic.Random
 
     public class WeightedSampler<T>
     {
-        public static List<T> PickMultipleItems(List<WeightedItem<T>> cards, int numberToDraw, IRandomProvider random)
+        private const double Sensitivity = 0.0000001d;
+
+        public static T PickSingleItem(List<WeightedChoice<T>> weights, IRandomProvider randomProvider)
+        {
+            var totalWeight = WeightsAddUpToOne(weights);
+            if (Math.Abs(1d - totalWeight) > Sensitivity) throw new ArgumentException($"The weights for the items to choose do not add up to one. Total weight = {totalWeight}");
+
+            var randomValue = randomProvider.NextDouble();
+            for (var i = 0; i < weights.Count; i++)
+            {
+                var currentWeight = weights[i];
+
+                if (i == weights.Count - 1) return currentWeight.Choice; // last item on the list so it must be chosen
+
+                randomValue -= currentWeight.Weight;
+                if (randomValue < 0) return currentWeight.Choice;
+            }
+
+            throw new Exception("Failed to make a random choice");
+        }
+
+        private static double WeightsAddUpToOne(IEnumerable<WeightedChoice<T>> weights)
+        {
+            var totalProbability = 0d;
+            // ReSharper disable once LoopCanBeConvertedToQuery
+            foreach (var weightedChoice in weights) totalProbability += weightedChoice.Weight;
+
+            return totalProbability;
+        }
+
+        public static List<T> PickMultipleItems(List<WeightedChoice<T>> cards, int numberToDraw, IRandomProvider random)
         {
             var pickedCards = new List<T>(numberToDraw);
 
@@ -41,13 +59,13 @@ namespace Yaabm.generic.Random
             for (var i = 0; i < numberToDraw; i++)
             {
                 var poppedItem = PopFromHeap(heap, random);
-                pickedCards.Add(poppedItem.Item);
+                pickedCards.Add(poppedItem.Choice);
             }
 
             return pickedCards;
         }
 
-        private static Node<T>[] GenerateHeap(List<WeightedItem<T>> cards)
+        private static Node<T>[] GenerateHeap(List<WeightedChoice<T>> cards)
         {
             var nodes = new Node<T>[cards.Count + 1];
             nodes[0] = null;
@@ -67,7 +85,7 @@ namespace Yaabm.generic.Random
             return nodes;
         }
 
-        private static WeightedItem<T> PopFromHeap(IReadOnlyList<Node<T>> heap, IRandomProvider random)
+        private static WeightedChoice<T> PopFromHeap(IReadOnlyList<Node<T>> heap, IRandomProvider random)
         {
             var gas = random.NextDouble() * heap[1].TotalWeight;
             var i = 1;
