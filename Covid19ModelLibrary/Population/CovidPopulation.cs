@@ -55,7 +55,7 @@ namespace Covid19ModelLibrary.Population
             Log.Verbose("Saved network files");
         }
 
-        public static List<Human> SampleWeightedAgents(List<WeightedItem<Human>> candidates, int noOfSamples, IRandomProvider random)
+        public static List<Human> SampleWeightedAgents(List<WeightedChoice<Human>> candidates, int noOfSamples, IRandomProvider random)
         {
             var numberToSelect = Math.Min(noOfSamples, candidates.Count);
 

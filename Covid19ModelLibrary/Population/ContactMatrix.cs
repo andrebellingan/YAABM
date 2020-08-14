@@ -74,7 +74,7 @@ namespace Covid19ModelLibrary.Population
             return _contactValues[ageBand];
         }
 
-        public List<WeightedItem<Human>> ContactWeightedAgentList(List<Human> potentialContacts, Human agent)
+        public List<WeightedChoice<Human>> ContactWeightedAgentList(List<Human> potentialContacts, Human agent)
         {
             var weights = new Tuple<Human, double>[potentialContacts.Count];
 
@@ -89,11 +89,11 @@ namespace Covid19ModelLibrary.Population
                 weights[k] = new Tuple<Human, double>(otherContact, weight);
             }
 
-            var result = new List<WeightedItem<Human>>(potentialContacts.Count);
+            var result = new List<WeightedChoice<Human>>(potentialContacts.Count);
 
             foreach (var (human, weight) in weights)
             {
-                result.Add(new WeightedItem<Human>(human, weight / totalWeight));
+                result.Add(new WeightedChoice<Human>(human, weight / totalWeight));
             }
 
             return result;
