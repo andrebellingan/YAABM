@@ -3,6 +3,7 @@
   "StartDate": "2020-02-06T00:00:00.0000000",
   "DaysToProject": 365,
   "NumberOfAgents": 100000,
+  "NumberExposedAtStart": 10,
   "GeographyFile": "Data/WardsCapeTown.csv",
   "AgeDistributionsFile": "Data/Age distributions.csv",
   "HouseHoldSizesFile": "Data/HHSizes.csv",
@@ -11,9 +12,41 @@
   "DiseaseParametersFile": "not set",
   "ModelEventsFile": "Scenarios/Test_events.json",
   "TravelMatrixFile": "Data/TravelMatrixCapeTown.csv",
+  "DayOfLockdown5": 49,
+  "DayOfLockdown4": 85,
+  "DayOfLockDown3": 116,
+  "DayOfLockDown2": 208,
+  "DayLockDownLifted": 330,
   "DiseaseParameters": {
-    "ProbInfection": 0.004,
+    "ProbInfection": 0.01,
     "Gamma": 0.04761904761904760,
-    "Sigma": 0.25
-  } 
+    "Sigma": 0.25,
+    "SymptomWeights": {
+      "Asymptomatic": 0.5,
+      "Mild": 0.4,
+      "Severe": 0.1
+    },
+    "IncubationPeriod": 4.0,
+    "TimeInfectious": 2.05,
+    "PropStoH": 0.8875,
+    "TimeStoH": 6.0,
+    "TimeStoC": 6.0,
+    "HospitalizationOutcomes": {
+      "Recover": 0.8703,
+      "GoToIcu": 0.00485,
+      "Die": 0.12485
+    },
+    "TimeHtoR": 8.0,
+    "TimeHtoD": 8.0,
+    "TimeHtoC": 2.6,
+    "PropDieInIcu": 0.5,
+    "TimeCtoD": 13,
+    "TimeCtoR": 16,
+    "RelativeBetaAsymptomatic": 0.65,
+    "LockdownFactor5": 0.75,
+    "LockdownFactor4": 0.8,
+    "LockdownFactor3": 0.8,
+    "LockdownFactor2": 0.8,
+    "LockdownFactorPost": 0.9
+  }
 }

@@ -55,6 +55,9 @@ namespace Covid19ModelLibrary.Scenarios
         public int NumberOfAgents { get; set; }
 
         [DataMember]
+        public int NumberExposedAtStart { get; set; }
+
+        [DataMember]
         public string GeographyFile { get; set; }
 
         [DataMember]
@@ -73,12 +76,24 @@ namespace Covid19ModelLibrary.Scenarios
         public string DiseaseParametersFile { get; set; }
 
         [DataMember]
-        public string ModelEventsFile { get; set; }
-
-        [DataMember]
         public string TravelMatrixFile { get; set; }
 
         [DataMember]
         public DiseaseParameters DiseaseParameters { get; set; }
+
+        [DataMember]
+        public int DayOfLockdown5 { get; set; }
+
+        [DataMember]
+        public int DayOfLockDown4 { get; set; }
+
+        [DataMember]
+        public int DayOfLockDown3 { get; set; }
+
+        [DataMember]
+        public int DayOfLockDown2 { get; set; }
+
+        [DataMember]
+        public int DayLockDownLifted { get; set; }
     }
 }

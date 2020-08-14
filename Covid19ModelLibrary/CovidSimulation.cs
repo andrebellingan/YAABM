@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Covid19ModelLibrary.Geography;
 using Covid19ModelLibrary.Initialization;
+using Covid19ModelLibrary.Interventions;
 using Covid19ModelLibrary.MultiState;
 using Covid19ModelLibrary.Population;
 using Covid19ModelLibrary.Scenarios;
@@ -16,7 +17,7 @@ namespace Covid19ModelLibrary
         private readonly CovidInitializationInfo _covidInitInfo;
         private readonly bool _saveContactGraphs;
 
-        public CovidSimulation(int seed, int iterationNo, CovidInitializationInfo parameters, bool saveContactGraphs) : base(parameters.Scenario.StartDate, iterationNo, seed, false, parameters.ModelEvents)
+        public CovidSimulation(int seed, int iterationNo, CovidInitializationInfo parameters, bool saveContactGraphs) : base(parameters.Scenario.StartDate, iterationNo, seed, false)
         {
             _covidInitInfo = parameters;
             _saveContactGraphs = saveContactGraphs;
@@ -26,12 +27,26 @@ namespace Covid19ModelLibrary
 
         protected override void PrepareSimulation(in int numberOfDays)
         {
+            GenerateEvents(_covidInitInfo.Scenario);
+
             InitializeGeography(_covidInitInfo.Wards);
             InitializeHealthCareSystem(); // Need to do this after the geography has been specified
             InitializePopulation(_covidInitInfo);
             InitializeContactModel(_covidInitInfo);
 
             if (_saveContactGraphs) PopulationDynamics.SaveGraphs(IterationNo);
+        }
+
+        private void GenerateEvents(IScenario scenario)
+        {
+            var covidScenario = (CovidScenario) scenario;
+
+            AddIntervention(new RandomlyInfectIndividuals(covidScenario.NumberExposedAtStart));
+            AddIntervention(new IntroduceLockDown(5, covidScenario.DayOfLockdown5));
+            AddIntervention(new IntroduceLockDown(4, covidScenario.DayOfLockDown4));
+            AddIntervention(new IntroduceLockDown(3, covidScenario.DayOfLockDown3));
+            AddIntervention(new IntroduceLockDown(2, covidScenario.DayOfLockDown2));
+            AddIntervention(new IntroduceLockDown(0, covidScenario.DayLockDownLifted));
         }
 
         private void InitializeContactModel(CovidInitializationInfo parameters)
@@ -108,6 +123,14 @@ namespace Covid19ModelLibrary
             {
                 var agentToInfect = totalPopulation[idx];
                 MoveAgentToState(agentToInfect, MultiStateModel.E, RandomProvider);
+            }
+        }
+
+        public void ApplyLockDownToAllWards(int lockdownLevel)
+        {
+            foreach (var ward in LocalAreas)
+            {
+                ward.LockDownLevel = lockdownLevel;
             }
         }
     }
