@@ -248,7 +248,11 @@ namespace Yaabm.generic
             if (!_interventions.ContainsKey(Day)) return;
 
             var dailyInterventions = _interventions[Day];
-            foreach (var intervention in dailyInterventions) intervention.Apply(this);
+            foreach (var intervention in dailyInterventions)
+            {
+                intervention.Apply(this);
+                Log.Verbose($"Simulation {IterationNo}: Applied intervention on day {Day}: {intervention.Description}");
+            }
         }
 
         private void DayCompleted()
