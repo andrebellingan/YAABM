@@ -34,7 +34,7 @@ The application has the following command line arguments:
 
 	-c, --contactGraphs [Optional] Switch to save the contact graph used in each iteration to a GraphML file
 
-example: `RunCovidSimulation.exe -n 100 -s ./Scenarios/Baseline_scenario.json -t 4`
+example: `RunCovidSimulation.exe -n 100 -s ./Scenarios/Baseline_scenario.json -t 4 -c`
 
 ### Threading
 The default value for the number of threads is `-t 1`. Running single threaded is highly recommended for debugging. Setting `-t 0` will detect the number of logical cores on the system and spawn the corresponding number of threads.
@@ -91,7 +91,15 @@ Unit test coverage is currently very poor.
 
 ## References:
 
-1. Contact graph generation is based on the [SABCOM model](https://github.com/blackrhinoabm/sabcom)
+1. Contact graph generation code is based on the [SABCOM model](https://github.com/blackrhinoabm/sabcom)
+
+2. The multi state disease model is based on the Actuarial Society of South Africa [SEIR model](https://github.com/Percept-Health-Solve/seir-model)
+
+3. The sample contact matrices are taken from Prem K, Cook AR, Jit M (2017) Projecting social contact matrices in 152 countries using contact surveys and demographic data. PLoS Comput Biol 13(9): e1005697. https://doi.org/10.1371/journal.pcbi.1005697
+
+4. The sample population data is based on South African Census Community Profiles 2011, created by [Statistics South Africa](http://www.statssa.gov.za/?page_id=3839) and retrieved from the [DataFirst](https://www.datafirst.uct.ac.za/) service
+
+5. The sample travel matrix is based on National Household Travel Survey 2013, created by [Statistics South Africa](https://www.statssa.gov.za/publications/P0320/P03202013.pdf) and retrieved from the [DataFirst](https://www.datafirst.uct.ac.za/) service
 
 ## Dependencies
 
@@ -104,8 +112,6 @@ This solution gratefully relies on code developed by the following projects:
 * [QuickGraph.NETStandard](https://github.com/deepakkumar1984/QuickGraph.NETStandard)
 * [Serilog](https://serilog.net/)
 
----
+# Disclaimer
 
-# Authors
-André Bellingan
-
+This code is a work in progress. The possibility of errors and bugs cannot be ruled out and the use of this code is therefore at your own risk.
