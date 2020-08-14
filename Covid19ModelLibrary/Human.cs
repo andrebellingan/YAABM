@@ -24,6 +24,13 @@ namespace Covid19ModelLibrary
         Severe
     }
 
+    public enum HospitalOutcome
+    {
+        Recover,
+        IntensiveCare,
+        Die
+    }
+
 
     public class Human : Agent<Human>
     {
@@ -45,6 +52,19 @@ namespace Covid19ModelLibrary
         public HouseHold HouseHold { get; set; }
 
         public int IncubationPeriod { get; set; }
+
+        public int DaysInfectious { get; set; }
+
+        public bool SevereToHospital { get; set; }
+
+        public HospitalOutcome HospitalOutcome { get; set; }
+        public int DaysIsolated { get; set; }
+
+        public int DaysInHospital { get; set; }
+
+        public bool DiesInIcu { get; set; }
+
+        public int DaysInIntensiveCare { get; set; }
     }
 }
  
