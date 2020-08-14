@@ -5,7 +5,7 @@ using System.Text;
 namespace Yaabm.generic
 {
     public class SimulationResults<TAgent, TModel> 
-        where TAgent : Agent<TAgent> 
+        where TAgent : Agent<TAgent>
         where TModel : MultiStateModel<TAgent>
     {
         private readonly Dictionary<int, IDailyRecord<TAgent>> _dailyRecords = new Dictionary<int, IDailyRecord<TAgent>>();
@@ -14,7 +14,8 @@ namespace Yaabm.generic
 
         private readonly Func<int, DateTime, IDailyRecord<TAgent>> _dailyRecordGeneratorFunc;
 
-        public SimulationResults(TModel multiStateModel, int numberOfDays, DateTime startDate, int iterationNumber, Func<int, DateTime, IDailyRecord<TAgent> > dailyRecordGeneratorFunc)
+        public SimulationResults(TModel multiStateModel, int numberOfDays, DateTime startDate, int iterationNumber,
+            Func<int, DateTime, IDailyRecord<TAgent>> dailyRecordGeneratorFunc)
         {
             MultiStateModel = multiStateModel;
             IterationNumber = iterationNumber;

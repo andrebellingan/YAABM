@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.Serialization;
+using Serilog;
 
 namespace Yaabm.generic
 {
@@ -32,7 +33,7 @@ namespace Yaabm.generic
             var pType = Type.GetType(TypeName);
             if (pType == null)
             {
-                InternalLog.Error($"Parameter '{Name}: Type {TypeName} does not exist'");
+                Log.Error($"Parameter '{Name}: Type {TypeName} does not exist'");
                 throw new InvalidCastException(TypeName);
             }
 
@@ -75,14 +76,14 @@ namespace Yaabm.generic
             var interventionType = Type.GetType(InterventionName);
             if (interventionType == null)
             {
-                InternalLog.Error($"There is not type called {InterventionName}");
-                InternalLog.Info("If the type is in another assembly then you need to specify as \"namespace.qualified.name, assembly.name\"");
+                Log.Error($"There is not type called {InterventionName}");
+                Log.Information("If the type is in another assembly then you need to specify as \"namespace.qualified.name, assembly.name\"");
                 return null;
             }
 
             if (!interventionType.GetInterfaces().Contains(typeof(IIntervention)))
             {
-                InternalLog.Error($"Intervention type {InterventionName} does not implement interface {nameof(IIntervention)}");
+                Log.Error($"Intervention type {InterventionName} does not implement interface {nameof(IIntervention)}");
                 return null;
             }
 
@@ -91,13 +92,18 @@ namespace Yaabm.generic
             try
             {
                 var intervention = (IIntervention) Activator.CreateInstance(interventionType, parameters);
-                intervention.DayOfIntervention = DayToApply;
+                if (intervention != null)
+                {
+                    intervention.DayOfIntervention = DayToApply;
 
-                return intervention;
+                    return intervention;
+                }
+
+                return null;
             }
             catch (Exception paramException)
             {
-                InternalLog.Error(paramException, $"Could not create an instance of {InterventionName}");
+                Log.Error(paramException, $"Could not create an instance of {InterventionName}");
                 return null;
             }
         }

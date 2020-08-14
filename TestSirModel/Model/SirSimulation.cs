@@ -3,7 +3,7 @@ using Yaabm.generic;
 
 namespace TestSirModel.Model
 {
-    public class SirSimulation : Simulation<SirAgent, SirStateModel, SirContext, SirPopulationDynamics, SirSimulation>
+    public class SirSimulation : Simulation<SirAgent, SirStateModel, SirContext, SirEnvironment, SirSimulation>
     {
         private readonly int _popSizeS;
         private readonly int _popSizeE;
@@ -23,15 +23,19 @@ namespace TestSirModel.Model
             _beta = beta;
             _gamma = gamma;
             _sigma = sigma;
-            InitializeSirSimulation(MultiStateModel);
+            MultiStateModel = new SirStateModel();
         }
 
         private void InitializeSirSimulation(SirStateModel multiStateModel)
         {
             // Setup the homogeneous population etc.
-            var context = new SirContext(new EmptyResourceSystem(), "Universe", RootContext);
+            var context = new SirContext("Universe", 
+                PopulationDynamics)
+            {
+                LocalResourceSystem = new EmptyResourceSystem()
+            };
             context.SetDiseaseParameters(_beta, _gamma, _sigma);
-            AddLocalContext("root", context);
+            AddLocalArea("root", context);
 
             GenerateStatePopulation(context, multiStateModel.S, _popSizeS);
             GenerateStatePopulation(context, multiStateModel.E, _popSizeE);
@@ -43,8 +47,7 @@ namespace TestSirModel.Model
         {
             for (var s = 0; s < numberOfLives; s++)
             {
-                var newSusceptible = new SirAgent();
-                AddAgent(newSusceptible, state, context);
+                AddAgent(state, context);
             }
         }
 
@@ -61,9 +64,14 @@ namespace TestSirModel.Model
             localContext.ProbabilityOfInfection = localContext.BetaParam * localContext.InfectiousTotal / localContext.N;
         }
 
+        protected override void PrepareSimulation(in int numberOfDays)
+        {
+            InitializeSirSimulation(MultiStateModel);
+        }
+
         protected override IDailyRecord<SirAgent> GenerateDailyRecordInstance(int day, DateTime date)
         {
-            return new SirDailyRecord();
+            return new SirDailyRecord(Date);
         }
     }
 }

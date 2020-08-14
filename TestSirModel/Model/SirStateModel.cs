@@ -14,25 +14,27 @@ namespace TestSirModel.Model
 
         public SirStateModel()
         {
-            S = CreateModelState("S");
-            E = CreateModelState("E");
-            I = CreateModelState("I", AgentInfected);
-            R = CreateModelState("R", AgentRecovered);
+            S = CreateModelState("S", false, true);
+            E = CreateModelState("E", false, false, AgentExposed);
+            I = CreateModelState("I", true, false, AgentBecomesInfectious);
+            R = CreateModelState("R", false, false);
 
             SetInfectionTransition(new InfectionTransition(this));
             // Now the within host transitions
-            AddTransition(new IncubationTransition(this));
-            AddTransition(new RecoveryTransition(this));
+            CreateConditionalTransition(E, I, agent => agent.NumberOfDaysInCurrentState >= agent.IncubationTime);
+            CreateConditionalTransition(I, R, agent => agent.NumberOfDaysInCurrentState >= agent.InfectiousDays);
         }
 
-        private void AgentRecovered(SirAgent agent, IRandomProvider random)
+        private void AgentBecomesInfectious(SirAgent agent, IRandomProvider random)
         {
-            agent.IsInfectious = false;
+           agent.InfectiousDays = random.SampleDaysInState(agent.SirContext.GammaParam);
         }
 
-        private void AgentInfected(SirAgent agent, IRandomProvider random)
+        private void AgentExposed(SirAgent agent, IRandomProvider random)
         {
-            agent.IsInfectious = true;
+            agent.IncubationTime = random.SampleDaysInState(agent.SirContext.SigmaParam);
         }
+
+        public override ModelState<SirAgent> DefaultState => S;
     }
 }

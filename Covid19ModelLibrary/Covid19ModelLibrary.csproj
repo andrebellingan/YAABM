@@ -13,12 +13,35 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Yaabm.generic\Yaabm.generic.csproj" />
+    <PackageReference Include="CsvHelper" Version="15.0.5" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Data\ProvincePopulation.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <ProjectReference Include="..\Yaabm.generic\Yaabm.generic.csproj" />
+    <ProjectReference Include="..\Yaabm.Graph\Yaabm.Graph.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Data\Age distributions.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\HHSizes.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\HomeContactMatrix.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\Other contact matrix.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\TravelMatrixCapeTown.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\WardsCapeTown.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Scenarios\Test_scenario.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 

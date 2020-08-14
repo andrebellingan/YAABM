@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using Serilog;
 using Yaabm.generic.Random;
 
 namespace Yaabm.generic
 {
-    public abstract class Simulation<TAgent, TMultiStateModel, TLocalContext, TPopulationDynamics, TSimulation>
+    public abstract class Simulation<TAgent, TMultiStateModel, TLocalArea, TPopulationDynamics, TSimulation>
         where TAgent : Agent<TAgent>
-        where TMultiStateModel : MultiStateModel<TAgent>, new()
-        where TLocalContext : LocalContext<TAgent>             //TODO: Make this a simple construction method as well and remove direct access to children
+        where TMultiStateModel : MultiStateModel<TAgent>
+        where TLocalArea : LocalArea<TAgent>
         where TPopulationDynamics : PopulationDynamics<TAgent>, new()
-        where TSimulation : Simulation<TAgent, TMultiStateModel, TLocalContext, TPopulationDynamics, TSimulation>
+        where TSimulation : Simulation<TAgent, TMultiStateModel, TLocalArea, TPopulationDynamics, TSimulation>
     {
         public delegate void DayEventDelegate(int day, DateTime date);
 
@@ -18,16 +19,16 @@ namespace Yaabm.generic
 
         private bool _hasBeenRun;
         private readonly List<Tuple<TAgent, Transition<TAgent>>> _transitionsToApply = new List<Tuple<TAgent, Transition<TAgent>>>();
-        private readonly List<Tuple<TAgent, Transition<TAgent>>> _infectionsToApply = new List<Tuple<TAgent, Transition<TAgent>>>();
-        private readonly Dictionary<int, TAgent> _infectedAgents = new Dictionary<int, TAgent>();
 
-        private readonly IDictionary<string, TLocalContext> _localContexts = new Dictionary<string, TLocalContext>();
-        private readonly IDictionary<string, CustomContext<TAgent>> _allContexts = new Dictionary<string, CustomContext<TAgent>>();
+        private readonly IDictionary<string, TLocalArea> _localContexts = new Dictionary<string, TLocalArea>();
+        private readonly IDictionary<string, GeographicArea<TAgent>> _allContexts = new Dictionary<string, GeographicArea<TAgent>>();
+
+        public IEnumerable<TLocalArea> LocalAreas => _localContexts.Values;
 
         // this should be set to true in cases where the transitions are based on probabilities.
         // In models where the time the agent will leave a state is determined when the state is entered it can be set to false (but this should be decided on a case-by-case basis
         // Obviously the shuffling process adds to the CPU overhead
-        private readonly bool _shuffleTransitions; 
+        private readonly bool _shuffleTransitions;
 
         /// <summary>
         /// Construct a new instance of the Simulation class
@@ -36,30 +37,46 @@ namespace Yaabm.generic
         /// <param name="iterationNo">The iteration of this simulation</param>
         /// <param name="seed">the seed value for the random generator</param>
         /// <param name="shuffleTransitions">Sets whether the order in which state transitions are tested is shuffled randomly</param>
+        /// <param name="modelEvents">List of events that apply changes to the simulation</param>
         protected Simulation(DateTime startDate, int iterationNo, int seed, bool shuffleTransitions)
         {
             IterationNo = iterationNo;
-            MultiStateModel = new TMultiStateModel();
             PopulationDynamics = new TPopulationDynamics();
             PopulationDynamics.Initialize(MultiStateModel);
             StartDate = startDate;
             RandomProvider = new DefaultRandom(seed);
-            _shuffleTransitions = shuffleTransitions; 
+            _shuffleTransitions = shuffleTransitions;
 
-            RootContext = new GroupedContext<TAgent>("root", null); // This is fine because it is only a grouped context - not an instance of TG
+            RootContext = new Region<TAgent>("root", "root", "Global"); // This is fine because it is only a grouped context - not an instance of TG
             _allContexts.Add(RootContext.Name, RootContext);
         }
 
-        protected void AddLocalContext(string parentContextName, TLocalContext newContext)
+        protected void AddRegion(RegionSpec regionSpec)
         {
-            if (!(_allContexts[parentContextName] is GroupedContext<TAgent> parentContext)) throw new ArgumentNullException($"Cannot add context as child to {parentContextName}");
+            AddRegion(regionSpec.ParentRegionName, regionSpec.Name, regionSpec.FullName, regionSpec.RegionType);
+        }
+
+        protected void AddRegion(string parentRegionName, string name, string fullname, string regionType)
+        {
+            if (string.IsNullOrEmpty(parentRegionName)) throw new ArgumentException("Cannot add region without parent region's name. Did you mean to use \"root\"?");
+            if (!_allContexts.ContainsKey(parentRegionName)) throw new ArgumentOutOfRangeException($"The given parent region {parentRegionName} has not been defined");
+            if (!(_allContexts[parentRegionName] is Region<TAgent> parentRegion)) throw new ArgumentNullException($"Cannot add context as child to {parentRegionName}");
+
+            var newRegion = new Region<TAgent>(name, fullname, regionType);
+            parentRegion.AddChild(newRegion);
+            _allContexts.Add(newRegion.Name, newRegion);
+        }
+
+        protected void AddLocalArea(string parentContextName, TLocalArea newContext)
+        {
+            if (!(_allContexts[parentContextName] is Region<TAgent> parentContext)) throw new ArgumentNullException($"Cannot add context as child to {parentContextName}");
 
             parentContext.AddChild(newContext);
             _allContexts.Add(newContext.Name, newContext);
             _localContexts.Add(newContext.Name, newContext);
         }
 
-        public TMultiStateModel MultiStateModel { get; }
+        public TMultiStateModel MultiStateModel { get; protected set; }
 
         public IRandomProvider RandomProvider { get; }
 
@@ -67,7 +84,7 @@ namespace Yaabm.generic
 
         public int IterationNo { get; }
 
-        public GroupedContext<TAgent> RootContext { get; }
+        public Region<TAgent> RootContext { get; }
 
         public int Day { get; private set; }
 
@@ -79,137 +96,128 @@ namespace Yaabm.generic
 
         private void Iterate(int numberOfDays)
         {
+#if !DEBUG
             try
             {
+#endif
                 for (var d = 0; d < numberOfDays; d++)
-                {
+                { 
+                    Log.Verbose($"Simulation {IterationNo} iterating day {d} days");
                     IterateOneDay();
                 }
-            }
+#if !DEBUG
+        }
             catch (NotImplementedException ex)
             {
-                InternalLog.Error(ex, "Part of the simulation is not implemented!");
+                Log.Error(ex, "Part of the simulation is not implemented!", ex.TargetSite);
                 throw;
             }
             catch (Exception x)
             {
-                InternalLog.Error(x, $"Something went wrong with simulation {IterationNo}\n{x.Message}");
+                Log.Error(x, $"Something went wrong with simulation {IterationNo}\n{x.Message}");
                 throw;
             }
+#endif
         }
 
         public SimulationResults<TAgent, TMultiStateModel> SimulationResults { get; private set; }
 
         private void IterateOneDay()
         {
-            var populationToSimulate = PopulationDynamics.EnumeratePopulation(RandomProvider, false);
+            var populationToSimulate = PopulationDynamics.EnumeratePopulation();
 
             ApplyInterventions();
             TakeCensus(populationToSimulate);
 
             UpdateContexts(RootContext);
 
-            IterateGoverningSystem();
             IterateAgentBehaviour(populationToSimulate);
 
+            _transitionsToApply.Clear();
             SimulateInfections();
             IterateWithinHostMultiStateModel(populationToSimulate);
+            foreach (var transit in _transitionsToApply)
+                ApplyTransitionToPerson(transit.Item1, transit.Item2);
 
             DayCompleted();
             Day++;
         }
 
-        private void UpdateContexts(CustomContext<TAgent> context)
+        private void UpdateContexts(GeographicArea<TAgent> context)
         {
-            if (context is GroupedContext<TAgent> asGroup)
+            if (context is Region<TAgent> asGroup)
             {
                 foreach (var child in asGroup.ChildContexts) UpdateContexts(child.Value);
                 return;
             }
 
-            var asLocal = (TLocalContext) context;
+            var asLocal = (TLocalArea) context;
             asLocal.Day = Day;
             asLocal.Date = Date;
             UpdateLocalContext(asLocal);
         }
 
-        protected abstract void UpdateLocalContext(TLocalContext asLocal);
-
-        private void IterateWithinHostMultiStateModel(TAgent[] populationToSimulate)
+        protected virtual void UpdateLocalContext(TLocalArea asLocal)
         {
-            _transitionsToApply.Clear();
+            // By default nothing is updated
+        }
 
-            // Do this single threaded
+        private void IterateWithinHostMultiStateModel(IEnumerable<TAgent> populationToSimulate)
+        {
             foreach (var agent in populationToSimulate)
                 ModelMultiStateModelOnAgent(agent);
-
-            foreach (var transit in _transitionsToApply)
-                ApplyTransitionToPerson(transit);
         }
 
         private void ModelMultiStateModelOnAgent(TAgent agent)
         {
-            if (_infectedAgents.ContainsKey(agent.Id)) return; // This agent already had it's one transition for the day
+            if (agent.TransitionReserved) return; // This agent already had it's one transition for the day
             var transition = MultiStateModel.DetermineWithinHostStateTransitions(agent, RandomProvider, _shuffleTransitions);
 
             if (transition == null) return;
+            agent.TransitionReserved = true;
 
             _transitionsToApply.Add(new Tuple<TAgent, Transition<TAgent>>(agent, transition));
         }
 
         private void SimulateInfections()
         {
-            _infectionsToApply.Clear();
-            _infectedAgents.Clear();
-
             foreach (var agent in PopulationDynamics.GetInfectiousAgents())
             {
-                var contacts = PopulationDynamics.GetContacts(agent, RandomProvider);
+                var encounters = PopulationDynamics.GetEncounters(agent, RandomProvider);
 
-                foreach (var contact in contacts)
+                foreach (var contact in encounters)
                 {
-                    if (contact == agent) continue; // can't infect yourself
-                    if (!MultiStateModel.InfectionTransition.IsSusceptible(contact)) continue;
+                    if (contact.Agent == agent) continue; // can't infect yourself
+                    if (contact.Agent.TransitionReserved) continue;
+                    if (!contact.Agent.CurrentState.IsSusceptible) continue;
 
                     var transition = MultiStateModel.DetermineAgentInteractionTransition(agent, contact, RandomProvider);
 
                     if (transition == null) continue;
 
-                    _infectionsToApply.Add(new Tuple<TAgent, Transition<TAgent>>(contact, transition));
-                }
-            }
+                    contact.Agent.TransitionReserved = true;
 
-            foreach (var transit in _infectionsToApply)
-            {
-                _infectedAgents.Add(transit.Item1.Id, transit.Item1);
-                ApplyTransitionToPerson(transit);
+                    _transitionsToApply.Add(new Tuple<TAgent, Transition<TAgent>>(contact.Agent, transition));
+                }
             }
         }
 
-        private void ApplyTransitionToPerson(Tuple<TAgent, Transition<TAgent>> transitionInfo)
+        private void ApplyTransitionToPerson(TAgent agent, Transition<TAgent> transition)
         {
-            var (agent, transition) = transitionInfo;
             MoveAgentToState(agent, transition.Destination, RandomProvider);
 
             SimulationResults.RecordTransition(agent, transition, Day);
         }
 
-        private void MoveAgentToState(TAgent agent, ModelState<TAgent> destinationState, IRandomProvider random)
+        protected void MoveAgentToState(TAgent agent, ModelState<TAgent> destinationState, IRandomProvider random)
         {
             destinationState.StateEntered(agent, random);
             agent.SetCurrentState(destinationState, Day);
-
-            PopulationDynamics.ProcessAgentMovingState(agent, destinationState); // Let the interaction model know that this agent changed state
         }
 
         private static void IterateAgentBehaviour(IEnumerable<TAgent> population)
         {
             foreach (var agent in population) agent.Behave();
-        }
-
-        private void IterateGoverningSystem()
-        {
-            RootContext.IterateGovernanceSystem();
         }
 
         private void TakeCensus(IEnumerable<TAgent> population)
@@ -228,7 +236,11 @@ namespace Yaabm.generic
             if (!_interventions.ContainsKey(Day)) return;
 
             var dailyInterventions = _interventions[Day];
-            foreach (var intervention in dailyInterventions) intervention.Apply(this);
+            foreach (var intervention in dailyInterventions)
+            {
+                intervention.Apply(this);
+                Log.Verbose($"Simulation {IterationNo}: Applied intervention on day {Day}: {intervention.Description}");
+            }
         }
 
         private void DayCompleted()
@@ -238,6 +250,9 @@ namespace Yaabm.generic
 
         public bool Run(int numberOfDays)
         {
+            Log.Verbose($"Simulation {IterationNo} preparing environment");
+            PrepareSimulation(numberOfDays);
+
             if (_hasBeenRun)
             {
                 throw new InvalidOperationException("The simulation has already been run");
@@ -247,8 +262,12 @@ namespace Yaabm.generic
             Iterate(numberOfDays);
             _hasBeenRun = true;
 
+            Log.Verbose($"Simulation {IterationNo} finished running");
+
             return _hasBeenRun;
         }
+
+        protected abstract void PrepareSimulation(in int numberOfDays);
 
         protected abstract IDailyRecord<TAgent> GenerateDailyRecordInstance(int day, DateTime date);
 
@@ -269,24 +288,17 @@ namespace Yaabm.generic
             }
         }
 
-        public void AddAgent(TAgent agent, ModelState<TAgent> initialState, TLocalContext context)
+        public TAgent AddAgent(ModelState<TAgent> initialState, TLocalArea context)
         {
-            PopulationDynamics.AddAgent(agent);
-            agent.Context = context;
-            MoveAgentToState(agent, initialState, RandomProvider);
+            var newAgent = PopulationDynamics.CreateAgent();
+            newAgent.HomeArea = context;
+            MoveAgentToState(newAgent, initialState, RandomProvider);
+            return newAgent;
         }
 
-        public TLocalContext GetContextByName(string contextName)
+        public TLocalArea GetContextByName(string contextName)
         {
             return _localContexts[contextName];
-        }
-
-        public void ApplyChangeToAllContexts(Action<TLocalContext> action)
-        {
-            foreach (var context in _localContexts)
-            {
-                action(context.Value);
-            }
         }
     }
 }

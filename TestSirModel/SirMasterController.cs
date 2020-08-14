@@ -5,14 +5,14 @@ using Yaabm.generic;
 
 namespace TestSirModel
 {
-    public class SirMasterController : MasterController<SirAgent, SirStateModel, SirContext, SirPopulationDynamics, SirSimulation>
+    public class SirMasterController : MasterController<SirAgent, SirStateModel, SirContext, SirEnvironment, SirSimulation>
     {
-        private StreamWriter _outputTextFile;
         private bool _headingHasBeenWritten;
         private readonly object _fileLock = new object();
-        public int SusceptibleZero { get; set; } = 9900;
+        private string _outputFileName;
+        public int SusceptibleZero { get; set; } = 100;
         public int ExposedZero { get; set; } = 0;
-        public int InfectiousZero { get; set; } = 100;
+        public int InfectiousZero { get; set; } = 1;
         public int ResistantZero { get; set; } = 0;
 
         public double RZero { get; set; } = 3.5;
@@ -25,34 +25,33 @@ namespace TestSirModel
         {
             lock (_fileLock)
             {
+                var outputFile = File.AppendText(_outputFileName);
+
                 if (!_headingHasBeenWritten)
                 {
-                    _outputTextFile.WriteLine(resultSet.CsvHeading());
+                    outputFile.WriteLine(resultSet.CsvHeading());
                     _headingHasBeenWritten = true;
                 }
 
-                _outputTextFile.Write(resultSet.CsvString());
-                _outputTextFile.Flush();
+                outputFile.Write(resultSet.CsvString());
+                outputFile.Close();
             }
         }
 
-        protected override void OpenOutput()
+        protected override IInitializationInfo PrepareInitializationInfo(IScenario scenario)
         {
-            var fileName = $"SEIRResults {DateTime.Today:yyyyMMdd} {DateTime.Now:HHmmsstt}.csv";
-            _outputTextFile = File.CreateText(fileName);
+            return null;
+        }
+
+        protected override void PrepareOutputFiles()
+        {
+            _outputFileName = $"SEIRResults {DateTime.Today:yyyyMMdd} {DateTime.Now:HHmmsstt}.csv";
+            var outputTextFile = File.CreateText(_outputFileName);
+            outputTextFile.Close();
             _headingHasBeenWritten = false;
         }
 
-        protected override void CloseOutput()
-        {
-            _outputTextFile.Close();
-        }
-
-
-
- 
-
-        protected override SirSimulation GenerateSimulation(int seed, int iterationNo, object modelParameters)
+        protected override SirSimulation GenerateSimulation(int seed, int iterationNo, IInitializationInfo modelParameters)
         {
             var beta = Gamma * RZero;
             var sirSim = new SirSimulation(seed, SusceptibleZero, ExposedZero, InfectiousZero, ResistantZero, beta, Gamma, Sigma, iterationNo);

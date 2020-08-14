@@ -1,105 +1,70 @@
-﻿
-
+﻿using System.Xml.Serialization;
 using Yaabm.generic;
 
 namespace Covid19ModelLibrary
 {
     public enum AgeBand
     {
-        Age00To04 = 0,
-        Age05To09 = 1,
-        Age10To14 = 2,
-        Age15To19 = 3,
-        Age20To24 = 4,
-        Age25To29 = 5,
-        Age30To34 = 6,
-        Age35To39 = 7,
-        Age40To44 = 8,
-        Age45To49 = 9,
-        Age50To54 = 10,
-        Age55To59 = 11,
-        Age60To64 = 12,
-        Age65To69 = 13,
-        Age70To74 = 14,
-        Age75To79 = 15,
-        Age80Plus = 16
+        Age00To09 = 0,
+        Age10To19 = 1,
+        Age20To29 = 2,
+        Age30To39 = 3,
+        Age40To49 = 4,
+        Age50To59 = 5,
+        Age60To69 = 6,
+        Age70To79 = 7,
+        Age80Plus = 8
     }
 
-    public enum DiseaseSymptoms
+    public enum Symptoms
     {
         None,
-        Incubating,
         Asymptomatic,
         Mild,
-        Severe,
-    }
-
-    public enum Hospitalization
-    {
-        None,
-        Hospital,
-        IntensiveCare
+        Severe
     }
 
     public enum HospitalOutcome
     {
         Recover,
-        MoveToIntensiveCare,
+        IntensiveCare,
         Die
     }
 
-    public enum IntensiveCareOutcome
-    {
-        Recover,
-        Die
-    }
 
     public class Human : Agent<Human>
     {
-        public AgeBand AgeBand { get; set; } = AgeBand.Age00To04;
+        public Human(int id) : base(id) 
+        {}
 
-        public DiseaseSymptoms Symptoms { get; set; } = DiseaseSymptoms.None;
+        public AgeBand AgeBand { get; set; } = AgeBand.Age00To09;
 
-        public Hospitalization Hospitalization { get; set; } = Hospitalization.None;
+        public Symptoms Symptoms { get; set; } = Symptoms.None;
 
-        public HospitalOutcome HospitalOutcome { get; set; } = HospitalOutcome.Recover;
+        [XmlAttribute(AttributeName = "AgeBand")]
+        public string AgeBandAsString => AgeBand.ToString(); // For output to GraphML file
 
-        public IntensiveCareOutcome IntensiveCareOutcome { get; set; } = IntensiveCareOutcome.Recover;
+        public Ward Ward => (Ward)HomeArea;
 
-        public bool IsInfectious { get; set; }
+        [XmlAttribute] 
+        public int WardId => Ward.WardId; // For output to GraphML file
 
-        public int? IncubationDays { get; set; }
+        public HouseHold HouseHold { get; set; }
 
-        public int? DaysInInfectedState { get; set; }
+        public int IncubationPeriod { get; set; }
 
-        public int? DaysInHospital { get; set; }
+        public int DaysInfectious { get; set; }
 
-        public int? DaysInIcu { get; set; }
+        public bool SevereToHospital { get; set; }
 
-        public int? DaysRecoveringAfterIcu { get; set; }
+        public HospitalOutcome HospitalOutcome { get; set; }
+        public int DaysIsolated { get; set; }
 
-        public bool IsAlive { get; set; }
+        public int DaysInHospital { get; set; }
 
-        public CovidContext CovidContext { get; private set; }
+        public bool DiesInIcu { get; set; }
 
-        private LocalContext<Human> _localContext;
-
-        public override LocalContext<Human> Context
-        {
-            get => _localContext;
-            set
-            {
-                _localContext = value;
-                CovidContext = value as CovidContext;
-            }
-        }
-
-        public int? DaysCanSurviveWithoutHospital { get; set; }
-
-        public override void Behave()
-        {
-            //TODO: Program agent behaviour
-        }
+        public int DaysInIntensiveCare { get; set; }
     }
 }
  

@@ -1,46 +1,79 @@
-﻿using System.Collections.Generic;
-using Covid19ModelLibrary.MultiState;
+﻿using System;
+using System.Collections.Generic;
+using Serilog;
 using Yaabm.generic;
+using Yaabm.generic.Random;
 
 namespace Covid19ModelLibrary.Population
 {
     public class CovidPopulation : PopulationDynamics<Human>
     {
-        public override IEnumerable<Human> GetContacts(Human agent, IRandomProvider random)
+        public CovidPopulation()
         {
-            //TODO: Actually get the agent's contacts - need to implement a contact model first
-            return EnumeratePopulation(random, false);
+            OnAgentAdded += AggAgentToGraphs;
         }
 
-        public override IEnumerable<Human> GetInfectiousAgents()
+        private void AggAgentToGraphs(Human agent)
         {
-            //TODO: Actually enumerate agents - this will only be required once a contact model has been implemented
-            return new[]
-            {
-                new Human() {IsInfectious = true}
-            };
+            _contactGraph.AddVertex(agent);
         }
 
-        public int GetInfectiousBySymptoms(DiseaseSymptoms symptoms, Province province)
+        public void AddConnection(Human agent1, Human agent2, ContactSetting setting)
         {
-            var total = 0;
+            _contactGraph.ConnectAgents(agent1, agent2, new {Setting = setting});
+        }
 
-            var diseaseModel = (CovidStateModel) MultiStateModel;
+        private readonly ContactGraph _contactGraph = new ContactGraph();
 
-            // ReSharper disable once LoopCanBeConvertedToQuery
-            foreach (var agent in EnumeratePopulation(null, false))
+        protected override Human GenerateNewAgent(int id)
+        {
+            return new Human(id);
+        }
+
+        public override IEnumerable<Encounter<Human>> GetEncounters(Human agent, IRandomProvider random)
+        {
+            var agentContacts = new List<Encounter<Human>>();
+
+            foreach (var adjacentEdge in _contactGraph.AdjacentEdges(agent))
             {
-                if (agent.CurrentState != diseaseModel.I) continue;
+                var encounter = new Encounter<Human>
+                {
+                    Agent = adjacentEdge.OtherConnectedAgent(agent),
+                    EncounterInformation = new {Setting = adjacentEdge.ContactSetting}
+                };
 
-                if (agent.CovidContext.Province == province && agent.Symptoms == symptoms) total++;
+                agentContacts.Add(encounter);
             }
 
-            return total;
+            return agentContacts;
         }
 
-        public void GenerateContacts(ContactMatrix contactMatrix)
+        public void SaveGraphs(in int iterationNo)
         {
-            
+            var filename = $"Output/Contact_graph_{iterationNo}.xml";
+            ContactGraph.SaveGraphToMl(_contactGraph, filename);
+            Log.Verbose("Saved network files");
+        }
+
+        public static List<Human> SampleWeightedAgents(List<WeightedChoice<Human>> candidates, int noOfSamples, IRandomProvider random)
+        {
+            var numberToSelect = Math.Min(noOfSamples, candidates.Count);
+
+            var selected = WeightedSampler<Human>.PickMultipleItems(candidates, numberToSelect, random);
+            return selected;
+        }
+
+        public List<Human> OtherAgentsInArea(Ward ward, List<Human> agentsToExclude)
+        {
+            var result = new List<Human>(ward.Residents.Count);
+            foreach (var otherAgent in ward.Residents)
+            {
+                if (agentsToExclude.Contains(otherAgent)) continue;
+
+                result.Add(otherAgent);
+            }
+
+            return result;
         }
     }
 }

@@ -1,30 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
+using Covid19ModelLibrary.Initialization;
 using Covid19ModelLibrary.MultiState;
 using Covid19ModelLibrary.Population;
+using Serilog;
 using Yaabm.generic;
 
 namespace Covid19ModelLibrary
 {
-    public class Controller : MasterController<Human, CovidStateModel, CovidContext, CovidPopulation, CovidSimulation>
+    public class Controller : MasterController<Human, CovidStateModel, Ward, CovidPopulation, CovidSimulation>
     {
-        private StreamWriter _outputTextFile;
+        private string _outputFileName;
         private bool _headingHasBeenWritten;
         private readonly object _fileLock = new object();
+        public bool SaveContactGraphs { get; set; }
 
-        protected override void CloseOutput()
+        protected override void PrepareOutputFiles()
         {
-            _outputTextFile.Close();
-        }
+            _outputFileName = SaveFilesWithDates 
+                                    ? $"./Output/{Scenario.ScenarioName} {RunTimeStamp:yyyyMMdd} {RunTimeStamp:HHmmss} Results.csv" 
+                                    : $"./Output/{Scenario.ScenarioName} Results.csv";
 
-        protected override void OpenOutput()
-        {
-            var fileName = SaveFilesWithDates 
-                                    ? $"./Output/{ModelParameters.ScenarioName} {RunTimeStamp:yyyyMMdd} {RunTimeStamp:HHmmss} Results.csv" 
-                                    : $"./Output/{ModelParameters.ScenarioName} Results.csv";
-
-            _outputTextFile = File.CreateText(fileName);
+            var outputTextFile = File.CreateText(_outputFileName);
+            outputTextFile.Close();
 
             _headingHasBeenWritten = false;
         }
@@ -33,55 +30,32 @@ namespace Covid19ModelLibrary
         {
             lock (_fileLock)
             {
+                Log.Verbose($"Saving results for Simulation {simulationResults.IterationNumber}");
+                var outputFile = File.AppendText(_outputFileName);
+
                 if (!_headingHasBeenWritten)
                 {
-                    _outputTextFile.WriteLine(simulationResults.CsvHeading());
+                    outputFile.WriteLine(simulationResults.CsvHeading());
                     _headingHasBeenWritten = true;
                 }
 
-                _outputTextFile.Write(simulationResults.CsvString());
-                _outputTextFile.Flush();
+                outputFile.Write(simulationResults.CsvString());
+                outputFile.Close();
             }
         }
 
-        protected override CovidSimulation GenerateSimulation(int seed, int iterationNo, object modelParameters)
+        protected override CovidSimulation GenerateSimulation(int seed, int iterationNo, IInitializationInfo modelParameters)
         {
-            var parameters = (CovidModelParameters) modelParameters;
+            var parameters = (CovidInitializationInfo) PrepareInitializationInfo(Scenario);
 
-            return new CovidSimulation(seed, iterationNo, parameters);
+            return new CovidSimulation(seed, iterationNo, parameters, SaveContactGraphs);
         }
 
-        protected override void SaveParameters(object modelParameters)
+        protected override IInitializationInfo PrepareInitializationInfo(IScenario scenario)
         {
-            RunTimeStamp = DateTime.Now;
-
-            ModelParameters = (CovidModelParameters) modelParameters;
-
-            if (!Directory.Exists("./Output")) Directory.CreateDirectory("./Output");
-
-            ModelParameters.SaveToJson(
-                SaveFilesWithDates
-                    ? $"./Output/{ModelParameters.ScenarioName} {RunTimeStamp:yyyyMMdd HHmmss} parameters.json"
-                    : $"./Output/{ModelParameters.ScenarioName} parameters.json");
-        }
-
-        public DateTime RunTimeStamp { get; private set; }
-
-        public CovidModelParameters ModelParameters { get; set; }
-
-        public bool SaveFilesWithDates { get; set; }
-
-        public void LoadInterventions(InterventionList interventionSpecs)
-        {
-            var interventions = new List<IIntervention>();
-
-            foreach (var spec in interventionSpecs)
-            {
-                var newIntervention = spec.CreateInstance();
-                interventions.Add(newIntervention);
-            }
-
-            base.LoadInterventions(interventions);
+            var initializationInfo = new CovidInitializationInfo();
+            initializationInfo.LoadScenario(scenario);
+            return initializationInfo;
         }
     }
 }

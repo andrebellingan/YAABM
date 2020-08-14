@@ -15,7 +15,7 @@ namespace Yaabm.generic.Random
 
         public int Seed { get; }
 
-        private System.Random RandomSource { get; }
+        public System.Random RandomSource { get; }
 
         public int SamplePoisson(double lambda)
         {
@@ -75,7 +75,7 @@ namespace Yaabm.generic.Random
 
             while (itemsSelected < k)
             {
-                var i = NextInt(n - 1);
+                var i = NextInt(n);
                 if (arr[i]) continue;
 
                 result[itemsSelected] = i;
@@ -84,6 +84,20 @@ namespace Yaabm.generic.Random
             }
 
             return result;
+        }
+
+        public int SampleDaysInState(double rate)
+        {
+            // Need to adjust for the fact that only one transition is allowed per day
+            // Then we need to convert from a continuous decrement rate to a daily one.
+            var pStar = (1 - Math.Exp(-rate)) / Math.Exp(-rate);
+            var p = (1 - Math.Exp(-pStar));
+
+            // This uses the geometric distribution
+            // This is the discrete equivalent of a exponential decay model
+            var geometricDistribution = new Geometric(p, RandomSource);
+
+            return geometricDistribution.Sample();
         }
     }
 }
