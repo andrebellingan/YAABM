@@ -20,8 +20,6 @@ namespace Covid19ModelLibrary.Initialization
             LoadSetupFiles(covidScenario);
         }
 
-        public InterventionList ModelEvents { get; private set; }
-
         public IList<WardRecord> Wards { get; private set; }
 
         public AgeDistributionCollection AgeDistributions { get; private set; }
@@ -42,7 +40,6 @@ namespace Covid19ModelLibrary.Initialization
             HomeContactMatrix = ContactMatrix.LoadFromCsv(scenario.HomeContactMatrixFile);
             OtherContactMatrix = ContactMatrix.LoadFromCsv(scenario.OtherContactMatrixFile);
             TravelMatrix = TravelMatrix.LoadFromCsv(scenario.TravelMatrixFile);
-            ModelEvents = InterventionList.LoadFromFile(scenario.ModelEventsFile);
         }
 
         public double CalcCorrectionFactor()
