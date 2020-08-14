@@ -11,19 +11,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Covid19ModelLibrary", "Covi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RunCovidSimulation", "RunCovidSimulation\RunCovidSimulation.csproj", "{47ABC824-663D-44EA-B05C-0AE1616BB2FC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphGen", "GraphGen\GraphGen.csproj", "{A0C20C7E-CCC9-4A70-8ECF-FB426045DD71}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestSirModel", "TestSirModel\TestSirModel.csproj", "{1B74371F-2B48-4480-BD95-48F9BBE7995C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests.Yaabm.generic", "UnitTests.Yaabm.generic\UnitTests.Yaabm.generic.csproj", "{2F64C34A-B0CA-4A09-86BC-32A49EF3A0AE}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests.Yaabm.Graph", "UnitTests.Yaabm.Graph\UnitTests.Yaabm.Graph.csproj", "{AEB9B8F1-5A4E-4E5A-A8BF-EB581BE6D504}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution items", "Solution items", "{60C5AAFE-4E6E-4A59-B754-23DEA1B704D1}"
 	ProjectSection(SolutionItems) = preProject
 		LICENSE = LICENSE
 		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests.Yaabm.Graph", "UnitTests.Yaabm.Graph\UnitTests.Yaabm.Graph.csproj", "{F24BC30A-E791-473E-978C-95D5022E89CF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,10 +45,6 @@ Global
 		{47ABC824-663D-44EA-B05C-0AE1616BB2FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47ABC824-663D-44EA-B05C-0AE1616BB2FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47ABC824-663D-44EA-B05C-0AE1616BB2FC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A0C20C7E-CCC9-4A70-8ECF-FB426045DD71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A0C20C7E-CCC9-4A70-8ECF-FB426045DD71}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A0C20C7E-CCC9-4A70-8ECF-FB426045DD71}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A0C20C7E-CCC9-4A70-8ECF-FB426045DD71}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1B74371F-2B48-4480-BD95-48F9BBE7995C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1B74371F-2B48-4480-BD95-48F9BBE7995C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B74371F-2B48-4480-BD95-48F9BBE7995C}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -59,10 +53,10 @@ Global
 		{2F64C34A-B0CA-4A09-86BC-32A49EF3A0AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F64C34A-B0CA-4A09-86BC-32A49EF3A0AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F64C34A-B0CA-4A09-86BC-32A49EF3A0AE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AEB9B8F1-5A4E-4E5A-A8BF-EB581BE6D504}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AEB9B8F1-5A4E-4E5A-A8BF-EB581BE6D504}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AEB9B8F1-5A4E-4E5A-A8BF-EB581BE6D504}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AEB9B8F1-5A4E-4E5A-A8BF-EB581BE6D504}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F24BC30A-E791-473E-978C-95D5022E89CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F24BC30A-E791-473E-978C-95D5022E89CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F24BC30A-E791-473E-978C-95D5022E89CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F24BC30A-E791-473E-978C-95D5022E89CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
