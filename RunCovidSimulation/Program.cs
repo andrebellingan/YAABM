@@ -61,7 +61,7 @@ namespace RunCovidSimulation
 
         private static void SetupLogging()
         {
-            var logFileName = $"{DateTime.Now:yyyyMMdd hh-mm-ss}.log";
+            var logFileName = $"{DateTime.Now:yyyyMMdd HH-mm-ss}.log";
 
             Log.Logger = new LoggerConfiguration()
 #if DEBUG

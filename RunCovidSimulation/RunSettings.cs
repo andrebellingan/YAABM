@@ -43,7 +43,7 @@ namespace RunCovidSimulation
 
         [SwitchArgument('d', "saveDate", false, Description = "Add the date and time to the output file names", Optional = true)]
         public bool SaveDate { get; set; }
-
+        
         [SwitchArgument('c', "contactGraphs", false, Description = "Save the contact graph for each iteration to GraphML files", Optional = true)]
         public bool SaveContactGraphs { get; set; }
     }
