@@ -14,7 +14,7 @@ namespace TestSirModel.Model
         private readonly double _gamma;
         private readonly double _sigma;
 
-        public SirSimulation(int seed, int popSizeS, int popSizeE, int popSizeI, int popSizeR, double beta, double gamma, double sigma, int iterationNo) : base( DateTime.Today, iterationNo, seed, true, new InterventionList())
+        public SirSimulation(int seed, int popSizeS, int popSizeE, int popSizeI, int popSizeR, double beta, double gamma, double sigma, int iterationNo) : base( DateTime.Today, iterationNo, seed, true)
         {
             _popSizeS = popSizeS;
             _popSizeE = popSizeE;
