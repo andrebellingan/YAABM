@@ -4,7 +4,6 @@ using System.Data;
 using Covid19ModelLibrary.Geography;
 using Covid19ModelLibrary.Initialization;
 using Covid19ModelLibrary.Population;
-using Covid19ModelLibrary.Scenarios;
 using Yaabm.generic;
 
 namespace Covid19ModelLibrary
@@ -18,6 +17,8 @@ namespace Covid19ModelLibrary
             WardId = ward.WardId;
             OwnerSimulation = simulation;
         }
+
+        public int LockDownLevel { get; set; } = -1;
 
         public CovidSimulation OwnerSimulation { get; }
 
