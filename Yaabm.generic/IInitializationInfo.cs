@@ -5,7 +5,5 @@
         public IScenario Scenario { get; }
 
         void LoadScenario(IScenario scenario);
-
-        public InterventionList ModelEvents { get; }
     }
 }

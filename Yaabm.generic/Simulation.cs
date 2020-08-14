@@ -38,29 +38,17 @@ namespace Yaabm.generic
         /// <param name="seed">the seed value for the random generator</param>
         /// <param name="shuffleTransitions">Sets whether the order in which state transitions are tested is shuffled randomly</param>
         /// <param name="modelEvents">List of events that apply changes to the simulation</param>
-        protected Simulation(DateTime startDate, int iterationNo, int seed, bool shuffleTransitions, InterventionList modelEvents)
+        protected Simulation(DateTime startDate, int iterationNo, int seed, bool shuffleTransitions)
         {
             IterationNo = iterationNo;
             PopulationDynamics = new TPopulationDynamics();
             PopulationDynamics.Initialize(MultiStateModel);
-            PrepareModelEvents(modelEvents);
             StartDate = startDate;
             RandomProvider = new DefaultRandom(seed);
             _shuffleTransitions = shuffleTransitions;
 
             RootContext = new Region<TAgent>("root", "root", "Global"); // This is fine because it is only a grouped context - not an instance of TG
             _allContexts.Add(RootContext.Name, RootContext);
-        }
-
-        private void PrepareModelEvents(InterventionList modelEvents)
-        {
-            foreach (var eventSpec in modelEvents)
-            {
-                if (!_interventions.ContainsKey(eventSpec.DayToApply)) _interventions.Add(eventSpec.DayToApply, new List<IIntervention>());
-
-                var newIntervention = eventSpec.CreateInstance();
-                _interventions[newIntervention.DayOfIntervention].Add(newIntervention);
-            }
         }
 
         protected void AddRegion(RegionSpec regionSpec)
