@@ -32,6 +32,8 @@ The application has the following command line arguments:
 
 	-d, --saveDate    [Optional] Switch to add the date and time to output file names
 
+	-c, --contactGraphs [Optional] Switch to save the contact graph used in each iteration to a GraphML file
+
 example: `RunCovidSimulation.exe -n 100 -s ./Scenarios/Baseline_scenario.json -t 4`
 
 ### Threading
