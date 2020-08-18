@@ -3,18 +3,15 @@ using Yaabm.generic;
 
 namespace Yaabm.Graph
 {
-    public class AgentLink<TAgent> : UndirectedEdge<TAgent>
-        where TAgent : Agent<TAgent> 
+    public class AgentLink : UndirectedEdge<int>
     {
-        public AgentLink(TAgent source, TAgent target) : base(source, target)
+        public AgentLink(int source, int target) : base(source, target)
         {
         }
 
-        public TAgent OtherConnectedAgent(TAgent agent)
+        public int OtherConnectedAgent(int agent)
         {
-            if (Source == agent) return Target;
-            if (Target == agent) return Source;
-            return null;
+            return Source == agent ? Target : Source;
         }
     }
 }

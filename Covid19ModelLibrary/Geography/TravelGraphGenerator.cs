@@ -19,13 +19,13 @@ namespace Covid19ModelLibrary.Geography
                 var potentialContacts = populationDynamics.OtherAgentsInArea(destinationWard, agent.HouseHold.Members);
                 if (potentialContacts.Count > 0)
                 {
-                    var p = contactMatrix.ContactWeightedAgentList(potentialContacts, agent);
+                    var p = contactMatrix.ContactWeightedAgentList(potentialContacts, populationDynamics, agent);
                     var numberOfContacts = contactMatrix.SampleNoOfContacts(agent, random);
-                    var contactsAtDestination = CovidPopulation.SampleWeightedAgents(p, numberOfContacts, random);
+                    var selected = CovidPopulation.SampleWeightedAgents(potentialContacts, p, numberOfContacts, random);
 
-                    foreach (var contact in contactsAtDestination)
+                    foreach (var contact in selected)
                     {
-                        populationDynamics.AddConnection(agent, contact, ContactSetting.Other);
+                        populationDynamics.AddConnection(agent.Id, contact, ContactSetting.Other);
                     }
                 }
 

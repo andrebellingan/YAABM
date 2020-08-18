@@ -6,7 +6,6 @@ using System.Linq;
 using CsvHelper;
 using Serilog;
 using Yaabm.generic;
-using Yaabm.generic.Random;
 
 namespace Covid19ModelLibrary.Population
 {
@@ -74,29 +73,24 @@ namespace Covid19ModelLibrary.Population
             return _contactValues[ageBand];
         }
 
-        public List<WeightedChoice<Human>> ContactWeightedAgentList(List<Human> potentialContacts, Human agent)
+        public IEnumerable<double> ContactWeightedAgentList(List<int> potentialContacts, CovidPopulation environment, Human agent)
         {
-            var weights = new Tuple<Human, double>[potentialContacts.Count];
-
-            var contracts = Contacts(agent.AgeBand);
+            var avgContacts = Contacts(agent.AgeBand);
 
             var totalWeight = 0d;
-            for (var k = 0; k < potentialContacts.Count; k++)
+            foreach (var otherContactId in potentialContacts)
             {
-                var otherContact = potentialContacts[k];
-                var weight = contracts[otherContact.AgeBand];
+                var otherContact = environment.AgentById(otherContactId);
+                var weight = avgContacts[otherContact.AgeBand];
                 totalWeight += weight;
-                weights[k] = new Tuple<Human, double>(otherContact, weight);
             }
 
-            var result = new List<WeightedChoice<Human>>(potentialContacts.Count);
-
-            foreach (var (human, weight) in weights)
+            foreach (var otherContactId in potentialContacts)
             {
-                result.Add(new WeightedChoice<Human>(human, weight / totalWeight));
+                var otherContact = environment.AgentById(otherContactId);
+                var weight = avgContacts[otherContact.AgeBand];
+                yield return weight / totalWeight;
             }
-
-            return result;
         }
 
         public int SampleNoOfContacts(Human agent, IRandomProvider random)

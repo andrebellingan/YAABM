@@ -16,6 +16,8 @@ namespace TestSirModel.Model
 
         public SirSimulation(int seed, int popSizeS, int popSizeE, int popSizeI, int popSizeR, double beta, double gamma, double sigma, int iterationNo) : base( DateTime.Today, iterationNo, seed, true)
         {
+            PopulationDynamics = new SirEnvironment();
+
             _popSizeS = popSizeS;
             _popSizeE = popSizeE;
             _popSizeI = popSizeI;

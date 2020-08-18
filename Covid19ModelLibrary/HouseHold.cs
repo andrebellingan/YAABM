@@ -6,16 +6,16 @@ namespace Covid19ModelLibrary
 {
     public class HouseHold
     {
-        public Human HouseholdHead { get; }
+        public int HouseholdHeadId { get; }
         public int HouseholdNumber { get; }
 
-        public List<Human> Members { get; } = new List<Human>();
+        public List<int> Members { get; } = new List<int>();
 
-        public HouseHold(Human headAgent, int householdNumber)
+        public HouseHold(int headAgentId, int householdNumber)
         {
-            HouseholdHead = headAgent;
+            HouseholdHeadId = headAgentId;
             HouseholdNumber = householdNumber;
-            Members.Add(HouseholdHead);
+            Members.Add(HouseholdHeadId);
         }
 
         public void AddContacts(CovidPopulation populationDynamics)
@@ -33,7 +33,7 @@ namespace Covid19ModelLibrary
                         throw new Exception("This would create a self loop!");
                     }
 
-                    populationDynamics.AddConnection( agent1, agent2, ContactSetting.Home);
+                    populationDynamics.AddConnection(agent1, agent2, ContactSetting.Home);
                 }
             }
         }

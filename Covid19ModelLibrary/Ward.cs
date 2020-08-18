@@ -16,7 +16,10 @@ namespace Covid19ModelLibrary
             WardRecord = ward;
             WardId = ward.WardId;
             OwnerSimulation = simulation;
+            CovidEnvironment = environment;
         }
+
+        public CovidPopulation CovidEnvironment { get; set; }
 
         public int LockDownLevel { get; set; } = -1;
 
@@ -28,7 +31,7 @@ namespace Covid19ModelLibrary
 
         public void GeneratePopulation(in double scalingFactor, WardAgeDistribution ageDistribution, IRandomProvider random)
         {
-            Residents.Clear();
+            ResidentIds.Clear();
 
             var agentsInThisWard = WardRecord.CorrectedPopulation(scalingFactor);
             var ages = ageDistribution.Sample(agentsInThisWard, random);
@@ -45,9 +48,9 @@ namespace Covid19ModelLibrary
         {
             var sizes = new List<int>();
             var cumulativeSizes = 0;
-            while (cumulativeSizes < Residents.Count)
+            while (cumulativeSizes < ResidentIds.Count)
             {
-                var maxRemainingSize = Math.Min(Residents.Count - cumulativeSizes, householdDistribution.MaximumSize);
+                var maxRemainingSize = Math.Min(ResidentIds.Count - cumulativeSizes, householdDistribution.MaximumSize);
                 var randomSize = householdDistribution.Sample(maxRemainingSize, random.RandomSource);
                 sizes.Add(randomSize);
                 cumulativeSizes += randomSize;
@@ -77,9 +80,10 @@ namespace Covid19ModelLibrary
 
             for (var i = 0; i < householdHeads.Count; i++)
             {
-                var headAgent = householdHeads[i];
+                var headAgentId = householdHeads[i];
+                var headAgent = Environment.AgentById(headAgentId);
 
-                var newHousehold = new HouseHold(headAgent, i);
+                var newHousehold = new HouseHold(headAgentId, i);
                 households.Add(newHousehold);
                 headAgent.HouseHold = newHousehold;
 
@@ -87,29 +91,30 @@ namespace Covid19ModelLibrary
                 if (familySize > 1)
                 {
                     // pick n other agents based on probability given their age
-                    var p = homeContactMatrix.ContactWeightedAgentList(notHouseholdHeads, headAgent);
+                    var p = homeContactMatrix.ContactWeightedAgentList(notHouseholdHeads, CovidEnvironment, headAgent);
 
-                    var familyMembers = CovidPopulation.SampleWeightedAgents(p, familySize - 1, random);
+                    var familyMembers = CovidPopulation.SampleWeightedAgents(notHouseholdHeads, p, familySize - 1, random);
                     foreach (var family in familyMembers)
                     {
                         notHouseholdHeads.Remove(family);
                         if (newHousehold.Members.Contains(family)) throw new DuplicateNameException("Already part of family");
                         newHousehold.Members.Add(family);
-                        family.HouseHold = newHousehold;
+                        var houseMate = CovidEnvironment.AgentById(family);
+                        houseMate.HouseHold = newHousehold;
                     }
 
-                    familyMembers.Add(headAgent);
+                    familyMembers.Add(headAgentId);
                 }
             }
 
             return households;
         }
 
-        private List<Human> SelectNotHouseHoldHeads(ICollection<Human> householdHeads)
+        private List<int> SelectNotHouseHoldHeads(ICollection<int> householdHeads)
         {
-            var result = new List<Human>();
+            var result = new List<int>();
 
-            foreach (var agent in Residents)
+            foreach (var agent in ResidentIds)
             {
                 if (householdHeads.Contains(agent)) continue;
                 result.Add(agent);
@@ -118,13 +123,13 @@ namespace Covid19ModelLibrary
             return result;
         }
 
-        private List<Human> SelectHouseholdHeads(in int numberOfHouseholds, IRandomProvider random)
+        private List<int> SelectHouseholdHeads(in int numberOfHouseholds, IRandomProvider random)
         {
-            var heads = random.RandomSelect(Residents.Count, numberOfHouseholds);
-            var result = new List<Human>();
+            var heads = random.RandomSelect(ResidentIds.Count, numberOfHouseholds);
+            var result = new List<int>();
             foreach (var i in heads)
             {
-                result.Add(Residents[i]);
+                result.Add(ResidentIds[i]);
             }
 
             return result;

@@ -4,19 +4,7 @@ using System.Collections.Generic;
 
 namespace Yaabm.generic.Random
 {
-    public class Node<T>
-    {
-        public double Weight { get; set; }
-        public WeightedChoice<T> Value { get; set; }
-        public double TotalWeight { get; set; }
 
-        public Node(double weight, WeightedChoice<T> value, double totalWeight)
-        {
-            Weight = weight;
-            Value = value;
-            TotalWeight = totalWeight;
-        }
-    }
 
     public class WeightedSampler<T>
     {
@@ -54,66 +42,119 @@ namespace Yaabm.generic.Random
         {
             var pickedCards = new List<T>(numberToDraw);
 
-            var heap = GenerateHeap(cards);
+            GenerateHeap(cards, out var weights, out var totalWeights, out var choices);
 
             for (var i = 0; i < numberToDraw; i++)
             {
-                var poppedItem = PopFromHeap(heap, random);
-                pickedCards.Add(poppedItem.Choice);
+                var poppedItem = PopFromHeap(choices, ref weights, ref totalWeights, random);
+                pickedCards.Add(poppedItem);
             }
 
             return pickedCards;
         }
 
-        private static Node<T>[] GenerateHeap(List<WeightedChoice<T>> cards)
+        public static List<T> PickMultipleItems(T[] inputChoices, double[] inputWeights, int numberToDraw, IRandomProvider random)
         {
-            var nodes = new Node<T>[cards.Count + 1];
-            nodes[0] = null;
+            if (inputChoices.Length != inputWeights.Length) throw new ArgumentException("Choice and weight vectors must have the same length");
+
+            var result = new List<T>(numberToDraw);
+
+            GenerateHeap(inputChoices, inputWeights, out var weights, out var totalWeights, out var choices);
+
+            for (var i = 0; i < numberToDraw; i++)
+            {
+                var poppedItem = PopFromHeap(choices, ref weights, ref totalWeights, random);
+                result.Add(poppedItem);
+            }
+
+            return result;
+        }
+
+        private static void GenerateHeap(T[] inputChoices, double[] inputWeights, out double[] weights, out double[] totalWeights, out T[] choices)
+        {
+            var arraySize = inputChoices.Length + 1;
+
+            weights = new double[arraySize];
+            weights[0] = 0d;
+
+            totalWeights = new double[arraySize];
+            totalWeights[0] = 0d;
+
+            choices = new T[arraySize];
+            choices[0] = default(T);
+
+            for (var k = 1; k <= inputChoices.Length; k++)
+            {
+                var weight = inputWeights[k - 1];
+                weights[k] = weight;
+                totalWeights[k] = weight;
+                choices[k] = inputChoices[k - 1];
+
+            }
+
+            for (var i = weights.Length - 1; i > 1; i--)
+            {
+                var idx = i >> 1;
+                totalWeights[idx] += totalWeights[i];
+            }
+        }
+
+        private static void GenerateHeap(List<WeightedChoice<T>> cards, out double[] weights, out double[] totalWeights, out T[] choices)
+        {
+            weights = new double[cards.Count + 1];
+            weights[0] = 0d;
+
+            totalWeights = new double[cards.Count + 1];
+            totalWeights[0] = 0d;
+
+            choices = new T[cards.Count + 1];
+            choices[0] = default(T);
 
             var k = 1;
             foreach (var card in cards)
             {
-                nodes[k] = new Node<T>(card.Weight, card, card.Weight);
+                weights[k] = card.Weight;
+                totalWeights[k] = card.Weight;
+                choices[k] = card.Choice;
                 k++;
             }
 
-            for (var i = nodes.Length - 1; i > 1; i--)
+            for (var i = weights.Length - 1; i > 1; i--)
             {
-                nodes[i >> 1].TotalWeight += nodes[i].TotalWeight;
+                var idx = i >> 1;
+                totalWeights[idx] += totalWeights[i];
             }
-
-            return nodes;
         }
 
-        private static WeightedChoice<T> PopFromHeap(IReadOnlyList<Node<T>> heap, IRandomProvider random)
+        private static T PopFromHeap(IReadOnlyList<T> choices, ref double[] weights, ref double[] totalWeights, IRandomProvider random)
         {
-            var gas = random.NextDouble() * heap[1].TotalWeight;
+            var gas = random.NextDouble() * totalWeights[1];
             var i = 1;
 
-            while (gas >= heap[i].Weight)
+            while (gas >= weights[i])
             {
-                gas -= heap[i].Weight;
+                gas -= weights[i];
                 i <<= 1;
 
-                if (gas >= heap[i].TotalWeight)
+                if (gas >= totalWeights[i])
                 {
-                    gas -= heap[i].TotalWeight;
+                    gas -= totalWeights[i];
                     i += 1;
                 }
             }
 
-            var weight = heap[i].Weight;
-            var card = heap[i].Value;
+            var weight = weights[i];
+            var chosen = choices[i];
 
-            heap[i].Weight = 0;
+            weights[i] = 0;
 
             while (i > 0)
             {
-                heap[i].TotalWeight -= weight;
+                totalWeights[i] -= weight;
                 i >>= 1;
             }
 
-            return card;
+            return chosen;
         }
 
     }

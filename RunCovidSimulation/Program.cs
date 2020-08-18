@@ -99,7 +99,7 @@ namespace RunCovidSimulation
 
         private static bool ParseArguments(string[] args, object targetObject)
         {
-            var parser = new CommandLineParser.CommandLineParser()
+            var parser = new CommandLineParser.CommandLineParser
             {
                 ShowUsageOnEmptyCommandline = true,
                 AcceptEqualSignSyntaxForValueArguments = true,

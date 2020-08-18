@@ -1,30 +1,38 @@
-﻿using QuickGraph;
-using Yaabm.generic;
+﻿using Yaabm.generic;
 
 namespace Yaabm.Graph
 {
-    public abstract class SocialContactGraph<TAgent, TEdge> : UndirectedGraph<TAgent, TEdge> where TAgent : Agent<TAgent> where TEdge : AgentLink<TAgent>
+    public abstract class SocialContactGraph<TAgent, TEdge> : XUndirectedGraph<int, TEdge> where TAgent : Agent<TAgent> where TEdge : AgentLink
     {
-        public TEdge ConnectAgents(TAgent agent1, TAgent agent2, dynamic parameters)
+        public TEdge ConnectAgents(int agent1Id, int agent2Id, dynamic parameters)
         {
-            var newLink = CreateEdgeInstance(agent1, agent2, parameters);
+            var newLink = CreateEdgeInstance(agent1Id, agent2Id, parameters);
             AddEdge(newLink);
             return newLink;
         }
 
         public TEdge ConnectAgents(TAgent agent1, TAgent agent2)
         {
-            return ConnectAgents(agent1, agent2, null);
+            return ConnectAgents(agent1.Id, agent2.Id, null);
         }
 
+        public TEdge ConnectAgents(int agent1Id, int agent2Id)
+        {
+            return ConnectAgents(agent1Id, agent1Id, null);
+        }
 
-        protected abstract TEdge CreateEdgeInstance(TAgent agent1, TAgent agent2, object parameters);
+        public bool AddVertex(TAgent newVertex)
+        {
+            return AddVertex(newVertex.Id);
+        }
 
-        protected SocialContactGraph() : base(false, BiDirectionalEdgeComparer)
+        protected abstract TEdge CreateEdgeInstance(int agent1Id, int agent2Id, object parameters);
+
+        protected SocialContactGraph(int capacity) : base(capacity, false, BiDirectionalEdgeComparer)
         {
         }
 
-        private static bool BiDirectionalEdgeComparer(TEdge edge, TAgent source, TAgent target)
+        private static bool BiDirectionalEdgeComparer(TEdge edge, int source, int target)
         {
             var oneWay = edge.Source == source && edge.Target == target;
             var otherWay = edge.Source == target && edge.Target == source;

@@ -23,6 +23,8 @@ namespace Covid19ModelLibrary
             _saveContactGraphs = saveContactGraphs;
             var covidScenario = (CovidScenario) parameters.Scenario;
             MultiStateModel = new CovidStateModel(covidScenario.DiseaseParameters);
+            PopulationDynamics = new CovidPopulation(parameters.Scenario.NumberOfAgents);
+            PopulationDynamics.Initialize(MultiStateModel);
         }
 
         protected override void PrepareSimulation(in int numberOfDays)

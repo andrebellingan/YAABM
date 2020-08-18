@@ -9,7 +9,7 @@ namespace Yaabm.generic
         where TAgent : Agent<TAgent>
         where TMultiStateModel : MultiStateModel<TAgent>
         where TLocalArea : LocalArea<TAgent>
-        where TPopulationDynamics : PopulationDynamics<TAgent>, new()
+        where TPopulationDynamics : PopulationDynamics<TAgent>
         where TSimulation : Simulation<TAgent, TMultiStateModel, TLocalArea, TPopulationDynamics, TSimulation>
     {
         public delegate void DayEventDelegate(int day, DateTime date);
@@ -37,12 +37,9 @@ namespace Yaabm.generic
         /// <param name="iterationNo">The iteration of this simulation</param>
         /// <param name="seed">the seed value for the random generator</param>
         /// <param name="shuffleTransitions">Sets whether the order in which state transitions are tested is shuffled randomly</param>
-        /// <param name="modelEvents">List of events that apply changes to the simulation</param>
         protected Simulation(DateTime startDate, int iterationNo, int seed, bool shuffleTransitions)
         {
             IterationNo = iterationNo;
-            PopulationDynamics = new TPopulationDynamics();
-            PopulationDynamics.Initialize(MultiStateModel);
             StartDate = startDate;
             RandomProvider = new DefaultRandom(seed);
             _shuffleTransitions = shuffleTransitions;
@@ -80,7 +77,7 @@ namespace Yaabm.generic
 
         public IRandomProvider RandomProvider { get; }
 
-        public TPopulationDynamics PopulationDynamics { get; }
+        public TPopulationDynamics PopulationDynamics { get; protected set; }
 
         public int IterationNo { get; }
 

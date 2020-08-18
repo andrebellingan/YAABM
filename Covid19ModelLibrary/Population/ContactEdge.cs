@@ -3,9 +3,9 @@ using Yaabm.Graph;
 
 namespace Covid19ModelLibrary.Population
 {
-    public class ContactEdge : AgentLink<Human>
+    public class ContactEdge : AgentLink
     {
-        public ContactEdge(Human source, Human target, ContactSetting setting) : base(source, target)
+        public ContactEdge(int sourceId, int targetId, ContactSetting setting) : base(sourceId, targetId)
         {
             ContactSetting = setting;
         }
