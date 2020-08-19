@@ -19,6 +19,6 @@ namespace Yaabm.generic
 
         public DateTime Date { get; set; }
 
-        public List<T> Residents { get; set; } = new List<T>();
+        public List<int> ResidentIds { get; set; } = new List<int>();
     }
 }

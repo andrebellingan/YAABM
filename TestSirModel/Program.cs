@@ -10,10 +10,10 @@ namespace TestSirModel
         {
             SetupLogging();
 
-            const int iterations = 1000;
+            const int iterations = 50;
             const int noOfDays = 100;
             const int seed = 879375928;
-            const int noOfThreads = 10;
+            const int noOfThreads = 5;
             const int maxQueueSize = 3;
 
             var controller = new SirMasterController

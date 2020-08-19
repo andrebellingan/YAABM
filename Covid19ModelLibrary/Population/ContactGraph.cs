@@ -1,4 +1,5 @@
-﻿using QuickGraph.Serialization;
+﻿using System.Collections;
+using QuickGraph.Serialization;
 using Yaabm.Graph;
 
 namespace Covid19ModelLibrary.Population
@@ -7,7 +8,7 @@ namespace Covid19ModelLibrary.Population
     {
         public static void SaveGraphToMl(ContactGraph graph, string fileName)
         {
-            graph.SerializeToGraphML<Human, ContactEdge, ContactGraph>(fileName, HumanIdentity,
+            graph.SerializeToGraphML<int, ContactEdge, ContactGraph>(fileName, HumanIdentity,
                 EdgeIdentities);
         }
 
@@ -16,14 +17,19 @@ namespace Covid19ModelLibrary.Population
             return edge.ToString();
         }
 
-        private static string HumanIdentity(Human human)
+        private static string HumanIdentity(int id)
         {
-            return human.Id.ToString();
+            return id.ToString();
         }
 
-        protected override ContactEdge CreateEdgeInstance(Human agent1, Human agent2, dynamic parameters)
+        public ContactGraph(int capacity) : base(capacity)
         {
-            return new ContactEdge(agent1, agent2, parameters.Setting);
+        }
+
+
+        protected override ContactEdge CreateEdgeInstance(int agent1Id, int agent2Id, dynamic parameters)
+        {
+            return new ContactEdge(agent1Id, agent2Id, parameters.Setting);
         }
     }
 }

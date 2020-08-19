@@ -5,6 +5,18 @@ namespace Yaabm.generic
     public abstract class PopulationDynamics<TAgent> 
         where TAgent : Agent<TAgent>
     {
+        protected PopulationDynamics(int capacity)
+        {
+            _allAgents = new HashSet<TAgent>(capacity);
+            _agentsById = new Dictionary<int, TAgent>(capacity);
+        }
+
+        protected PopulationDynamics()
+        {
+            _allAgents = new HashSet<TAgent>();
+            _agentsById = new Dictionary<int, TAgent>();
+        }
+
         private int _nextAgentId = -1;
 
         protected MultiStateModel<TAgent> MultiStateModel { get; private set; }
@@ -14,7 +26,14 @@ namespace Yaabm.generic
             MultiStateModel = multiStateModel;
         }
 
-        private readonly HashSet<TAgent> _allAgents = new HashSet<TAgent>();
+        private readonly HashSet<TAgent> _allAgents;
+
+        private readonly Dictionary<int, TAgent> _agentsById;
+
+        public TAgent AgentById(int id)
+        {
+            return _agentsById[id];
+        }
 
         private readonly HashSet<TAgent> _infectiousAgents = new HashSet<TAgent>();
 
@@ -38,12 +57,18 @@ namespace Yaabm.generic
             return new HashSet<TAgent>(_allAgents);
         }
 
+        public HashSet<int> EnumeratePopulationIds()
+        {
+            return new HashSet<int>(_agentsById.Keys);
+        }
+
         internal TAgent CreateAgent()
         {
             var newAgent = GenerateNewAgent(GetNextId());
             newAgent.OnStateChange += HandleAgentStateChange;
             newAgent.OnHomeAreaChanged += HandleAgentHomeAreaChange;
             _allAgents.Add(newAgent);
+            _agentsById.Add(newAgent.Id, newAgent);
             AgentAdded(newAgent);
             return newAgent;
         }
@@ -52,9 +77,9 @@ namespace Yaabm.generic
         {
             if (agent.HomeArea == previousArea) return;
 
-            agent.HomeArea.Residents.Add(agent);
+            agent.HomeArea.ResidentIds.Add(agent.Id);
 
-            previousArea?.Residents.Remove(agent);
+            previousArea?.ResidentIds.Remove(agent.Id);
         }
 
         public delegate void AgentEvent(TAgent agent);

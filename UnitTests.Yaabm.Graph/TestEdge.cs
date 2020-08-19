@@ -2,11 +2,11 @@
 
 namespace UnitTests.Yaabm.Graph
 {
-    public class TestEdge : AgentLink<TestAgent>
+    public class TestEdge : AgentLink
     {
-        public TestEdge(TestAgent source, TestAgent target) : base(source, target)
+        public TestEdge(int sourceId, int targetId) : base(sourceId, targetId)
         {
-            Description = $"{source.Id}--{target.Id}";
+            Description = $"{sourceId}--{targetId}";
         }
 
         public string Description { get; }

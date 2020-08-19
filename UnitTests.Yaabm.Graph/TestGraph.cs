@@ -4,9 +4,13 @@ namespace UnitTests.Yaabm.Graph
 {
     public class TestGraph : SocialContactGraph<TestAgent, TestEdge>
     {
-        protected override TestEdge CreateEdgeInstance(TestAgent agent1, TestAgent agent2, dynamic parameters)
+        protected TestGraph(int capacity) : base(capacity)
         {
-            return new TestEdge(agent1, agent2);
+        }
+
+        protected override TestEdge CreateEdgeInstance(int agent1Id, int agent2Id, dynamic parameters)
+        {
+           return new TestEdge(agent1Id, agent2Id);
         }
     }
 }
