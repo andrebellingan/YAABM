@@ -37,7 +37,11 @@ The application has the following command line arguments:
 example: `RunCovidSimulation.exe -n 100 -s ./Scenarios/Baseline_scenario.json -t 4 -c`
 
 ### Threading
-The default value for the number of threads is `-t 1`. Running single threaded is highly recommended for debugging. Setting `-t 0` will detect the number of logical cores on the system and spawn the corresponding number of threads.
+The default value for the number of threads is `-t 1`. Running single threaded is highly recommended for debugging. 
+
+Your mileage may vary but multi-threading with values greater than `-t 4` will not significanly improve runtimes and very large values (such as 10) will actually result in sub-optimal performance. The issue seems to be garbage collection blocking all threads simultaneously, which gets worse the as the number of threads increase.
+
+Setting `-t 0` will detect the number of logical cores on the system and spawn the corresponding number of threads. For the reasons state above this may be counter-productive on systems with a large number of cores and is therefore not recommended.
 
 **WARNING:** For performance reasons each thread keeps its own agent population in memory. A large value of the NumberOfAgents parameter in the scenario file combined with a large number of processing threads can result in high memory usage. Users should open task manager and keep an eye on memory usage to select the optimal balance between performance and memory usage, given the amount of RAM available.
 
@@ -79,7 +83,7 @@ Output is currently written in CSV format, which makes it easy to import into wh
 
 ### Model assumptions
 
-* The model assumptions are not based on any calibration or reliable sources and the results therefore do not approximate reality.
+* The model assumptions are not based on any calibration or reliable sources and the results therefore do not approximate any realistic outcomes.
 * Some of the assumption names are based on more traditional [Compartmental models](https://en.wikipedia.org/wiki/Compartmental_models_in_epidemiology) that are based on differential equations. The parameter names used in such models the underlying concepts do not necessarily translate to agent based models.
 * Model parameters are currently specific in a JSON formatted file. Some of the aspects, such as specifying interventions (used to model changes such as non-healthcare interventions) is not user friendly at all and needs some work.
 
