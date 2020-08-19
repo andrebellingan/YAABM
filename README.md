@@ -39,7 +39,7 @@ example: `RunCovidSimulation.exe -n 100 -s ./Scenarios/Baseline_scenario.json -t
 ### Threading
 The default value for the number of threads is `-t 1`. Running single threaded is highly recommended for debugging. 
 
-Your mileage may vary but multi-threading with values greater than `-t 4` will not significanly improve runtimes and very large values (such as 10) will actually result in sub-optimal performance. The issue seems to be garbage collection blocking all threads simultaneously, which gets worse the as the number of threads increase.
+Your mileage may vary but multi-threading with values greater than `-t 4` will not significanly improve runtimes and very large values  may actually result in sub-optimal performance.
 
 Setting `-t 0` will detect the number of logical cores on the system and spawn the corresponding number of threads. For the reasons state above this may be counter-productive on systems with a large number of cores and is therefore not recommended.
 
