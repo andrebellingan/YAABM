@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime;
 using CommandLineParser.Exceptions;
 using Covid19ModelLibrary;
 using Covid19ModelLibrary.Scenarios;
@@ -15,6 +16,7 @@ namespace RunCovidSimulation
         private static int Main(string[] args)
         {
             SetupLogging();
+            CheckGCStatus();
 
             if (!CheckArgumentParserVersion()) return -1;
 
@@ -57,6 +59,12 @@ namespace RunCovidSimulation
 
             Log.CloseAndFlush();
             return 0;
+        }
+
+        private static void CheckGCStatus()
+        {
+            var gcType = GCSettings.IsServerGC ? "server" : "workstation";
+            Log.Debug($"Garbage collection type is {gcType}");
         }
 
         private static void SetupLogging()

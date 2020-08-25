@@ -15,7 +15,7 @@ This is an agent based model that is being developed to model the impact of the 
 1. Download or clone the source code
 2. Compiling
 	* It is recommended to open the solution in Visual Studio 2019 and build the projected from there (The Visual Studio Community editions are free to download for non-commercial use). Visual Studio code works too.
-	* Alternatively you can download the .NET Core 3.1 SDK and use ```dotnet build YAABM.sln``` from the command line
+	* Alternatively you can download the [.NET Core 3.1 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1) and use ```dotnet build YAABM.sln``` from the command line
 3. Note that the nuget package manager may indicate that there is an update available for the "CommandLineArgumentsParser" package. Due to a bug in version 3.0.20 of the package when handling default argument values you should not upgrade to this specific version.
 
 ### Running the model
@@ -39,7 +39,7 @@ example: `RunCovidSimulation.exe -n 100 -s ./Scenarios/Baseline_scenario.json -t
 ### Threading
 The default value for the number of threads is `-t 1`. Running single threaded is highly recommended for debugging. 
 
-Your mileage may vary but multi-threading with values greater than `-t 4` will not significanly improve runtimes and very large values (such as 10) will actually result in sub-optimal performance. The issue seems to be garbage collection blocking all threads simultaneously, which gets worse the as the number of threads increase.
+Your mileage may vary but multi-threading with values greater than `-t 4` will not significanly improve runtimes and very large values  may actually result in sub-optimal performance.
 
 Setting `-t 0` will detect the number of logical cores on the system and spawn the corresponding number of threads. For the reasons state above this may be counter-productive on systems with a large number of cores and is therefore not recommended.
 
