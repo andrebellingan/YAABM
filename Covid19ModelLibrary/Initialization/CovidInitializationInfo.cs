@@ -32,6 +32,8 @@ namespace Covid19ModelLibrary.Initialization
 
         internal TravelMatrix TravelMatrix { get; private set; }
 
+        public GeoLevel OutputDetail { get; set; } = GeoLevel.National;
+
         private void LoadSetupFiles(CovidScenario scenario)
         {
             Wards = WardRecord.LoadFromCsv(scenario.GeographyFile);

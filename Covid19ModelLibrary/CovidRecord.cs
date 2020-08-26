@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Covid19ModelLibrary.Geography;
 using Yaabm.generic;
 
 namespace Covid19ModelLibrary
 {
-    internal class WardCounts
+    internal class RegionCounts
     {
-        public WardCounts(MultiStateModel<Human> model)
+        public RegionCounts(MultiStateModel<Human> model)
         {
             foreach (var state in model.States)
             {
@@ -24,11 +25,11 @@ namespace Covid19ModelLibrary
 
         public Dictionary<Transition<Human>, int> TransitionCounts { get; } = new Dictionary<Transition<Human>, int>();
 
-        public string CsvString(int wardId, in int iterationNo, in int day, in DateTime date)
+        public string CsvString(string areaName, in int iterationNo, in int day, in DateTime date)
         {
             var valueStrings = new List<string>
             {
-                iterationNo.ToString(), day.ToString(), date.ToString("yyyy-MM-dd"), wardId.ToString()
+                iterationNo.ToString(), day.ToString(), date.ToString("yyyy-MM-dd"), areaName
             };
 
             var n = 0;
@@ -50,45 +51,66 @@ namespace Covid19ModelLibrary
 
     public class CovidRecord : IDailyRecord<Human>
     {
-        public CovidRecord(DateTime date, IEnumerable<Ward> wards)
+        public CovidRecord(DateTime date, IEnumerable<Ward> wards, GeoLevel outputLevel)
         {
             Date = date;
+            OutputLevel = outputLevel;
             _wards = wards;
+
+            PrepareRegions();
         }
+
+        private void PrepareRegions()
+        {
+            _regions = new List<GeographicArea<Human>>();
+            _wardMap = new Dictionary<Ward, GeographicArea<Human>>();
+            foreach (var ward in _wards)
+            {
+                var region = ward.AreaAtLevel(OutputLevel);
+                if (!_regions.Contains(region)) _regions.Add(region);
+                _wardMap.Add(ward, region);
+            }
+        }
+
+        public GeoLevel OutputLevel { get; set; }
 
         public DateTime Date { get; set; }
 
-        private readonly Dictionary<int, WardCounts> _counts = new Dictionary<int, WardCounts>();
+        private readonly Dictionary<GeographicArea<Human>, RegionCounts> _counts = new Dictionary<GeographicArea<Human>, RegionCounts>();
 
-        private readonly IEnumerable<Ward> _wards;
+        private List<GeographicArea<Human>> _regions;
+        private Dictionary<Ward, GeographicArea<Human>> _wardMap;
         private MultiStateModel<Human> _model;
+        private readonly IEnumerable<Ward> _wards;
 
 
         public void InitializeWithStates(MultiStateModel<Human> multiStateModel)
         {
             _model = multiStateModel;
-            foreach (var ward in _wards)
+            foreach (var region in _regions)
             {
-                _counts.Add(ward.WardId, new WardCounts(multiStateModel));
+                _counts.Add(region, new RegionCounts(multiStateModel));
             }
         }
 
         public void RecordTransition(Human agent, Transition<Human> transition)
         {
-            var wardToUpdate = _counts[agent.WardId];
+            var region = _wardMap[agent.Ward];
+            var wardToUpdate = _counts[region];
             wardToUpdate.TransitionCounts[transition]++;
         }
 
         public void RecordState(Human agent)
         {
-            _counts[agent.WardId].StateCounts[agent.CurrentState]++;
+            var region = _wardMap[agent.Ward];
+            _counts[region].StateCounts[agent.CurrentState]++;
         }
 
         public string CsvHeading
         {
             get
             {
-                var listColumns = new List<string> {"WardId"};
+                var listColumns = new List<string> {"AreaName"};
 
                 var stateNames =  _model.States.Select(state => state.Name).ToArray();
                 listColumns.AddRange(stateNames);
@@ -104,14 +126,14 @@ namespace Covid19ModelLibrary
 
         public string CsvString(int iterationNo, int day)
         {
-            var rowstring = new List<string>();
+            var rowString = new List<string>();
 
             foreach (var wardRecord in _counts)
             {
-                rowstring.Add(wardRecord.Value.CsvString(wardRecord.Key, iterationNo, day, Date));
+                rowString.Add(wardRecord.Value.CsvString(wardRecord.Key.Name, iterationNo, day, Date));
             }
 
-            return string.Join('\n', rowstring);
+            return string.Join('\n', rowString);
 
         }
     }

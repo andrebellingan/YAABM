@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using CommandLineParser.Arguments;
+using Covid19ModelLibrary.Geography;
 
 namespace RunCovidSimulation
 {
@@ -46,5 +47,8 @@ namespace RunCovidSimulation
         
         [SwitchArgument('c', "contactGraphs", false, Description = "Save the contact graph for each iteration to GraphML files", Optional = true)]
         public bool SaveContactGraphs { get; set; }
+
+        [EnumeratedValueArgument(typeof(GeoLevel), 'g', "geoDetail", Description = "Level of geographical detail in the output", Optional = true, AllowMultiple = false, DefaultValue = GeoLevel.National)]
+        public GeoLevel OutputDetail { get; set; }
     }
 }

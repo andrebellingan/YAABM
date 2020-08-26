@@ -135,5 +135,19 @@ namespace Covid19ModelLibrary
             return result;
         }
 
+        public GeographicArea<Human> AreaAtLevel(GeoLevel level)
+        {
+            if (level == GeoLevel.Ward) return this;
+            var nextLevel = this.Parent;
+            while (nextLevel.Parent != null)
+            {
+                var nextType = (GeoLevel) nextLevel.Tag;
+                if (nextType == level) return nextLevel;
+                nextLevel = nextLevel.Parent;
+            }
+
+            return null; // didn't find at the parent's level
+        }
+
     }
 }

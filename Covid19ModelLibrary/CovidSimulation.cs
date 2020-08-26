@@ -76,26 +76,31 @@ namespace Covid19ModelLibrary
 
         private void InitializeGeography(IList<WardRecord> wards)
         {
-            AddRegions(wards, w => new RegionSpec("root", w.CountryCode, w.CountryName, "Country"));
-            AddRegions(wards, w => new RegionSpec(w.CountryCode, w.ProvinceCode, w.ProvinceName, "Province"));
-            AddRegions(wards, w => new RegionSpec(w.ProvinceCode, $"dm_{w.DistrictMunicipalityCode}", w.DistrictMunicipalityName, "DistrictMunicipality")); // Add "dm_" prefix because of duplicate district and local municipality codes
-            AddRegions(wards, w => new RegionSpec($"dm_{w.DistrictMunicipalityCode}", w.LocalMunicipalityCode, w.LocalMunicipalityName, "LocalMunicipality"));
+            AddRegions(wards, w => new RegionSpec("root", w.CountryCode, w.CountryName, "National"), GeoLevel.National);
+            AddRegions(wards, w => new RegionSpec(w.CountryCode, w.ProvinceCode, w.ProvinceName, "Province"), GeoLevel.Province);
+            AddRegions(wards, w => new RegionSpec(w.ProvinceCode, $"dm_{w.DistrictMunicipalityCode}", w.DistrictMunicipalityName, "DistrictMunicipality"), GeoLevel.DistrictMunicipality); // Add "dm_" prefix because of duplicate district and local municipality codes
+            AddRegions(wards, w => new RegionSpec($"dm_{w.DistrictMunicipalityCode}", w.LocalMunicipalityCode, w.LocalMunicipalityName, "LocalMunicipality"), GeoLevel.LocalMunicipality);
 
             foreach (var ward in wards)
             {
-                var newWard = new Ward(ward, "Ward", PopulationDynamics, this); // Get the appropriate hospital for this region
+                var newWard =
+                    new Ward(ward, "Ward", PopulationDynamics, this)
+                    {
+                        Tag = GeoLevel.Ward
+                    };
                 AddLocalArea(ward.LocalMunicipalityCode, newWard);
             }
         }
 
-        private void AddRegions(IEnumerable<WardRecord> wardRecords, Func<WardRecord, RegionSpec> regionFunc)
+        private void AddRegions(IEnumerable<WardRecord> wardRecords, Func<WardRecord, RegionSpec> regionFunc, GeoLevel level)
         {
             var regionsToAdd = wardRecords.Select(regionFunc).Distinct();
 
             foreach (var region in regionsToAdd)
             {
                 Log.Logger.Debug($"Adding region {region.LogString()}");
-                AddRegion(region);
+                var newRegion = AddRegion(region);
+                newRegion.Tag = level;
             }
         }
 
@@ -110,11 +115,9 @@ namespace Covid19ModelLibrary
             }
         }
 
-
-
         protected override IDailyRecord<Human> GenerateDailyRecordInstance(int day, DateTime date)
         {
-            return new CovidRecord(date, LocalAreas);
+            return new CovidRecord(date, LocalAreas, _covidInitInfo.OutputDetail);
         }
 
         public void RandomlyInfect(in int numberToInfect)

@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Covid19ModelLibrary.Geography;
 using Covid19ModelLibrary.Initialization;
 using Covid19ModelLibrary.MultiState;
 using Covid19ModelLibrary.Population;
@@ -13,6 +14,7 @@ namespace Covid19ModelLibrary
         private bool _headingHasBeenWritten;
         private readonly object _fileLock = new object();
         public bool SaveContactGraphs { get; set; }
+        public GeoLevel OutputDetail { get; set; } = GeoLevel.National;
 
         protected override void PrepareOutputFiles()
         {
@@ -55,6 +57,7 @@ namespace Covid19ModelLibrary
         {
             var initializationInfo = new CovidInitializationInfo();
             initializationInfo.LoadScenario(scenario);
+            initializationInfo.OutputDetail = OutputDetail;
             return initializationInfo;
         }
     }

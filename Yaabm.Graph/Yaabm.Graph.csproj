@@ -13,7 +13,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LoycCore" Version="28.1.0" />
     <PackageReference Include="QuickGraph.NETStandard" Version="3.8.0" />
   </ItemGroup>
 

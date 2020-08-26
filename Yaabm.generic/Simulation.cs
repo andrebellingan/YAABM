@@ -48,12 +48,12 @@ namespace Yaabm.generic
             _allContexts.Add(RootContext.Name, RootContext);
         }
 
-        protected void AddRegion(RegionSpec regionSpec)
+        protected Region<TAgent> AddRegion(RegionSpec regionSpec)
         {
-            AddRegion(regionSpec.ParentRegionName, regionSpec.Name, regionSpec.FullName, regionSpec.RegionType);
+            return AddRegion(regionSpec.ParentRegionName, regionSpec.Name, regionSpec.FullName, regionSpec.RegionType);
         }
 
-        protected void AddRegion(string parentRegionName, string name, string fullname, string regionType)
+        protected Region<TAgent> AddRegion(string parentRegionName, string name, string fullname, string regionType)
         {
             if (string.IsNullOrEmpty(parentRegionName)) throw new ArgumentException("Cannot add region without parent region's name. Did you mean to use \"root\"?");
             if (!_allContexts.ContainsKey(parentRegionName)) throw new ArgumentOutOfRangeException($"The given parent region {parentRegionName} has not been defined");
@@ -62,6 +62,7 @@ namespace Yaabm.generic
             var newRegion = new Region<TAgent>(name, fullname, regionType);
             parentRegion.AddChild(newRegion);
             _allContexts.Add(newRegion.Name, newRegion);
+            return newRegion;
         }
 
         protected void AddLocalArea(string parentContextName, TLocalArea newContext)

@@ -16,7 +16,7 @@ namespace RunCovidSimulation
         private static int Main(string[] args)
         {
             SetupLogging();
-            CheckGCStatus();
+            CheckGcStatus();
 
             if (!CheckArgumentParserVersion()) return -1;
 
@@ -43,7 +43,8 @@ namespace RunCovidSimulation
 
             var controller = new Controller()
             {
-                SaveContactGraphs = runSettings.SaveContactGraphs
+                SaveContactGraphs = runSettings.SaveContactGraphs,
+                OutputDetail = runSettings.OutputDetail
             };
 
             var startTime = DateTime.Now;
@@ -61,7 +62,7 @@ namespace RunCovidSimulation
             return 0;
         }
 
-        private static void CheckGCStatus()
+        private static void CheckGcStatus()
         {
             var gcType = GCSettings.IsServerGC ? "server" : "workstation";
             Log.Debug($"Garbage collection type is {gcType}");

@@ -17,5 +17,7 @@ namespace Yaabm.generic
         public string FullName { get; }
 
         public string AreaType { get; }
+
+        public object Tag { get; set; }
     }
 }
