@@ -95,14 +95,14 @@ namespace Covid19ModelLibrary
 
         public void RecordTransition(Human agent, Transition<Human> transition)
         {
-            var region = _wardMap[agent.Ward];
-            var wardToUpdate = _counts[region];
-            wardToUpdate.TransitionCounts[transition]++;
+            var region = agent.Ward.OutputRegion;
+            var regionToUpdate = _counts[region];
+            regionToUpdate.TransitionCounts[transition]++;
         }
 
         public void RecordState(Human agent)
         {
-            var region = _wardMap[agent.Ward];
+            var region = agent.Ward.OutputRegion;
             _counts[region].StateCounts[agent.CurrentState]++;
         }
 

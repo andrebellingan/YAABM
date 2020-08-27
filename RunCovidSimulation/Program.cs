@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Runtime;
 using CommandLineParser.Exceptions;
 using Covid19ModelLibrary;
+using Covid19ModelLibrary.Geography;
 using Covid19ModelLibrary.Scenarios;
 using Serilog;
 using Serilog.Events;
@@ -44,7 +45,7 @@ namespace RunCovidSimulation
             var controller = new Controller()
             {
                 SaveContactGraphs = runSettings.SaveContactGraphs,
-                OutputDetail = runSettings.OutputDetail
+                OutputDetail = (GeoLevel) Enum.Parse(typeof(GeoLevel), runSettings.OutputDetail)
             };
 
             var startTime = DateTime.Now;

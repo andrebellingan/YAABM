@@ -48,7 +48,7 @@ namespace RunCovidSimulation
         [SwitchArgument('c', "contactGraphs", false, Description = "Save the contact graph for each iteration to GraphML files", Optional = true)]
         public bool SaveContactGraphs { get; set; }
 
-        [EnumeratedValueArgument(typeof(GeoLevel), 'g', "geoDetail", Description = "Level of geographical detail in the output", Optional = true, AllowMultiple = false, DefaultValue = GeoLevel.National)]
-        public GeoLevel OutputDetail { get; set; }
+        [EnumeratedValueArgument(typeof(string), 'g', "geoDetail", AllowedValues = "National;Province;DistrictMunicipality;LocalMunicipality;Ward", Description = "Level of geographical detail in the output.", Optional = true, AllowMultiple = false, DefaultValue = "National")]
+        public string OutputDetail { get; set; }
     }
 }

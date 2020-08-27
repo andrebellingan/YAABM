@@ -149,5 +149,11 @@ namespace Covid19ModelLibrary
             return null; // didn't find at the parent's level
         }
 
+        public GeographicArea<Human> OutputRegion { get; private set; }
+
+        public void SetOutputRegion(GeoLevel outputDetail)
+        {
+            OutputRegion = AreaAtLevel(outputDetail);
+        }
     }
 }

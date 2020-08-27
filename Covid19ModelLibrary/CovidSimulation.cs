@@ -89,6 +89,7 @@ namespace Covid19ModelLibrary
                         Tag = GeoLevel.Ward
                     };
                 AddLocalArea(ward.LocalMunicipalityCode, newWard);
+                newWard.SetOutputRegion(_covidInitInfo.OutputDetail); // needs to be called after the ward was assigned a parent region
             }
         }
 
