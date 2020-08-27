@@ -18,7 +18,7 @@
   "DayOfLockDown2": 208,
   "DayLockDownLifted": 330,
   "DiseaseParameters": {
-    "ProbInfection": 0.01,
+    "ProbInfection": 0.015,
     "Gamma": 0.04761904761904760,
     "Sigma": 0.25,
     "SymptomWeights": {
