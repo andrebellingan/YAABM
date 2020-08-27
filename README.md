@@ -34,7 +34,7 @@ The application has the following command line arguments:
 
 	-c, --contactGraphs [Optional] Switch to save the contact graph used in each iteration to a GraphML file
 
-	-g, --geoDetail [Optional] Set the level of geographic detail in the output.
+	-g, --geoDetail [Optional] Set the level of geographic detail in the output. Default is National
 
 example: `RunCovidSimulation.exe -n 100 -s ./Scenarios/Baseline_scenario.json -t 4 -c -g Province`
 
