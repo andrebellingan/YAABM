@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using CommandLineParser.Arguments;
-using Covid19ModelLibrary.Geography;
 
 namespace RunCovidSimulation
 {

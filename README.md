@@ -34,7 +34,16 @@ The application has the following command line arguments:
 
 	-c, --contactGraphs [Optional] Switch to save the contact graph used in each iteration to a GraphML file
 
-example: `RunCovidSimulation.exe -n 100 -s ./Scenarios/Baseline_scenario.json -t 4 -c`
+	-g, --geoDetail [Optional] Set the level of geographic detail in the output.
+
+example: `RunCovidSimulation.exe -n 100 -s ./Scenarios/Baseline_scenario.json -t 4 -c -g Province`
+
+The valid values for the -g option, in increasing level of detail are:
+* National
+* Province
+* DistrictMunicipality
+* LocalMunicipality
+* Ward
 
 ### Threading
 The default value for the number of threads is `-t 1`. Running single threaded is highly recommended for debugging. 
@@ -55,7 +64,7 @@ Output is saved in the Output/ directory. A copy of the scenario file that was u
 
 The naming convention is to start the filename with the value of the ScenarioName setting in the scenario file.
 
-If the --saveDate switch is used then the date and time the model was run will be appended to the filename.
+If the --saveDate switch is used then the date and time the model was run will be appended to the file name.
 
 **WARNING:** If a file with the same name already exists it will be overwritten.
 
@@ -79,7 +88,7 @@ The major outstanding issues are:
 
 ### Output format
 
-Output is currently written in CSV format, which makes it easy to import into whatever analysis software you would like. Unfortunatly the file sizes can get very large depending on the number of monte-carlo iterations.
+Output is currently written in CSV format, which makes it easy to import into whatever analysis software you would like. Depending on the geographic detail level and the number of iterations the file sizes can get very large.
 
 ### Model assumptions
 
